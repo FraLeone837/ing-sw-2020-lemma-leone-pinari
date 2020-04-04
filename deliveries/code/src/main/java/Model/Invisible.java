@@ -18,4 +18,10 @@ public class Invisible {
     public void putOnCell(Cell c){
         c.addForbidden(this);
     }
+
+    public Player getPlayer(){
+        Player copy = new Player(creator.getName(),creator.getIdPlayer());
+        return copy;
+    }
+
 }

@@ -26,4 +26,8 @@ public class Worker {
     public void delete(Cell c){
         c.setWorker(null);
     }
+
+    public Cell getPosition() {
+        return position;
+    }
 }

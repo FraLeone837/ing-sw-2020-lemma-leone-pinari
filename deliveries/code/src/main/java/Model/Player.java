@@ -10,4 +10,11 @@ public class Player {
         this.idPlayer = idPlayer;
     }
 
+    public int getIdPlayer() {
+        int x = idPlayer;
+        return x;
+    }
+    public String getName(){
+        return name;
+    }
 }

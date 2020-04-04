@@ -3,15 +3,22 @@ package Model;
 import java.util.ArrayList;
 
 public class Cell {
+    private Index index;
     private boolean dome;
     private boolean building;
     private Worker worker;
     private ArrayList<Invisible> forbidden = new ArrayList<Invisible>();
 
-    public Cell(){
+    public Cell(int x,int y, int z){
+        this.index = new Index(x,y,z);
         this.dome = false;
         this.building = false;
         this.worker = null;
+    }
+
+    public Index getIndex() {
+        Index copy = new Index(index.getX(),index.getY(),index.getZ());
+        return copy;
     }
 
     /**
@@ -20,8 +27,9 @@ public class Cell {
      * if both building and dome are false then (res = true)
      */
     public boolean isEmpty(){
-        if(!(worker.equals(null)))
-            return true;
+        if(worker != null)
+            return false;
+
         return !(dome || building);
     }
 
@@ -41,6 +49,7 @@ public class Cell {
     public Worker getWorker() {
         return worker;
     }
+
 
     /**
      *
