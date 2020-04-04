@@ -1,18 +1,28 @@
 package ModelTest;
 
 import Model.Cell;
+import Model.Index;
 import Model.Worker;
 import org.junit.Assert;
+import java.util.Random;
+
 
 import static org.junit.Assert.*;
 
 public class CellTest {
 
-    Cell cell;
+    private int x;
+    private int y;
+    private int z;
+    private Cell cell;
 
     @org.junit.Before
     public void setUp() throws Exception {
-        this.cell = new Cell(1,2,3);
+        Random rand = new Random();
+        this.x = rand.nextInt(5) + 1;
+        this.y = rand.nextInt(5) + 1;
+        this.z = rand.nextInt(4) + 1;
+        this.cell = new Cell(x, y, z);
     }
 
     @org.junit.After
@@ -55,6 +65,13 @@ public class CellTest {
         assertFalse(cell.isEmpty());
     }
 
+    @org.junit.Test
+    public void testGetIndex(){
+        Index ix = cell.getIndex();
+        assertEquals(x, ix.getX());
+        assertEquals(y, ix.getY());
+        assertEquals(z, ix.getZ());
+    }
 
 //    @org.junit.Test
 //    public void testSetBuilding() {
