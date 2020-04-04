@@ -9,7 +9,7 @@ public class Cell {
     private Worker worker;
     private ArrayList<Invisible> forbidden = new ArrayList<Invisible>();
 
-    public Cell(int x,int y, int z){
+    public Cell(int x, int y, int z){
         this.index = new Index(x,y,z);
         this.dome = false;
         this.building = false;

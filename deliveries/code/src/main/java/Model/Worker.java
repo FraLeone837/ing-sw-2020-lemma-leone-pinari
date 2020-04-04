@@ -2,9 +2,10 @@ package Model;
 
 public class Worker {
     private int idWorker;
-    private Cell position;
-    public Worker(int idWorker){
-        this.idWorker = idWorker;
+    private Index position;
+
+    public void setIdWorker(int id){
+        this.idWorker=id;
     }
     /**
      * can only build buildings
@@ -27,7 +28,11 @@ public class Worker {
         c.setWorker(null);
     }
 
-    public Cell getPosition() {
+    public Index getPosition() {
         return position;
+    }
+
+    public void setPosition(Cell c){
+        position= c.getIndex();
     }
 }
