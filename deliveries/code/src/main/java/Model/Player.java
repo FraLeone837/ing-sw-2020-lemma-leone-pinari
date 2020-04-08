@@ -12,6 +12,8 @@ public class Player {
         this.idPlayer = idPlayer;
         this.worker1= new Worker();
         this.worker2= new Worker();
+        worker1.setOwner(this);
+        worker2.setOwner(this);
     }
 
     public int getIdPlayer() {

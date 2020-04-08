@@ -11,12 +11,6 @@ public class Island {
     {
         cells= new Cell[5][5][4];
         workers= new ArrayList<Worker>();
-    }
-
-    /**
-     * Initializes all 5*5*4 empty cells in setup phase
-     */
-    public void initCells(){
         for(int x=0; x<5; x++)
         {
             for(int y=0; y<5; y++)
@@ -29,15 +23,14 @@ public class Island {
         }
     }
 
-//    /**
-//     * Set the player's workers on the game board
-//     * @param p the current player whose workers are to be setted
-//     */
-//    public void initPlayer(Player p)
-//    {
-//
-//    }
-
+    /**
+     * provide the reference of a cell with a specific index. this method is useful in order to make the controller works only with index
+     * @param i the index of the cell we are interested in
+     * @return the cell with the wanted index
+     */
+    public Cell getCellByIndex(Index i){
+        return cells[i.getX()][i.getY()][i.getZ()];
+    }
     /**
      * Set the worker in a cell of the game board
      * @param w the current worker to be setted
@@ -46,7 +39,7 @@ public class Island {
     private void initWorker(Worker w, Cell c)
     {
         c.setWorker(w);
-        w.setPosition(c);
+        w.setPosition(c.getIndex());
         workers.add(w);
     }
 
