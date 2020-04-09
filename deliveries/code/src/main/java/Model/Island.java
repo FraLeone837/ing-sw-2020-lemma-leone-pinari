@@ -3,6 +3,9 @@ package Model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this class represents the game board
+ */
 public class Island {
     private Cell[][][] cells;
     private ArrayList<Worker> workers;

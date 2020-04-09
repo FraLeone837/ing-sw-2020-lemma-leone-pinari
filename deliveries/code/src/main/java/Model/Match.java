@@ -57,7 +57,7 @@ public class Match {
     }
 
     /**
-     * build a dome in the cell in a given position
+     * build a dome in a cell in a given position
      * @param w the worker who builds
      * @param i the index of the cell where to build a dome
      */

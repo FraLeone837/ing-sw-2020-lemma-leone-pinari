@@ -17,6 +17,7 @@ public class Worker {
     public void setOwner(Player p){
         owner=p;
     }
+
     public Player getOwner() {
         return owner;
     }
@@ -24,7 +25,7 @@ public class Worker {
 
 
     /**
-     * can only build buildings
+     * can only build buildings, not dome
      * @param c != null
      */
     public void build(Cell c) {
@@ -36,11 +37,20 @@ public class Worker {
         c.setDome();
     }
 
+    /**
+     * put the worker in a cell and updates its position, without removing it in the previous
+     *
+     * @param c the cell where to put the worker
+     */
     public void move(Cell c){
        c.setWorker(this);
        setPosition(c.getIndex());
     }
 
+    /**
+     * removes the player from its current cell and set its position to null
+     * @param c the current cell of the worker
+     */
     public void delete(Cell c){
         c.setWorker(null);
         setPosition(null);

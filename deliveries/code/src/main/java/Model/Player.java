@@ -25,10 +25,20 @@ public class Player {
         return name;
     }
 
+    /**
+     * adds an id in the worker1. this action is not done in the constructor because we do not know the id initially
+     *
+     * @param id the id to set in worker1
+     */
     public void setWorker1Id(int id) {
         this.worker1.setIdWorker(id);
     }
 
+    /**
+     * adds an id in the worker2. this action is not done in the constructor because we do not know the id initially
+     *
+     * @param id the id to set in worker2
+     */
     public void setWorker2Id(int id) {
         this.worker2.setIdWorker(id);
     }
@@ -36,6 +46,7 @@ public class Player {
     public Worker getWorker1(){
         return worker1;
     }
+
     public Worker getWorker2() {
         return worker2;
     }

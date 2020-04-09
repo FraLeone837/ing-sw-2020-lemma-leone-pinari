@@ -2,6 +2,9 @@ package Model;
 
 import java.util.ArrayList;
 
+/**
+ * this class represents the positions in the game board, either in width, depth and height
+ */
 public class Cell {
     private Index index;
     private boolean dome;
@@ -16,6 +19,9 @@ public class Cell {
         this.worker = null;
     }
 
+    /**
+     * @return a copy of the index of the class
+     */
     public Index getIndex() {
         Index copy = new Index(index.getX(),index.getY(),index.getZ());
         return copy;
@@ -25,6 +31,8 @@ public class Cell {
      * if dome is true, then it's not empty (res = false)
      * if building is true, then it's not empty (res = false)
      * if both building and dome are false then (res = true)
+     *
+     * @return a boolean that indicates if there is something in the cell or not
      */
     public boolean isEmpty(){
         if(worker != null)
@@ -33,15 +41,26 @@ public class Cell {
         return !(dome || building);
     }
 
+    /**
+     * builds a normal building, not a dome
+     */
     public void setBuilding() {
         this.building = true;
     }
 
+    /**
+     * builds a dome
+     */
     public void setDome(){
         this.setBuilding();
         dome = true;
     }
 
+    /**
+     * put a worker in the cell
+     *
+     * @param worker the worker to put in the cell
+     */
     public void setWorker(Worker worker) {
         this.worker = worker;
     }
@@ -52,6 +71,7 @@ public class Cell {
 
 
     /**
+     *adds an invisible block in the cell
      *
      * @param forbidden != null
      */
