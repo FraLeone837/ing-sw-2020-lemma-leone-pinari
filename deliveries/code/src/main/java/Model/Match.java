@@ -42,18 +42,21 @@ public class Match {
       * @param i the position where to move the worker
      */
     public void moveWorker(Worker w, Index i){
-        w.delete(island.getCellByIndex(i));
-        w.move(island.getCellByIndex(i));
+        w.delete(island.getCell(i));
+        w.move(island.getCell(i));
 
     }
 
     /**
-     * build a building, not a dome, in the cell in a given position
+     * build a building in the cell in a given position.Automatically builds a dome if the cell is in the 4th level
      * @param w the worker who builds
-     * @param i the index of the cell where to build a normal building, not a dome
+     * @param i the index of the cell where to build
      */
     public void build(Worker w, Index i){
-        w.build(island.getCellByIndex(i));
+        if(i.getZ()==3)
+            w.buildDome(island.getCell(i));
+        else
+            w.build(island.getCell(i));
     }
 
     /**
@@ -62,7 +65,7 @@ public class Match {
      * @param i the index of the cell where to build a dome
      */
     public void buildDome(Worker w, Index i){
-        w.buildDome(island.getCellByIndex(i));
+        w.buildDome(island.getCell(i));
     }
 
     /**
@@ -71,7 +74,7 @@ public class Match {
      * @param i the index of the cell where to build the invisible block
      */
     public void buildInvisible(Invisible in, Index i){
-        island.getCellByIndex(i).addForbidden(in);
+        island.getCell(i).addForbidden(in);
     }
 
     /**
@@ -80,7 +83,7 @@ public class Match {
      * @param i the position where to put the worker at the beginning of the game
      */
     public void initWorker(Worker w, Index i){
-        w.move(island.getCellByIndex(i));
+        w.move(island.getCell(i));
     }
 
     /**
@@ -88,7 +91,7 @@ public class Match {
      * @param w the worker to remove from the game board
      */
     public void removeWorker(Worker w){
-        w.delete(island.getCellByIndex(w.getPosition()));
+        w.delete(island.getCell(w.getPosition()));
     }
 
     /**
@@ -98,7 +101,7 @@ public class Match {
      */
     public Cell selectCell(Index i){
 //to do: deep clone of class island and use it to return a copy of the cell, not the cell itself
-        return island.getCellByIndex(i);
+        return island.getCell(i);
     }
 
     /**

@@ -19,9 +19,9 @@ public class CellTest {
     @org.junit.Before
     public void setUp() throws Exception {
         Random rand = new Random();
-        this.x = rand.nextInt(5) + 1;
-        this.y = rand.nextInt(5) + 1;
-        this.z = rand.nextInt(4) + 1;
+        this.x = rand.nextInt(5);
+        this.y = rand.nextInt(5);
+        this.z = rand.nextInt(4);
         this.cell = new Cell(x, y, z);
     }
 
@@ -42,7 +42,7 @@ public class CellTest {
 
     @org.junit.Test
     public void testIsEmpty_containsWorker_expectedNotEmpty() {
-        cell.setWorker(new Worker(2));
+        cell.setWorker(new Worker());
 
         if(cell.isEmpty()) {
             System.out.println("Cell is empty.");

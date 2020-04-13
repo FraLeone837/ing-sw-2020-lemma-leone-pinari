@@ -31,7 +31,7 @@ public class Island {
      * @param i the index of the cell we are interested in
      * @return the cell with the wanted index
      */
-    public Cell getCellByIndex(Index i){
+    public Cell getCell(Index i){
         return cells[i.getX()][i.getY()][i.getZ()];
     }
     /**
@@ -39,8 +39,7 @@ public class Island {
      * @param w the current worker to be setted
      * @param c the cell where the worker is to be put
      */
-    private void initWorker(Worker w, Cell c)
-    {
+    private void initWorker(Worker w, Cell c){
         c.setWorker(w);
         w.setPosition(c.getIndex());
         workers.add(w);

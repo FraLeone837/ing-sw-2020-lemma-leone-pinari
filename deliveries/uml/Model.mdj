@@ -804,7 +804,7 @@
 											"top": 330,
 											"width": 190,
 											"height": 13,
-											"text": "+getCellByIndex(Index): Cell",
+											"text": "+getCell(Index): Cell",
 											"horizontalAlignment": 0
 										},
 										{
@@ -7332,7 +7332,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFxCI1s6vVt6Hw="
 							},
-							"name": "getCellByIndex",
+							"name": "getCell",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -7351,8 +7351,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFxHPPE4ODaRxM="
 									},
-									"name": "Index",
-									"type": ""
+									"name": "Index"
 								}
 							]
 						},
