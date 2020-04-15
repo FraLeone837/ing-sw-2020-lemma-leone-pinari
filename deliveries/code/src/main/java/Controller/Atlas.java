@@ -36,4 +36,9 @@ public class Atlas implements God {
         else
             m.build(w, index2);
     }
+
+    @Override
+    public void setup(Match m) {
+        return;
+    }
 }

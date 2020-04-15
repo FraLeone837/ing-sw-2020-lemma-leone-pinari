@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Match;
+import Model.Player;
 import Model.Worker;
 
 public class Apollo implements God {
@@ -29,6 +30,10 @@ public class Apollo implements God {
 
         //take index2 where to build from view
         m.build(w, index2);
+    }
+
+    @Override
+    public void setup(Match m, Player p) {
     }
 }
 

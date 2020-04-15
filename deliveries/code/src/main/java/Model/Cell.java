@@ -78,4 +78,9 @@ public class Cell {
     public void addForbidden(Invisible forbidden){
         this.forbidden.add(forbidden);
     }
+
+    public void removeForbidden(Invisible forbidden) {this.forbidden.remove(forbidden);}
+
+    public ArrayList<Invisible> getForbidden(){return forbidden;}
+
 }

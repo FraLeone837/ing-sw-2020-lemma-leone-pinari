@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Index;
 import Model.Match;
+import Model.Player;
 import Model.Worker;
 
 public class Artemis implements God {
@@ -50,5 +51,10 @@ public class Artemis implements God {
             m.moveWorker(w, index2);
         //take index3 where to build
         m.build(w, index3);
+    }
+
+    @Override
+    public void setup(Match m, Player p) {
+        return;
     }
 }

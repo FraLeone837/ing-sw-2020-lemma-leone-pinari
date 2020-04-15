@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.ArrayList;
+
 /**
  * this class implements gods' powers that have effects during the opponents turns.
  * each invisible block is a set of conditions that forbid certain actions.
@@ -14,26 +16,43 @@ public class Invisible {
 
     private Player creator;
 
-    public Invisible(){
-        this.creator = null;
-    }
+    private ArrayList<Worker> workersList;
 
     public Invisible (Player creator){
         this.creator = creator;
+        this.workersList = new ArrayList<Worker>();
+    }
+
+
+
+    public Player getCreator(){
+        return creator;
     }
 
     /**
-     * adds the invisible block in a cell
+     * adds the worker to the list of the workers affected by the forbidden
      *
-     * @param c the cell where to put the invisible block
+     * @param w the worker to be added
      */
-    //maybe useless
-    public void putOnCell(Cell c){
-        c.addForbidden(this);
+    public void addWorker(Worker w){
+        workersList.add(w);
     }
 
-    public Player getPlayer(){
-        return creator;
+    /**
+     * removes all the workers from the list of the workers affected by the forbidden
+     */
+    public void removeWorkers(){
+        workersList.clear();
+    }
+
+    /**
+     * checks if the worker is in the list of workers affected by the forbidden
+     *
+     * @param w the worker to check
+     * @return true if the worker is in the list
+     */
+    public Boolean isIn(Worker w){
+        return workersList.contains(w);
     }
 
 }

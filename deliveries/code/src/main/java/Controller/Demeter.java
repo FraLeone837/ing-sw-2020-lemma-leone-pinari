@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Index;
 import Model.Match;
+import Model.Player;
 import Model.Worker;
 
 public class Demeter implements God {
@@ -48,5 +49,10 @@ public class Demeter implements God {
         if(buildAgain)
             //take index3 where to build a second time
             m.build(w, index3);
+    }
+
+    @Override
+    public void setup(Match m, Player p) {
+        return;
     }
 }

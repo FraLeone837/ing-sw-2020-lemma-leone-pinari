@@ -1,5 +1,6 @@
 package Model;
 
+import java.lang.management.PlatformLoggingMXBean;
 import java.util.ArrayList;
 
 /**
@@ -18,6 +19,12 @@ public class Match {
         idMatch =  id;
         island = new Island();
     }
+
+    /**
+     *
+     * @return the list of players
+     */
+    public ArrayList<Player> getPlayers(){return players;}
 
     /**
      * takes a player from the player manager and stores him in the match class
@@ -42,8 +49,8 @@ public class Match {
       * @param i the position where to move the worker
      */
     public void moveWorker(Worker w, Index i){
-        w.delete(island.getCell(i));
-        w.move(island.getCell(i));
+        w.delete(selectCell(w.getPosition()));
+        w.move(selectCell(i));
 
     }
 
@@ -54,9 +61,9 @@ public class Match {
      */
     public void build(Worker w, Index i){
         if(i.getZ()==3)
-            w.buildDome(island.getCell(i));
+            w.buildDome(selectCell(i));
         else
-            w.build(island.getCell(i));
+            w.build(selectCell(i));
     }
 
     /**
@@ -65,7 +72,7 @@ public class Match {
      * @param i the index of the cell where to build a dome
      */
     public void buildDome(Worker w, Index i){
-        w.buildDome(island.getCell(i));
+        w.buildDome(selectCell(i));
     }
 
     /**
@@ -74,7 +81,7 @@ public class Match {
      * @param i the index of the cell where to build the invisible block
      */
     public void buildInvisible(Invisible in, Index i){
-        island.getCell(i).addForbidden(in);
+        selectCell(i).addForbidden(in);
     }
 
     /**
@@ -83,7 +90,7 @@ public class Match {
      * @param i the position where to put the worker at the beginning of the game
      */
     public void initWorker(Worker w, Index i){
-        w.move(island.getCell(i));
+        w.move(selectCell(i));
     }
 
     /**
@@ -91,7 +98,7 @@ public class Match {
      * @param w the worker to remove from the game board
      */
     public void removeWorker(Worker w){
-        w.delete(island.getCell(w.getPosition()));
+        w.delete(selectCell(w.getPosition()));
     }
 
     /**
