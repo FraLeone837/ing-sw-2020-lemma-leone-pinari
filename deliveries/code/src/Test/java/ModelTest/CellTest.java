@@ -1,9 +1,9 @@
 package ModelTest;
 
-import Model.Cell;
-import Model.Index;
-import Model.Worker;
+import Model.*;
 import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Random;
 
 
@@ -71,6 +71,18 @@ public class CellTest {
         assertEquals(x, ix.getX());
         assertEquals(y, ix.getY());
         assertEquals(z, ix.getZ());
+    }
+
+    @Test
+    public void testForbidden(){
+        String name = "generic_name";
+        int id = 1;
+        Player player = new Player(name, id);
+        Invisible invisible = new Invisible(player);
+        cell.addForbidden(invisible);
+        assertTrue(cell.getForbidden().contains(invisible));
+        cell.removeForbidden(invisible);
+        assertFalse(cell.getForbidden().contains(invisible));
     }
 
 //    @org.junit.Test
