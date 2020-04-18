@@ -24,7 +24,9 @@ public class Match {
      *
      * @return the list of players
      */
-    public ArrayList<Player> getPlayers(){return players;}
+    public ArrayList<Player> getPlayers(){
+        return players;
+    }
 
     /**
      * takes a player from the player manager and stores him in the match class
@@ -51,7 +53,6 @@ public class Match {
     public void moveWorker(Worker w, Index i){
         w.delete(selectCell(w.getPosition()));
         w.move(selectCell(i));
-
     }
 
     /**

@@ -23,20 +23,23 @@ public class IslandTest {
         this.x = rand.nextInt(5);
         this.y = rand.nextInt(5);
         this.z = rand.nextInt(4);
-        this.island = new Island();
+        if (island == null)
+            this.island = new Island();
     }
 
     @org.junit.After
     public void tearDown() throws Exception {
+        island = null;
     }
 
     @org.junit.Test
     public void testGetCell_correctIndex_correctCell(){
         //Cell getCell(Index i)
         Index ix = new Index(x,y,z);
-        Cell c1 = new Cell(x,y,z);
         Cell c2=island.getCell(ix);
-        assertEquals(c1, c2);
+        assertEquals(c2.getIndex().getZ(), z);
+        assertEquals(c2.getIndex().getY(), y);
+        assertEquals(c2.getIndex().getX(), x);
     }
 
     @org.junit.Test
@@ -48,12 +51,6 @@ public class IslandTest {
 
     }
 
-    @org.junit.Test
-    public void testInitWorker(){
-        //void initWorker(Worker w, Cell c)
-        Cell c= new Cell(x,y,z);
-        Worker w = new Worker();
-        island.initWorker(w,c);
-    }
+
 
 }

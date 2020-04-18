@@ -1,6 +1,8 @@
 package Controller;
 
+import Model.Index;
 import Model.Match;
+import Model.Player;
 import Model.Worker;
 
 public class Atlas implements God {
@@ -17,16 +19,8 @@ public class Atlas implements God {
         return "Atlas";
     }
 
-    @Override
-    public String getDescription() {
-        return "Titan Shouldering the Heavens\n" +
-                "Your Build: Your Worker\n" +
-                "may build a dome at any level\n" +
-                "including the ground.";
-    }
 
-    @Override
-    public void turn(Match m, Worker w) {
+    public void turn(Match m, Worker w, Index index1, Index index2, Index index3) {
         //take index1 where to move from view
         m.moveWorker(w, index1);
         //take index2 where to build from view
@@ -38,7 +32,30 @@ public class Atlas implements God {
     }
 
     @Override
-    public void setup(Match m) {
+    public String getDescription() {
+        return "Titan Shouldering the Heavens\n" +
+                "Your Build: Your Worker\n" +
+                "may build a dome at any level\n" +
+                "including the ground.";
+    }
+    @Override
+    public void turn(Match m, Worker w) {
+        //take index1 where to move from view
+            //Stub
+            Index index1 = new Index(0,0,1);
+        m.moveWorker(w, index1);
+        //take index2 where to build from view
+        //ask to build a building or a dome
+            //Stub
+            Index index2 = new Index(2,3,1);
+        if(buildDome)
+            m.buildDome(w, index2);
+        else
+            m.build(w, index2);
+    }
+
+    @Override
+    public void setup(Match m, Player p) {
         return;
     }
 }

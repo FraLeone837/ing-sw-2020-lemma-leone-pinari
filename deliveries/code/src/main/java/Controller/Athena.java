@@ -32,6 +32,20 @@ public class Athena implements God {
 
     @Override
     public void turn(Match m, Worker w) {
+            //Stub
+            Index index1 = new Index(1,3,3);
+        reset(m, w);
+        setPrevIndex(w.getPosition());
+        //take index1 where to move from view
+        m.moveWorker(w, index1);
+        //take index2 where to build from view
+            //Stub
+            Index index2 = new Index(1,2,3);
+        m.build(w, index2);
+        usePower(m, w);
+    }
+
+    public void turn(Match m, Worker w,Index index1, Index index2) {
         reset(m, w);
         setPrevIndex(w.getPosition());
         //take index1 where to move from view

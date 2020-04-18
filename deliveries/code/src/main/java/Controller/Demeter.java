@@ -42,14 +42,37 @@ public class Demeter implements God {
     @Override
     public void turn(Match m, Worker w) {
         //take index1 where to move the first time
+
+        Index index1 = new Index(1,4,3);
         m.moveWorker(w, index1);
         //take index2 where to build
+        //Stub
+        Index index2 = new Index(1,3,3);
         m.build(w, index2);
         //ask to build another time
-        if(buildAgain)
+        if(buildAgain){
+            //take index3 where to build a second time
+                //Stub
+                Index index3 = new Index(2,3,3);
+            m.build(w, index3);
+        }
+    }
+
+
+    public void turn(Match m, Worker w,Index index1,Index index2,Index index3) {
+        //take index1 where to move the first time
+        m.moveWorker(w, index1);
+        //take index2 where to build
+        //Stub
+        m.build(w, index2);
+        //ask to build another time
+        if(buildAgain){
             //take index3 where to build a second time
             m.build(w, index3);
+        }
     }
+
+
 
     @Override
     public void setup(Match m, Player p) {

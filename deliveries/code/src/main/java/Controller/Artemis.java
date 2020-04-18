@@ -43,6 +43,27 @@ public class Artemis implements God {
     @Override
     public void turn(Match m, Worker w) {
         //take index1 where to move the first time
+            //Stub
+            Index index1 = new Index(2,2,1);
+        setPrevIndex(w.getPosition());
+        m.moveWorker(w, index1);
+        //ask to move another time
+        if(moveAgain){
+                //take index2 where to move a second time
+                Index index2 = new Index(1,1,3);
+            m.moveWorker(w, index2);
+
+        }
+        //take index3 where to build
+
+            //Stub
+            Index index3 = new Index(1,2,3);
+        m.build(w, index3);
+    }
+
+    public void turn(Match m, Worker w,Index index1,Index index2,Index index3) {
+        //take index1 where to move the first time
+
         setPrevIndex(w.getPosition());
         m.moveWorker(w, index1);
         //ask to move another time
