@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Index;
 import Model.Match;
 import Model.Player;
 import Model.Worker;
@@ -17,6 +18,7 @@ public interface God {
      * @param w the worker that the player chose to move
      */
     public void turn(Match m, Worker w);
+
 
     /**
      * this method is used at the beginning of the match to do actions that will be active for the whole duration of the game,

@@ -26,4 +26,27 @@ public class Index {
     public int getZ() {
         return z;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Index)){
+            System.out.println("Object other is not instance of Index ");
+            return false;
+        }
+        Index in = (Index) other;
+        if (this.x == in.x){
+            if (this.y == in.y) {
+                if (this.z == in.z) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "X position is: " + this.x + ". Y position is: " + this.y + ". Z position is: " + this.z;
+    }
 }

@@ -41,7 +41,7 @@ public class Demeter implements God {
 
     @Override
     public void turn(Match m, Worker w) {
-        //take index1 where to move the first time
+        //index1 = take index1 where to move the first time
 
         Index index1 = new Index(1,4,3);
         m.moveWorker(w, index1);

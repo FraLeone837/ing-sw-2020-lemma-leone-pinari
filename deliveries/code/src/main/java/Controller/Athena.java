@@ -84,33 +84,37 @@ public class Athena implements God {
      * @param w the worker that the player chose to move
      */
     private void usePower(Match m, Worker w){
-        if(prevIndex.getZ() < w.getPosition().getZ()){
+        if(prevIndex.getZ()+1 == w.getPosition().getZ()){
             for (Player p : m.getPlayers()){
-                if(p.getIdPlayer() != w.getOwner().getIdPlayer()){
-                    Worker w1= p.getWorker1();
-                    Index i1= w1.getPosition();
-                    if(i1.getZ()<3){
-                        for (int x = 0; x < 5; x++) {
-                            for (int y = 0; y < 5; y++) {
-                                Cell c1 = m.selectCell(new Index(x, y, i1.getZ() + 1));
-                                ArrayList<Invisible> invisibles= c1.getForbidden();
-                                for(Invisible inv : invisibles){
-                                    if(inv instanceof ForbiddenMove && w.getOwner()==inv.getCreator())
-                                        inv.addWorker(w1);
+                if(p.getIdPlayer() != w.getOwner().getIdPlayer()) {
+                    Worker w1 = p.getWorker1();
+                    if(w1 != null){
+                        Index i1 = w1.getPosition();
+                        if (i1.getZ() < 3) {
+                            for (int x = 0; x < 5; x++) {
+                                for (int y = 0; y < 5; y++) {
+                                    Cell c1 = m.selectCell(new Index(x, y, i1.getZ() + 1));
+                                    ArrayList<Invisible> invisibles = c1.getForbidden();
+                                    for (Invisible inv : invisibles) {
+                                        if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
+                                            inv.addWorker(w1);
+                                    }
                                 }
                             }
                         }
                     }
-                    Worker w2= p.getWorker2();
-                    Index i2= w2.getPosition();
-                    if(i2.getZ()<3){
-                        for (int x = 0; x < 5; x++) {
-                            for (int y = 0; y < 5; y++) {
-                                Cell c2 = m.selectCell(new Index(x, y, i2.getZ() + 1));
-                                ArrayList<Invisible> invisibles= c2.getForbidden();
-                                for(Invisible inv : invisibles){
-                                    if(inv instanceof ForbiddenMove && w.getOwner()==inv.getCreator())
-                                        inv.addWorker(w2);
+                    Worker w2 = p.getWorker2();
+                    if (w2 != null) {
+                        Index i2 = w2.getPosition();
+                        if (i2.getZ() < 3) {
+                            for (int x = 0; x < 5; x++) {
+                                for (int y = 0; y < 5; y++) {
+                                    Cell c2 = m.selectCell(new Index(x, y, i2.getZ() + 1));
+                                    ArrayList<Invisible> invisibles = c2.getForbidden();
+                                    for (Invisible inv : invisibles) {
+                                        if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
+                                            inv.addWorker(w2);
+                                    }
                                 }
                             }
                         }

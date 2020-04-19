@@ -45,9 +45,15 @@ public class IslandTest {
     @org.junit.Test
     public void testGetCell_wrongIndex_OutOfBoundException(){
         //Cell getCell(Index i)
-        Index ix = new Index(5,5,5);
-        Cell c1 = new Cell(x,y,z);
-        Cell c2=island.getCell(ix);
+        boolean x = false;
+        try{
+            Index ix = new Index(5,5,4);
+            Cell c1 = new Cell(this.x,this.y,this.z);
+            Cell c2=island.getCell(ix);
+        } catch (ArrayIndexOutOfBoundsException IO){
+            x = true;
+        }
+        assertTrue(x);
 
     }
 

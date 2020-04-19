@@ -5,6 +5,22 @@ public class Worker {
     private Index position;
     private Player owner;
 
+    public Worker(){
+        idWorker = 0;
+        position = null;
+        owner = null;
+    }
+    public Worker(int id){
+        idWorker = id;
+        position = null;
+        owner = null;
+    }
+    public Worker(int id, Player owner){
+        idWorker = id;
+        position = null;
+        this.owner = owner;
+    }
+
     public void setIdWorker(int id){
         this.idWorker=id;
     }
@@ -61,7 +77,7 @@ public class Worker {
     }
 
     public void setPosition(Index i){
-        position= i;
+        position = i;
     }
 
 }

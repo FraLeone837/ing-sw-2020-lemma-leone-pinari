@@ -20,7 +20,7 @@ public class Atlas implements God {
     }
 
 
-    public void turn(Match m, Worker w, Index index1, Index index2, Index index3) {
+    public void turn(Match m, Worker w, Index index1, Index index2) {
         //take index1 where to move from view
         m.moveWorker(w, index1);
         //take index2 where to build from view

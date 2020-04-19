@@ -20,10 +20,11 @@ public class MatchTest {
 
     @org.junit.After
     public void tearDown() throws Exception {
+
     }
 
     @Test
-    public void testPlayers(){
+    public void testPlayers_InsertAndRemove_isInsertedIsRemoved(){
         String name = "generic name";
         Random rand = new Random();
         int playerId = rand.nextInt(1);
@@ -35,26 +36,34 @@ public class MatchTest {
     }
 
     @Test
-    public void testMoveWorker(){
+    public void testMoveWorker_MoveFromFirstPosition_True(){
         Random rand = new Random();
         int x = rand.nextInt(5);
         int y = rand.nextInt(5);
         int z = rand.nextInt(4);
         Index index = new Index(x, y, z);
         Worker worker = new Worker();
-        worker.setPosition(index);
-        int x2 = rand.nextInt(5);
-        int y2 = rand.nextInt(5);
-        int z2 = rand.nextInt(4);
-        Index index2 = new Index(x2, y2, z2);
+
+        match.initWorker(worker,index);
+        assertEquals(x, worker.getPosition().getX());
+        assertEquals(y, worker.getPosition().getY());
+        assertEquals(z, worker.getPosition().getZ());
+
+        x = rand.nextInt(5);
+        y = rand.nextInt(5);
+        z = rand.nextInt(4);
+        Index index2 = new Index(x, y, z);
         match.moveWorker(worker, index2);
-        assertEquals(index2.getX(), worker.getPosition().getX());
-        assertEquals(index2.getY(), worker.getPosition().getY());
-        assertEquals(index2.getZ(), worker.getPosition().getZ());
+        assertEquals(x, worker.getPosition().getX());
+        assertEquals(y, worker.getPosition().getY());
+        assertEquals(z, worker.getPosition().getZ());
+
+        assertNull(match.selectCell(index).getWorker());
+
     }
 
     @Test
-    public void testBuild(){
+    public void testBuild_BuildEverwhere_isBuildingAndisDomeInLevel3(){
         Random rand = new Random();
         int x = rand.nextInt(5);
         int y = rand.nextInt(5);
@@ -64,10 +73,12 @@ public class MatchTest {
         Worker worker = new Worker();
         match.build(worker, index);
         assertFalse(match.selectCell(index).isEmpty());
+        if(z==3)
+            assertTrue(match.selectCell(index).isDome());
     }
 
     @Test
-    public void testBuildInvisible(){
+    public void testBuildInvisible_BuildOneCell_CorrectOutput(){
         Random rand = new Random();
         int x = rand.nextInt(5);
         int y = rand.nextInt(5);
@@ -77,12 +88,12 @@ public class MatchTest {
         Player player = new Player("generic_name", 1);
         Invisible invisible = new Invisible(player);
         match.buildInvisible(invisible, index);
-        assertFalse(match.selectCell(index).getForbidden().size()==0);
+        assertTrue(match.selectCell(index).getForbidden().size()==1);
 
     }
 
     @Test
-    public void testWorker(){
+    public void testInitWorker_CorrectIn_CorrectOut(){
         Random rand = new Random();
         int x = rand.nextInt(5);
         int y = rand.nextInt(5);

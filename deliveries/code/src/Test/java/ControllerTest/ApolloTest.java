@@ -28,92 +28,69 @@ public class ApolloTest {
     private Worker enemyWorker;
     private Apollo apollo;
 
-    public int absolute(int x){
-        if (x >= 0) return x;
-        return -x;
-    }
-
-    private int getAdjacent(int x){
-        Random rand = new Random();
-        int v = rand.nextInt(2);
-        int sign = rand.nextInt(2);
-        if(sign == 1) v = -v;
-        int fx;
-        if(x == 0){
-            fx = x+absolute(v);
-        } else if(x == 5){
-            fx = x-absolute(v);
-        }
-        else{
-            fx = x+v;
-        }
-        return fx;
-    }
-
-    private Index getAdjacent(Worker x){
-        int fx = getAdjacent(x.getPosition().getX());
-        int fy = getAdjacent(x.getPosition().getY());
-        int fz = getAdjacent(x.getPosition().getZ());
-        return new Index(fx,fy,fz);
-    }
-
-    public void placeAdjacent(){
-        this.ex = getAdjacent(this.x);
-        this.ey = getAdjacent(this.y);
-        this.ez = getAdjacent(this.z);
-        Index newIndex = new Index(ex,ey,ez);
-        match.initWorker(enemyWorker,newIndex);
-
-    }
-
-
-
     @org.junit.Before
     public void setUp(){
-        Random rand = new Random();
-        this.x = rand.nextInt(5);
-        this.y = rand.nextInt(5);
-        this.z = rand.nextInt(4);
+
+        Utils utils = new Utils();
+        Index ix = utils.generateRandomIndex();
         this.apollo = new Apollo();
+        this.myWorker = new Worker();
+        this.enemyWorker = new Worker();
         match = new Match(1);
-        match.initWorker(myWorker, new Index(x,y,z));
-
-        placeAdjacent();
+        match.initWorker(myWorker, ix);
 
 
+        Index index = utils.getPseudoAdjacent(myWorker);
+        match.initWorker(this.enemyWorker,index);
     }
 
     @org.junit.Test
-    public void testTurn_CorrectInput_UsePower(){
-        apollo.turn(match,myWorker,myWorker.getPosition(),enemyWorker.getPosition());
-        //Controls if coordinates of myworker are those that enemyWorker previously had
-        int xpos = myWorker.getPosition().getX();
-        int ypos = myWorker.getPosition().getY();
-        int zpos = myWorker.getPosition().getZ();
-        assertEquals(xpos, ex);
-        assertEquals(ypos, ey);
-        assertEquals(zpos, ey);
+    public void testTurn_SwitchPlaces_ExpectedSwitchedPlaces(){
+        Utils utils = new Utils();
+        Index oldPosition = myWorker.getPosition();
 
-        //Controls if coordinates of enemyWorker are those that myWorker previously had
-        xpos = enemyWorker.getPosition().getX();
-        ypos = enemyWorker.getPosition().getY();
-        zpos = enemyWorker.getPosition().getZ();
 
-        assertEquals(xpos, x);
-        assertEquals(ypos, y);
-        assertEquals(zpos, z);
+        Index buildIndex = utils.getPseudoAdjacent(enemyWorker);
+
+        Index myWorkerLastPos = myWorker.getPosition();
+        Index enemyWorkerLastPos = enemyWorker.getPosition();
+
+        apollo.turn(match, myWorker, enemyWorker.getPosition(), buildIndex);
+
+        assertTrue(enemyWorkerLastPos.equals(myWorker.getPosition()));
+        assertTrue(myWorkerLastPos.equals(enemyWorker.getPosition()));
+        assertTrue(match.selectCell(buildIndex).isBuilding());
+        assertNull(match.selectCell(oldPosition).getWorker());
     }
 
     @org.junit.Test
-    public void testTurn_CorrectInput_NormalMovement(){
-        apollo.turn(match,myWorker,myWorker.getPosition(),getAdjacent(myWorker));
-        int xpos = myWorker.getPosition().getX();
-        int ypos = myWorker.getPosition().getY();
-        int zpos = myWorker.getPosition().getZ();
+    public void testTurn_NormalMovement_CorrectOutput(){
+        Utils utils = new Utils();
+        Index enemyPosition = enemyWorker.getPosition();
 
-        assertEquals(xpos, ex);
-        assertEquals(ypos, ey);
-        assertEquals(zpos, ey);
+        Index oldPosition = myWorker.getPosition();
+        Index moveIndex;
+        Index buildIndex;
+        do{
+            moveIndex = utils.getPseudoAdjacent(myWorker);
+        }while (moveIndex.equals(enemyPosition));
+        do {
 
+            buildIndex = utils.getPseudoAdjacent(myWorker);
+        }while(buildIndex.equals(enemyPosition) && buildIndex.equals(moveIndex));
+
+        apollo.turn(match, myWorker, moveIndex, buildIndex);
+
+        assertEquals(moveIndex,myWorker.getPosition());
+
+        assertEquals(enemyPosition,enemyWorker.getPosition());
+
+        assertTrue(match.selectCell(buildIndex).isBuilding());
+
+
+        assertNull(match.selectCell(oldPosition).getWorker());
     }
+
+
+
 }

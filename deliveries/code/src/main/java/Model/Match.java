@@ -51,8 +51,10 @@ public class Match {
       * @param i the position where to move the worker
      */
     public void moveWorker(Worker w, Index i){
-        w.delete(selectCell(w.getPosition()));
-        w.move(selectCell(i));
+        if(w != null){
+            w.delete(selectCell(w.getPosition()));
+            w.move(selectCell(i));
+        }
     }
 
     /**

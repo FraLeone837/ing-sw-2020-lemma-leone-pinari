@@ -23,8 +23,9 @@ public class Cell {
      * @return a copy of the index of the class
      */
     public Index getIndex() {
-        Index copy = new Index(index.getX(),index.getY(),index.getZ());
-        return copy;
+//        Index copy = new Index(index.getX(),index.getY(),index.getZ());
+//        return copy;
+        return index;
     }
 
     /**
@@ -54,6 +55,14 @@ public class Cell {
     public void setDome(){
         this.setBuilding();
         dome = true;
+    }
+
+    public boolean isDome() {
+        return dome;
+    }
+
+    public boolean isBuilding() {
+        return building;
     }
 
     /**

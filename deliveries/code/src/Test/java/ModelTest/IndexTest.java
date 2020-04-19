@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.*;
 
 public class IndexTest {
     private Index index;
@@ -71,6 +71,23 @@ public class IndexTest {
             notZ = rand.nextInt(4) + 1;
         } while(notZ==z);
         assertNotEquals(notZ, index.getZ());
+    }
+    @Test
+    public void testEquals_sameIndexes_expectedTrue(){
+        Index other = new Index(index.getX(),index.getY(),index.getZ());
+
+//        assertTrue(other.equals(index));a
+        assertEquals(other,index);
+    }
+    @Test
+    public void testEquals_differentIndexes_expectedFalse(){
+        Index other = new Index(x,y+1,z);
+        assertFalse(other.equals(index));
+    }
+    @Test
+    public void testEquals_differentClasses_expectedFalse(){
+        Object other = new String();
+        assertFalse(other.equals(index));
     }
 
 }
