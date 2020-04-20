@@ -1,9 +1,8 @@
 package Controller;
 
-import Model.Index;
-import Model.Match;
-import Model.Player;
-import Model.Worker;
+import Model.*;
+
+import java.util.ArrayList;
 
 public class Demeter implements God {
 
@@ -49,6 +48,12 @@ public class Demeter implements God {
         //Stub
         Index index2 = new Index(1,3,3);
         m.build(w, index2);
+        Cell cell = m.selectCell(prevIndex);
+        ArrayList<Invisible> invisibles = cell.getForbidden();
+        for (Invisible inv : invisibles) {
+            if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
+                inv.addWorker(w);
+        }
         //ask to build another time
         if(buildAgain){
             //take index3 where to build a second time
@@ -56,6 +61,7 @@ public class Demeter implements God {
                 Index index3 = new Index(2,3,3);
             m.build(w, index3);
         }
+        reset(m,w);
     }
 
 
@@ -65,17 +71,42 @@ public class Demeter implements God {
         //take index2 where to build
         //Stub
         m.build(w, index2);
+        Cell cell = m.selectCell(prevIndex);
+        ArrayList<Invisible> invisibles = cell.getForbidden();
+        for (Invisible inv : invisibles) {
+            if (inv instanceof ForbiddenConstruction && w.getOwner() == inv.getCreator())
+                inv.addWorker(w);
+        }
         //ask to build another time
         if(buildAgain){
             //take index3 where to build a second time
             m.build(w, index3);
         }
+        reset(m,w);
     }
 
 
 
     @Override
     public void setup(Match m, Player p) {
-        return;
+        for(int x=0; x<5; x++){
+            for(int y=0; y<5; y++){
+                for(int z=0; z<4; z++){
+                    Index i=new Index(x,y,z);
+                    Invisible invisible = new ForbiddenConstruction(p);
+                    m.buildInvisible(invisible, i);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void reset(Match m, Worker w) {
+        Cell cell = m.selectCell(prevIndex);
+        ArrayList<Invisible> invisibles = cell.getForbidden();
+        for(Invisible inv : invisibles){
+            if(inv instanceof ForbiddenConstruction && w.getOwner()==inv.getCreator())
+                inv.removeWorkers();
+        }
     }
 }

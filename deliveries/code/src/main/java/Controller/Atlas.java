@@ -19,18 +19,6 @@ public class Atlas implements God {
         return "Atlas";
     }
 
-
-    public void turn(Match m, Worker w, Index index1, Index index2) {
-        //take index1 where to move from view
-        m.moveWorker(w, index1);
-        //take index2 where to build from view
-        //ask to build a building or a dome
-        if(buildDome)
-            m.buildDome(w, index2);
-        else
-            m.build(w, index2);
-    }
-
     @Override
     public String getDescription() {
         return "Titan Shouldering the Heavens\n" +
@@ -54,8 +42,20 @@ public class Atlas implements God {
             m.build(w, index2);
     }
 
-    @Override
-    public void setup(Match m, Player p) {
-        return;
+    public void turn(Match m, Worker w, Index index1, Index index2) {
+        //take index1 where to move from view
+        m.moveWorker(w, index1);
+        //take index2 where to build from view
+        //ask to build a building or a dome
+        if(buildDome)
+            m.buildDome(w, index2);
+        else
+            m.build(w, index2);
     }
+
+    @Override
+    public void setup(Match m, Player p) {}
+
+    @Override
+    public void reset(Match m, Worker w) {}
 }

@@ -29,5 +29,7 @@ public interface God {
      */
     public void setup(Match m, Player p);
 
+    public void reset(Match m, Worker w);
+
 }
 

@@ -50,5 +50,9 @@ public class Apollo implements God {
     @Override
     public void setup(Match m, Player p) {
     }
+
+    @Override
+    public void reset(Match m, Worker w) {
+    }
 }
 

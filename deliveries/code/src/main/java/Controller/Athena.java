@@ -55,27 +55,6 @@ public class Athena implements God {
         usePower(m, w);
     }
 
-    /**
-     * this private method is for removing all the workers from the forbiddenMove blocks, since this power lasts just for a turn.
-     * in case, they will be set again in the blocks eventually
-     *
-     * @param m the match that the server is managing
-     * @param w the worker that the player chose to move
-     */
-    private void reset(Match m, Worker w){
-        for(int x=0; x<5; x++){
-            for(int y=0; y<5; y++){
-                for(int z=0; z<4; z++){
-                    Index i=new Index(x,y,z);
-                    ArrayList<Invisible> invisibles =m.selectCell(i).getForbidden();
-                    for(Invisible inv : invisibles){
-                        if(inv instanceof ForbiddenMove && w.getOwner()==inv.getCreator())
-                            inv.removeWorkers();
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * put the opponents' workers in the forbiddenMove blocks if your worker moves up during this turn
@@ -130,9 +109,34 @@ public class Athena implements God {
             for(int y=0; y<5; y++){
                 for(int z=0; z<4; z++){
                     Index i=new Index(x,y,z);
-                    m.buildInvisible(new ForbiddenMove(p), i);
+                    Invisible invisible = new ForbiddenMove(p);
+                    m.buildInvisible(invisible, i);
                 }
             }
         }
     }
+
+    /**
+     * this private method is for removing all the workers from the forbiddenMove blocks, since this power lasts just for a turn.
+     * in case, they will be set again in the blocks eventually
+     *
+     * @param m the match that the server is managing
+     * @param w the worker that the player chose to move
+     */
+    @Override
+    public void reset(Match m, Worker w){
+        for(int x=0; x<5; x++){
+            for(int y=0; y<5; y++){
+                for(int z=0; z<4; z++){
+                    Index i=new Index(x,y,z);
+                    ArrayList<Invisible> invisibles =m.selectCell(i).getForbidden();
+                    for(Invisible inv : invisibles){
+                        if(inv instanceof ForbiddenMove && w.getOwner()==inv.getCreator())
+                            inv.removeWorkers();
+                    }
+                }
+            }
+        }
+    }
+
 }
