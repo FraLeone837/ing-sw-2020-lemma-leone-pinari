@@ -1,9 +1,8 @@
 package Controller;
 
-import Model.Index;
-import Model.Match;
-import Model.Player;
-import Model.Worker;
+import Model.*;
+
+import java.util.ArrayList;
 
 public class Atlas implements God {
 
@@ -57,5 +56,83 @@ public class Atlas implements God {
     public void setup(Match m, Player p) {}
 
     @Override
-    public void reset(Match m, Worker w) {}
+    public void resetPower(Match m, Worker w) {}
+
+    @Override
+    public ArrayList<Index> whereToMove(Match match, Worker worker){
+        ArrayList<Index> cellsWhereToMove = new ArrayList<Index>();
+        int currentX = worker.getPosition().getX();
+        int currentY = worker.getPosition().getY();
+        int currentZ = worker.getPosition().getZ();
+        for(int x = currentX-1; x < currentX+2; x++){
+            if(x >= 0 && x < 5){
+                for(int y = currentY-1; y < currentY+2; y++){
+                    if(y >= 0 && y < 5){
+                        if(x != currentX || y != currentY){
+                            int z=0;
+                            while(z <= currentZ +1){
+                                Index checkedIndex = new Index(x,y,z);
+                                if(match.selectCell(checkedIndex).isEmpty()){
+                                    ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                    Boolean forbiddenCell = false;
+                                    for(Invisible inv : invisibles){
+                                        if(inv instanceof ForbiddenMove && inv.isIn(worker)){
+                                            forbiddenCell = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!forbiddenCell)
+                                        cellsWhereToMove.add(checkedIndex);
+                                    break;
+                                }
+                                z++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return cellsWhereToMove;
+    }
+
+    @Override
+    public ArrayList<Index> whereToBuild(Match match, Worker worker){
+        ArrayList<Index> cellsWhereToBuild = new ArrayList<Index>();
+        int currentX = worker.getPosition().getX();
+        int currentY = worker.getPosition().getY();
+        for(int x = currentX-1; x < currentX+2; x++){
+            if(x >= 0 && x < 5){
+                for(int y = currentY-1; y < currentY+2; y++){
+                    if(y >= 0 && y < 5){
+                        if(x != currentX || y != currentY){
+                            int z=0;
+                            while(z < 4){
+                                Index checkedIndex = new Index(x,y,z);
+                                if(match.selectCell(checkedIndex).isEmpty()){
+                                    ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                    Boolean forbiddenCell = false;
+                                    for(Invisible inv : invisibles){
+                                        if(inv instanceof ForbiddenConstruction && inv.isIn(worker)){
+                                            forbiddenCell = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!forbiddenCell)
+                                        cellsWhereToBuild.add(checkedIndex);
+                                    break;
+                                }
+                                z++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return cellsWhereToBuild;
+    }
+
+    @Override
+    public Boolean canMove(Match match, Worker worker) {
+        return null;
+    }
 }
