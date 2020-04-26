@@ -20,6 +20,12 @@ public interface God {
     public String getDescription();
 
     /**
+     * stores the previous index of a worker in an attribute when it moves, in order to check if the owner win
+     * @param prev the index of the starting cell of the worker
+     */
+    public void setPrevIndex(Index prev);
+
+    /**
      * this method manages the entire turn, from the movement of the worker to the building, taking into account god's power
      *
      * @param m the match that the server is managing
@@ -46,22 +52,24 @@ public interface God {
     public void resetPower(Match m, Worker w);
 
     /**
-     * allows you to know where you can move a worker after you select it, taking forbiddenMove blocks into account
+     * allows you to know where you could move a worker if it was in a specific cell, taking forbiddenMove-blocks into account
      *
      * @param match the current match
      * @param worker the worker selected by the player
+     * @param index the index where you imagine the worker is
      * @return the list of indexes of the cells where the worker can moves
      */
-    public ArrayList<Index> whereToMove(Match match, Worker worker);
+    public ArrayList<Index> whereToMove(Match match, Worker worker, Index index);
 
     /**
-     * allows you to know where you can build with worker after you move it, taking forbiddenConstruction blocks into account
+     * allows you to know where you could build with a worker if it was in a specific cell, taking forbiddenMove-blocks into account
      *
      * @param match the current match
      * @param worker the worker selected by the player
+     * @param index the index where you imagine the worker is
      * @return the list of indexes of the cells where the worker can builds
      */
-    public ArrayList<Index> whereToBuild(Match match, Worker worker);
+    public ArrayList<Index> whereToBuild(Match match, Worker worker, Index index);
 
     /**
      * allows you to know if you can end the turn with the selected worker
@@ -71,6 +79,11 @@ public interface God {
      * @return true if you can end the turn with the worker
      */
     public Boolean canMove(Match match, Worker worker);
+
+    /**
+     * @return true if a winning condition is verified, taking the power of god into account
+     */
+    public Boolean checkWin(Match match, Worker worker);
 
 }
 

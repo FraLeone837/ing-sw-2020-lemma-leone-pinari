@@ -21,6 +21,7 @@ public class Artemis implements God {
      */
     private Index prevIndex;
 
+    @Override
     public void setPrevIndex(Index prev){
         prevIndex=prev;
     }
@@ -41,11 +42,12 @@ public class Artemis implements God {
 
     @Override
     public void turn(Match m, Worker w) {
+        setPrevIndex(w.getPosition());
         //take index1 where to move the first time
             //Stub
             Index index1 = new Index(2,2,1);
-        setPrevIndex(w.getPosition());
         m.moveWorker(w, index1);
+        checkWin(m, w);
         //ask to move another time
         if(moveAgain) {
             Cell cell = m.selectCell(prevIndex);
@@ -54,10 +56,12 @@ public class Artemis implements God {
                 if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
                     inv.addWorker(w);
             }
+            setPrevIndex(w.getPosition());
             //take index2 where to move a second time
                 //Stub
                 Index index2 = new Index(1,1,3);
             m.moveWorker(w, index2);
+            checkWin(m, w);
             resetPower(m, w);
         }
         //take index3 where to build
@@ -67,9 +71,10 @@ public class Artemis implements God {
     }
 
     public void turn(Match m, Worker w,Index index1,Index index2,Index index3) {
-        //take index1 where to move the first time
         setPrevIndex(w.getPosition());
+        //take index1 where to move the first time
         m.moveWorker(w, index1);
+        checkWin(m, w);
         //ask to move another time
         if(moveAgain) {
             Cell cell = m.selectCell(prevIndex);
@@ -78,8 +83,10 @@ public class Artemis implements God {
                 if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
                     inv.addWorker(w);
             }
+            setPrevIndex(w.getPosition());
             //take index2 where to move a second time
             m.moveWorker(w, index2);
+            checkWin(m, w);
             resetPower(m, w);
         }
         //take index3 where to build
@@ -110,11 +117,11 @@ public class Artemis implements God {
     }
 
     @Override
-    public ArrayList<Index> whereToMove(Match match, Worker worker){
+    public ArrayList<Index> whereToMove(Match match, Worker worker, Index index){
         ArrayList<Index> cellsWhereToMove = new ArrayList<Index>();
-        int currentX = worker.getPosition().getX();
-        int currentY = worker.getPosition().getY();
-        int currentZ = worker.getPosition().getZ();
+        int currentX = index.getX();
+        int currentY = index.getY();
+        int currentZ = index.getZ();
         for(int x = currentX-1; x < currentX+2; x++){
             if(x >= 0 && x < 5){
                 for(int y = currentY-1; y < currentY+2; y++){
@@ -123,7 +130,7 @@ public class Artemis implements God {
                             int z=0;
                             while(z <= currentZ +1){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(match.selectCell(checkedIndex).isEmpty()){
+                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker()==worker){
                                     ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
                                     Boolean forbiddenCell = false;
                                     for(Invisible inv : invisibles){
@@ -147,10 +154,10 @@ public class Artemis implements God {
     }
 
     @Override
-    public ArrayList<Index> whereToBuild(Match match, Worker worker){
+    public ArrayList<Index> whereToBuild(Match match, Worker worker, Index index){
         ArrayList<Index> cellsWhereToBuild = new ArrayList<Index>();
-        int currentX = worker.getPosition().getX();
-        int currentY = worker.getPosition().getY();
+        int currentX = index.getX();
+        int currentY = index.getY();
         for(int x = currentX-1; x < currentX+2; x++){
             if(x >= 0 && x < 5){
                 for(int y = currentY-1; y < currentY+2; y++){
@@ -159,7 +166,7 @@ public class Artemis implements God {
                             int z=0;
                             while(z < 4){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(match.selectCell(checkedIndex).isEmpty()){
+                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker()==worker){
                                     ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
                                     Boolean forbiddenCell = false;
                                     for(Invisible inv : invisibles){
@@ -184,6 +191,55 @@ public class Artemis implements God {
 
     @Override
     public Boolean canMove(Match match, Worker worker) {
-        return null;
+        ArrayList<Index> possibleMoves = whereToMove(match, worker, worker.getPosition());
+        if(possibleMoves.isEmpty())
+            return false;
+        for(Index index : possibleMoves){
+            ArrayList<Index> possibleBuildings = whereToBuild(match, worker, index);
+            if(!possibleBuildings.isEmpty())
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * allows you to know if you can end the turn with the selected worker moving twice
+     *
+     * @param match the current match
+     * @param worker the worker selected by the player
+     * @return true if you can end the turn with the worker moving twice
+     */
+    public Boolean canMoveTwice(Match match, Worker worker){
+        ArrayList<Index> possibleMoves = whereToMove(match, worker, worker.getPosition());
+        if(possibleMoves.isEmpty())
+            return false;
+        for(Index index : possibleMoves){
+            ArrayList<Index> possibleSecondMoves = whereToMove(match, worker, index);
+            if(!possibleSecondMoves.isEmpty()){
+                for(Index index2 : possibleSecondMoves) {
+                    ArrayList<Index> possibleBuildings = whereToBuild(match, worker, index2);
+                    if (!possibleBuildings.isEmpty())
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean checkWin(Match match, Worker worker) {
+        Index currentIndex = worker.getPosition();
+        if(prevIndex.getZ()==2 && currentIndex.getZ()==3){
+            Cell currentCell = match.selectCell(currentIndex);
+            ArrayList<Invisible> invisibles = currentCell.getForbidden();
+            for(Invisible inv : invisibles){
+                if(inv instanceof ForbiddenWin){
+                    if(inv.isIn(worker))
+                        return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }
