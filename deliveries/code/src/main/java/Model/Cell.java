@@ -23,8 +23,6 @@ public class Cell {
      * @return a copy of the index of the class
      */
     public Index getIndex() {
-//        Index copy = new Index(index.getX(),index.getY(),index.getZ());
-//        return copy;
         return index;
     }
 

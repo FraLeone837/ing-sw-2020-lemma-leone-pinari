@@ -18,10 +18,7 @@ public class MatchTest {
         match = new Match(id);
     }
 
-    @org.junit.After
-    public void tearDown() throws Exception {
 
-    }
 
     @Test
     public void testPlayers_InsertAndRemove_isInsertedIsRemoved(){

@@ -1,12 +1,13 @@
 package ControllerTest;
 
 import Controller.Demeter;
-import Model.Index;
-import Model.Match;
-import Model.Worker;
+import Model.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -15,6 +16,7 @@ public class DemeterTest {
     private Worker myWorker;
     private Match match;
     private Demeter demeter;
+    Player player;
 
     @Before
     public void setUp(){
@@ -22,7 +24,8 @@ public class DemeterTest {
         myWorker = new Worker();
         match = new Match(1);
         demeter = new Demeter();
-
+        player = new Player("Costui",1);
+        demeter.setup(match, player);
         match.initWorker(myWorker, util.generateRandomIndex());
     }
 
@@ -41,8 +44,8 @@ public class DemeterTest {
         Index moveIndex;
         do{
             moveIndex = utils.getPseudoAdjacent(myWorker);
-        }
-        while(moveIndex.equals(oldPosition));
+        }while(moveIndex.equals(oldPosition));
+
         Index buildIndex = utils.getPseudoAdjacent(moveIndex);
         Index buildOther;
         do{

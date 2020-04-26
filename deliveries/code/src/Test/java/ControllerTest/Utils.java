@@ -4,6 +4,7 @@ import Model.Index;
 import Model.Match;
 import Model.Worker;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Utils {
@@ -84,15 +85,15 @@ public class Utils {
         return  new Index(x,y,z);
     }
 
-    public Index[] getAllLevelAboves(Worker worker){
+    public ArrayList<Index> getAllLevelsAbove(Worker worker){
         Index ix = worker.getPosition();
+        System.out.println("Your Position: "+ix);
         int xPos = ix.getX();
         int yPos = ix.getY();
         int zPos = ix.getZ() + 1;
-        Index[] inx_array = new Index[8];
-        if (zPos == 4) return inx_array;
+        ArrayList<Index> inx_array = new ArrayList<>();
+        if (zPos == 4 || zPos == 5) return inx_array;
 
-        int arrayIndex = 0;
 
         int tempx = 0;
         int tempy = 0;
@@ -101,11 +102,12 @@ public class Utils {
                 tempx = xPos + i;
                 tempy = yPos + j;
                 if(tempx>=0 && tempx<5 && tempy>=0 && tempy<5){
-                    inx_array[arrayIndex] = new Index(tempx,tempy,zPos);
+                    inx_array.add(new Index(tempx,tempy,zPos));
                 }
 
             }
         }
+
         return inx_array;
     }
 

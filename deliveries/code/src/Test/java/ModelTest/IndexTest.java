@@ -89,5 +89,9 @@ public class IndexTest {
         Object other = new String();
         assertFalse(other.equals(index));
     }
+    @Test
+    public void testToString(){
+        assertFalse(index.toString().isEmpty());
+    }
 
 }
