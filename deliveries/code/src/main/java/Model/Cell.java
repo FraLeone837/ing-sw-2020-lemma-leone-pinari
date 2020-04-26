@@ -19,9 +19,6 @@ public class Cell {
         this.worker = null;
     }
 
-    /**
-     * @return a copy of the index of the class
-     */
     public Index getIndex() {
 //        Index copy = new Index(index.getX(),index.getY(),index.getZ());
 //        return copy;
@@ -65,11 +62,7 @@ public class Cell {
         return building;
     }
 
-    /**
-     * put a worker in the cell
-     *
-     * @param worker the worker to put in the cell
-     */
+
     public void setWorker(Worker worker) {
         this.worker = worker;
     }
