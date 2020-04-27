@@ -19,6 +19,8 @@ public class AtlasTest {
         this.match = new Match(1);
         this.myWorker = new Worker();
         this.atlas = new Atlas();
+        atlas.getDescription();
+        atlas.getName();
         Utils utils = new Utils();
         match.initWorker(myWorker, utils.generateRandomIndex());
     }

@@ -24,6 +24,8 @@ public class DemeterTest {
         myWorker = new Worker();
         match = new Match(1);
         demeter = new Demeter();
+        demeter.getDescription();
+        demeter.getName();
         player = new Player("Costui",1);
         demeter.setup(match, player);
         match.initWorker(myWorker, util.generateRandomIndex());

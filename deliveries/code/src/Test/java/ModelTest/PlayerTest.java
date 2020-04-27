@@ -31,19 +31,12 @@ public class PlayerTest {
     public void testGetIdPlayer_sameId_expectedEquals(){
         assertEquals(id, player.getIdPlayer());
     }
-    @Test
-    public void testGetIdPlayer_differentId_expectedNotEquals(){
-        Random rand = new Random();
-        int notId;
-        do {
-            notId = rand.nextInt(2) + 1;
-        } while(id==notId);
-        assertNotEquals(notId, player.getIdPlayer());
-    }
+
     @Test
     public void testGetName_sameName_expectedEquals(){
         assertEquals(name, player.getName());
     }
+
     @Test
     public void testGetName_differentName_expectedNotEquals(){
         String notName = "other_name";

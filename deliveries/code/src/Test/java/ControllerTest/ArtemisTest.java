@@ -21,6 +21,8 @@ public class ArtemisTest {
     public void setUp(){
         Utils utils = new Utils();
         this.artemis = new Artemis();
+        artemis.getDescription();
+        artemis.getName();
         this.myWorker = new Worker();
         this.match = new Match(1);
         Index index = utils.generateRandomIndex();

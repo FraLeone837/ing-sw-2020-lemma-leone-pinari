@@ -27,6 +27,8 @@ public class AthenaTest {
     public void setUp(){
         match = new Match(1);
         athena = new Athena();
+        athena.getDescription();
+        athena.getName();
         me = new Player("Me",1);
         enemy = new Player("Enemy",2);
         apollo = new Apollo();

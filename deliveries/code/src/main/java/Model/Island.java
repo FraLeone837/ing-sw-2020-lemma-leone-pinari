@@ -34,15 +34,6 @@ public class Island {
     public Cell getCell(Index i){
         return cells[i.getX()][i.getY()][i.getZ()];
     }
-    /**
-     * Set the worker in a cell of the game board
-     * @param w the current worker to be setted
-     * @param c the cell where the worker is to be put
-     */
-    private void initWorker(Worker w, Cell c){
-        c.setWorker(w);
-        w.setPosition(c.getIndex());
-        workers.add(w);
-    }
+
 
 }

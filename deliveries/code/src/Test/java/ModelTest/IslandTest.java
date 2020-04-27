@@ -41,6 +41,7 @@ public class IslandTest {
         assertEquals(c2.getIndex().getY(), y);
         assertEquals(c2.getIndex().getX(), x);
     }
+    
 
     @org.junit.Test
     public void testGetCell_wrongIndex_OutOfBoundException(){

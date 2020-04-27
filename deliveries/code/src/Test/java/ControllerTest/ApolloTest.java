@@ -34,6 +34,8 @@ public class ApolloTest {
         Utils utils = new Utils();
         Index ix = utils.generateRandomIndex();
         this.apollo = new Apollo();
+        apollo.getDescription();
+        apollo.getName();
         this.myWorker = new Worker();
         this.enemyWorker = new Worker();
         match = new Match(1);
