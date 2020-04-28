@@ -13,9 +13,14 @@ public class CliPlayerManager implements PlayerManager{
         scanner = new Scanner(System.in);
     }
 
+    public String getServerIp(){
+        System.out.println("Which server do you want to connect to?");
+        return scanner.nextLine();
+    }
+
     @Override
     public int listMatch(List<Integer> ids) {
-        System.out.println("Puoi connetterti a queste partite");
+        System.out.println("You can join these matches");
         for(int i=0; i<ids.size(); i++){
             System.out.println(ids.get(i));
         }
@@ -29,9 +34,9 @@ public class CliPlayerManager implements PlayerManager{
     @Override
     public Index placeWorker(boolean firstWorker) {
         if(firstWorker)
-            System.out.println("Scegli dove posizionare il primo lavoratore");
+            System.out.println("Choose where to locate the first worker");
         else
-            System.out.println("Scegli dove posizionare il secondo lavoratore");
+            System.out.println("Choose where to locate the second worker");
         Index index;
         do{
             index = correspondingIndex(scanner.next());
@@ -41,7 +46,7 @@ public class CliPlayerManager implements PlayerManager{
 
     @Override
     public Index chooseWorker(List<Worker> workers) {
-        System.out.println("Quale lavoratore vuoi selezionare?");
+        System.out.println("Which worker do you want to select?");
         Index index;
         do{
             index = correspondingIndex(scanner.next());
@@ -51,7 +56,7 @@ public class CliPlayerManager implements PlayerManager{
 
     @Override
     public Index chooseMovement(List<Index> movements) {
-        System.out.println("Dove vuoi muovere il lavoratore?");
+        System.out.println("Where do you want to move the worker?");
         Index index;
         do{
             index = correspondingIndex(scanner.next());
@@ -61,7 +66,7 @@ public class CliPlayerManager implements PlayerManager{
 
     @Override
     public Index chooseBuilding(List<Index> buildings) {
-        System.out.println("Dove vuoi costruire?");
+        System.out.println("Where do you want to build?");
         Index index;
         do{
             index = correspondingIndex(scanner.next());

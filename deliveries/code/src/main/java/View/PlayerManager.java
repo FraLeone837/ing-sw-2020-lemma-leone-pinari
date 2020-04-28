@@ -6,6 +6,11 @@ import Model.Worker;
 import java.util.List;
 
 public interface PlayerManager {
+    /**
+     * Ask the user the IP of the server it wants to connect to
+     * @return the IP written on the cli
+     */
+    public abstract String getServerIp();
 
     /**
      * Print the list of all the matches that the player can join

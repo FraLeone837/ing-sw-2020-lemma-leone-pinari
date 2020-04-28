@@ -11,8 +11,8 @@ public class CliGameManager implements GameManager {
 
     @Override
     public void startMatch() {
-        System.out.println("Sei connesso");
-        System.out.println("Iniziare una partita?");
+        //System.out.println("Sei connesso");
+        System.out.println("Do you want to start a match?");
     }
 
     @Override
@@ -22,12 +22,12 @@ public class CliGameManager implements GameManager {
 
     @Override
     public void printReadyToStart(boolean starting, God assigned) {
-        System.out.println("Ci sono entrambi i giocatori, la partita può iniziare!");
+        System.out.println("Both the players are here, the match can start!");
         if(starting)
-            System.out.println("Partirai per primo");
+            System.out.println("You'll play as first player");
         else
-            System.out.println("Partirai per secondo");
-        System.out.println("Ti è stato assegnato il dio " + assigned.getName());
+            System.out.println("You'll play as second player");
+        System.out.println("You've been assigned the God " + assigned.getName());
     }
 
     @Override
@@ -60,9 +60,9 @@ public class CliGameManager implements GameManager {
     @Override
     public void printWin(boolean win) {
         if(win)
-            System.out.println("Hai vinto!");
+            System.out.println("You win!");
         else
-            System.out.println("Hai perso.");
+            System.out.println("You loose.");
     }
 
 
