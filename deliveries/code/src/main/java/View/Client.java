@@ -1,7 +1,7 @@
 package View;
 
 import Controller.Message;
-import Controller.Server;
+import Controller.ViewManager;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -27,7 +27,7 @@ public class Client implements Runnable, ServerObserver
 
         Socket server;
         try {
-            server = new Socket(ip, Server.SOCKET_PORT);
+            server = new Socket(ip, ViewManager.SOCKET_PORT);
         } catch (IOException e) {
             System.out.println("server unreachable");
             return;

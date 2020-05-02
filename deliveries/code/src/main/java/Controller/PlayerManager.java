@@ -16,6 +16,7 @@ public class PlayerManager {
         this.god = god;
     }
 
+
     /**
      * has to be invoked at the beginning of the match in order to set a block Invisible in each cell of the
      * game board, if the god's power foresees that
@@ -37,5 +38,23 @@ public class PlayerManager {
         god.turn(match, worker);
     }
 
+    public God getGod() {
+        return god;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        PlayerManager pmg = (PlayerManager) obj;
+        Player thisOne = this.getPlayer();
+        Player other = pmg.getPlayer();
+        if(thisOne.getName() == other.getName()) {
+            return true;
+        }
+        return false;
+    }
 }
 

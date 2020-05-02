@@ -27,7 +27,7 @@ public class UserInterface {
         Thread t = new Thread(client);
         t.start();
         Player player = new Player(playerManager.getServerIp(), 2);
-        client.sendThis(new Message(Message.MessageType.TYPE_0, player));
+        client.sendThis(new Message(Message.MessageType.ISLAND_INFO, player));
         while(true){
             if(inputUi){
 

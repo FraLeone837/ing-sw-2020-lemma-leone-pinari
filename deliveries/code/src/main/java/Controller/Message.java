@@ -1,10 +1,18 @@
 package Controller;
 
+import Model.Player;
+
 import java.util.ArrayList;
 
 public class Message {
     public enum MessageType{
-        TYPE_0
+        ISLAND_INFO,
+        NAME,
+        MOVEMENT,
+        PING_IS_ALIVE,
+        CHOOSE_WORKER,
+        PLAYER_LOST,
+        FUNCTION_STUB
     }
     private MessageType type;
     private ArrayList<Object> list;
@@ -14,7 +22,18 @@ public class Message {
         list.add(o);
         this.type = type;
     }
+
+
+    public MessageType getType() {
+        return type;
+    }
+
     public Object getFirstObject(){
-        return list.get(0);
+        Player player = new Player("Eeee", 2);
+        return player;
+    }
+
+    public ArrayList<Object> getList() {
+        return list;
     }
 }

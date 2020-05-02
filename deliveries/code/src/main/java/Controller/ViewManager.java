@@ -5,11 +5,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 
-public class Server
+public class ViewManager
 {
     public final static int SOCKET_PORT = 7777;
 
-
+    /** Passively opens the server side and waits for clients to connect with.
+     *  Once connected calls clientHandler to do all the functionalities as a new Thread.
+     * @param args not needed
+     */
     public static void main(String[] args)
     {
         ServerSocket socket;

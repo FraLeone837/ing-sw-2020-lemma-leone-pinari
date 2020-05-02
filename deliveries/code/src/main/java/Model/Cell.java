@@ -24,6 +24,17 @@ public class Cell {
     }
 
     /**
+     * Returns a shallow copy of a cell
+     * @param cell must already exist in game
+     */
+    public Cell getCell(Cell cell){
+        int idWorker = cell.getWorker().getIdWorker();
+        Index indexCopy = cell.getIndex();
+        Cell copy = new Cell(indexCopy.getX(), indexCopy.getY(), indexCopy.getZ());
+        copy.setWorker(new Worker(idWorker));
+        return copy;
+    }
+    /**
      * if dome is true, then it's not empty (res = false)
      * if building is true, then it's not empty (res = false)
      * if both building and dome are false then (res = true)
