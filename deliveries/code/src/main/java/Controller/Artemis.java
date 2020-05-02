@@ -4,7 +4,7 @@ import Model.*;
 
 import java.util.ArrayList;
 
-public class Artemis implements God {
+public class Artemis extends God {
 
     /**
      * this flag is for moving once again if the player wants
@@ -13,17 +13,6 @@ public class Artemis implements God {
 
     public void setMoveAgain(boolean moveAgain) {
         this.moveAgain = moveAgain;
-    }
-
-    /**
-     * this variable is for store the previous position of the worker that moves so, if the player wants to move again,
-     * he cannot come back in the previous position
-     */
-    private Index prevIndex;
-
-    @Override
-    public void setPrevIndex(Index prev){
-        prevIndex=prev;
     }
 
 
@@ -116,92 +105,6 @@ public class Artemis implements God {
         }
     }
 
-    @Override
-    public ArrayList<Index> whereToMove(Match match, Worker worker, Index index){
-        ArrayList<Index> cellsWhereToMove = new ArrayList<Index>();
-        int currentX = index.getX();
-        int currentY = index.getY();
-        int currentZ = index.getZ();
-        for(int x = currentX-1; x < currentX+2; x++){
-            if(x >= 0 && x < 5){
-                for(int y = currentY-1; y < currentY+2; y++){
-                    if(y >= 0 && y < 5){
-                        if(x != currentX || y != currentY){
-                            int z=0;
-                            while(z <= currentZ +1){
-                                Index checkedIndex = new Index(x,y,z);
-                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker()==worker){
-                                    ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
-                                    Boolean forbiddenCell = false;
-                                    for(Invisible inv : invisibles){
-                                        if(inv instanceof ForbiddenMove && inv.isIn(worker)){
-                                            forbiddenCell = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!forbiddenCell)
-                                        cellsWhereToMove.add(checkedIndex);
-                                    break;
-                                }
-                                z++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return cellsWhereToMove;
-    }
-
-    @Override
-    public ArrayList<Index> whereToBuild(Match match, Worker worker, Index index){
-        ArrayList<Index> cellsWhereToBuild = new ArrayList<Index>();
-        int currentX = index.getX();
-        int currentY = index.getY();
-        for(int x = currentX-1; x < currentX+2; x++){
-            if(x >= 0 && x < 5){
-                for(int y = currentY-1; y < currentY+2; y++){
-                    if(y >= 0 && y < 5){
-                        if(x != currentX || y != currentY){
-                            int z=0;
-                            while(z < 4){
-                                Index checkedIndex = new Index(x,y,z);
-                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker()==worker){
-                                    ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
-                                    Boolean forbiddenCell = false;
-                                    for(Invisible inv : invisibles){
-                                        if(inv instanceof ForbiddenConstruction && inv.isIn(worker)){
-                                            forbiddenCell = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!forbiddenCell)
-                                        cellsWhereToBuild.add(checkedIndex);
-                                    break;
-                                }
-                                z++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return cellsWhereToBuild;
-    }
-
-    @Override
-    public Boolean canMove(Match match, Worker worker) {
-        ArrayList<Index> possibleMoves = whereToMove(match, worker, worker.getPosition());
-        if(possibleMoves.isEmpty())
-            return false;
-        for(Index index : possibleMoves){
-            ArrayList<Index> possibleBuildings = whereToBuild(match, worker, index);
-            if(!possibleBuildings.isEmpty())
-                return true;
-        }
-        return false;
-    }
-
     /**
      * allows you to know if you can end the turn with the selected worker moving twice
      *
@@ -222,23 +125,6 @@ public class Artemis implements God {
                         return true;
                 }
             }
-        }
-        return false;
-    }
-
-    @Override
-    public Boolean checkWin(Match match, Worker worker) {
-        Index currentIndex = worker.getPosition();
-        if(prevIndex.getZ()==2 && currentIndex.getZ()==3){
-            Cell currentCell = match.selectCell(currentIndex);
-            ArrayList<Invisible> invisibles = currentCell.getForbidden();
-            for(Invisible inv : invisibles){
-                if(inv instanceof ForbiddenWin){
-                    if(inv.isIn(worker))
-                        return false;
-                }
-            }
-            return true;
         }
         return false;
     }
