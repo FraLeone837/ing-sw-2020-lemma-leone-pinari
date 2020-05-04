@@ -1,7 +1,7 @@
 package View;
 
-import Controller.Message;
-import Controller.ViewManager;
+import Controller.Communication.Message;
+import Controller.Communication.ViewManager;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -47,6 +47,7 @@ public class Client implements Runnable, ServerObserver
                 try {
                     wait();
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 response = null;
 
@@ -55,7 +56,9 @@ public class Client implements Runnable, ServerObserver
                 while (response == null) {
                     try {
                         wait();
-                    } catch (InterruptedException e) { }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }

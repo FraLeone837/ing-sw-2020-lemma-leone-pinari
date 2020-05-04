@@ -1,6 +1,6 @@
 package View;
 
-import Controller.Message;
+import Controller.Communication.Message;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -90,7 +90,9 @@ public class ServerAdapter implements Runnable
             nextCommand = null;
             try {
                 wait();
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             if (nextCommand == null)
                 continue;
@@ -109,7 +111,7 @@ public class ServerAdapter implements Runnable
 
     private synchronized void doSendMessage() throws IOException, ClassNotFoundException
     {
-        System.out.println(messageToSend);
+        System.out.println("Message to send is: " + messageToSend);
         Gson gson = new Gson();
 
         String converted = gson.toJson(messageToSend);
@@ -126,7 +128,7 @@ public class ServerAdapter implements Runnable
         }
 
         Message msg = gson.fromJson(newStr, Message.class);
-
+        System.out.println("Message received is: " + msg);
         /* notify the observers that we got the string */
         for (ServerObserver observer: observersCpy) {
             observer.didReceiveMessage(msg);

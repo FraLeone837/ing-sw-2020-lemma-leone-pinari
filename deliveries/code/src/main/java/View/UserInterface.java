@@ -1,12 +1,9 @@
 package View;
 
-import Controller.Message;
-import Model.Index;
-import Model.Island;
+import Controller.Communication.Message;
 import Model.Player;
-import Model.Worker;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class UserInterface {
 
@@ -26,23 +23,46 @@ public class UserInterface {
         Client client = new Client(this, playerManager.getServerIp());
         Thread t = new Thread(client);
         t.start();
-        Player player = new Player(playerManager.getServerIp(), 2);
-        client.sendThis(new Message(Message.MessageType.ISLAND_INFO, player));
+        try{
+            TimeUnit.SECONDS.sleep(4);
+        } catch (InterruptedException e){
+            System.out.println("Sleep, allowing time for client handler to be created");
+            e.printStackTrace();
+        }
+        client.sendThis(new Message(Message.MessageType.JOIN_GAME, "Hello! /this message is ignored"));
         while(true){
+
             if(inputUi){
 
             }
             if(inputServer){
-                //client.sendThis(new Message(Message.MessageType.TYPE_0, playerManager.getServerIp()));
+                //
+                System.out.println("Hello Received input from server");
+
+                //switch case
+
+                //if need input from UI (ex: getName // getIndex)
+                //Ask for input from UI
+
+                //sendMessage (if ping for example, send automatically) not implemented yet
+
+                //                                                  IMPORTANT ||| SAME TYPE
+                //client.sendThis(new Message(Message.MessageType.SAME TYPE THAT IS SENT FROM SERVER, "Object "));
+            }
+            synchronized (this){
+                try {
+                        wait();
+                } catch (Exception e) {
+                    System.out.println("Caught exception");
+                    e.printStackTrace();
+                }
             }
 
-            try {
-                wait();
-            } catch (Exception e) {
-            }
         }
     }
 
+    //I would do notifyAll
+    //it is more secure
     public void receivedServerInput(Message msg){
         inputServer = true;
         System.out.println(msg.getFirstObject());
@@ -51,6 +71,7 @@ public class UserInterface {
         }
     }
 
+    //I would do notifyAll
     public void receivedUiInput(){
         inputUi = true;
         synchronized (this){

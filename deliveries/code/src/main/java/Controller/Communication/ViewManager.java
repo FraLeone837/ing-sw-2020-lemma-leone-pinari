@@ -1,4 +1,4 @@
-package Controller;
+package Controller.Communication;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -24,12 +24,15 @@ public class ViewManager
             return;
         }
 
+        IntermediaryClass iC = new IntermediaryClass();
+
+
         while (true) {
             try {
                 /* accepts connections; for every connection we accept,
                  * create a new Thread executing a ClientHandler */
                 Socket client = socket.accept();
-                ClientHandler clientHandler = new ClientHandler(client);
+                ClientHandler clientHandler = new ClientHandler(client, iC);
                 Thread thread = new Thread(clientHandler, "server_" + client.getInetAddress());
                 thread.start();
             } catch (IOException e) {
@@ -37,4 +40,8 @@ public class ViewManager
             }
         }
     }
+
+
+
+
 }

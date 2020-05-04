@@ -37,7 +37,7 @@ public class CliPlayerManager implements PlayerManager{
             System.out.println("Choose where to locate the first worker");
         else
             System.out.println("Choose where to locate the second worker");
-        Index index;
+        Index index=null;
         do{
             index = correspondingIndex(scanner.next());
         } while(index==null);
@@ -47,7 +47,7 @@ public class CliPlayerManager implements PlayerManager{
     @Override
     public Index chooseWorker(List<Worker> workers) {
         System.out.println("Which worker do you want to select?");
-        Index index;
+        Index index = null;
         do{
             index = correspondingIndex(scanner.next());
         } while(index==null);
@@ -57,7 +57,7 @@ public class CliPlayerManager implements PlayerManager{
     @Override
     public Index chooseMovement(List<Index> movements) {
         System.out.println("Where do you want to move the worker?");
-        Index index;
+        Index index = null;
         do{
             index = correspondingIndex(scanner.next());
         } while(index==null);
@@ -67,7 +67,7 @@ public class CliPlayerManager implements PlayerManager{
     @Override
     public Index chooseBuilding(List<Index> buildings) {
         System.out.println("Where do you want to build?");
-        Index index;
+        Index index = null;
         do{
             index = correspondingIndex(scanner.next());
         } while(index==null);
