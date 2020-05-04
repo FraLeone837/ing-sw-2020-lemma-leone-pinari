@@ -129,7 +129,7 @@ public class Match {
                         if(cell.isBuilding()){
                             if(cell.isDome()){
                                 //if k = 3 then dome is built in level 4 else k = 2 dome is built in level 3 (val = 5) else k = 1 (val = 6) else val = 7
-                                informationArray[i][j][0] = 7 - k;
+                                informationArray[i][j][0] = 4 + k;
                             } else {
                                 //if there are no domes built then we give the lowest level of the building built
                                 informationArray[i][k][0] = k;

@@ -9,14 +9,16 @@ import java.net.Socket;
 
 public class Client implements Runnable, ServerObserver
 {
-    private Message request = null;
-    private Message response = null;
+    private Message messageIn = null;
+    private Message messageOut = null;
     private UserInterface ui;
     private String ip;
+    public final static int SOCKET_PORT = 7777;
 
-    public Client(UserInterface ui, String ip){
+    public Client(UserInterface ui, String ip, Message nameMessage){
         this.ui = ui;
         this.ip = ip;
+        messageOut = nameMessage;
     }
 
 
@@ -27,7 +29,7 @@ public class Client implements Runnable, ServerObserver
 
         Socket server;
         try {
-            server = new Socket(ip, ViewManager.SOCKET_PORT);
+            server = new Socket(ip, SOCKET_PORT);
         } catch (IOException e) {
             System.out.println("server unreachable");
             return;
@@ -39,28 +41,23 @@ public class Client implements Runnable, ServerObserver
         Thread serverAdapterThread = new Thread(serverAdapter);
         serverAdapterThread.start();
 
+        serverAdapter.requestSending(messageOut);
+
         while (true) {
-
-            request = null;
-
-            synchronized (this) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                }
-                response = null;
-
-                serverAdapter.requestSending(request);
-                int seconds = 0;
-                while (response == null) {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) { }
-                }
-
+            try {
+                wait();
+            } catch (InterruptedException e) {
             }
 
-            ui.receivedServerInput(response);
+            ui.receivedServerInput(messageIn);
+
+            try {
+                wait();
+            } catch (InterruptedException e) {
+            }
+
+            serverAdapter.requestSending(messageOut);
+
         }
 
         //serverAdapter.stop();
@@ -70,12 +67,12 @@ public class Client implements Runnable, ServerObserver
     @Override
     public synchronized void didReceiveMessage(Message msg)
     {
-        response = msg;
+        messageIn = msg;
         notifyAll();
     }
 
     public synchronized void sendThis(Message msg){
-        request = msg;
+        messageOut = msg;
         notifyAll();
     }
 }

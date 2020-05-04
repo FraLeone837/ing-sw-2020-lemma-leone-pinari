@@ -29,10 +29,30 @@ public class CliGameManager implements GameManager {
             System.out.println("You'll play as second player");
         System.out.println("You've been assigned the God " + assigned.getName());
     }
-
     @Override
-    public void updateMap(Island island, Player player) {
+    public void updateMap(int[][][] island, Player player) {
         System.out.println("  a b c d e ");
+        for(int y=0; y<5; y++){
+            System.out.print(y+1+" ");
+            for(int x=0; x<5; x++){
+                char content = ' ';
+                int level = 0;
+                if(island[x][y][0] > 3) {
+                    content = 'c';
+                    level = island[x][y][0] - 4;
+                }
+                else
+                    level = island[x][y][0];
+                if(island[x][y][0] != 0)
+                    content = (char)(island[x][y][0]);
+                System.out.print("\u001B[4"+(level+1)+"m\u001B[37m"+content+" ");
+            }
+            System.out.println("\u001B[0m");
+        }
+    }
+    /*@Override
+    public void updateMap(Island island, Player player) {
+        /*System.out.println("  a b c d e ");
         for(int y=0; y<5; y++){
             System.out.print(y+1+" ");
             for(int x=0; x<5; x++){
@@ -55,7 +75,7 @@ public class CliGameManager implements GameManager {
             }
             System.out.println("\u001B[0m");
         }
-    }
+    }*/
 
     @Override
     public void printWin(boolean win) {

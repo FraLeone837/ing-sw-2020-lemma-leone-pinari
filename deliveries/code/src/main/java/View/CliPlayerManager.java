@@ -19,6 +19,12 @@ public class CliPlayerManager implements PlayerManager{
     }
 
     @Override
+    public String getName() {
+        System.out.println("Write your username");
+        return scanner.nextLine();
+    }
+
+    @Override
     public int listMatch(List<Integer> ids) {
         System.out.println("You can join these matches");
         for(int i=0; i<ids.size(); i++){

@@ -2,6 +2,7 @@ package View;
 
 import Controller.Message;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -109,10 +110,10 @@ public class ServerAdapter implements Runnable
 
     private synchronized void doSendMessage() throws IOException, ClassNotFoundException
     {
-        System.out.println(messageToSend);
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
 
         String converted = gson.toJson(messageToSend);
+        System.out.println(converted);
 
         /* send the string to the server and get the new string back */
         outputStm.writeObject(converted);

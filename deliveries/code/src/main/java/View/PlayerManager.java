@@ -13,6 +13,12 @@ public interface PlayerManager {
     public abstract String getServerIp();
 
     /**
+     * Ask the user the username it wants to use
+     * @return the name given by the player
+     */
+    public abstract String getName();
+
+    /**
      * Print the list of all the matches that the player can join
      * @param ids the ArrayList with the ids of all the matches
      * @return the id of the match that the player has choosen to join
