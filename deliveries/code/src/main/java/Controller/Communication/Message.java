@@ -27,6 +27,10 @@ public class Message {
          */
         MOVEMENT,
         /**
+         * name and description of god
+         */
+        YOUR_GOD,
+        /**
          * REQUIRES NAME
          */
         GET_NAME,
@@ -101,7 +105,12 @@ public class Message {
          * value to be ignored by messages in input.
          * acts as null value
          */
-        ZZZ
+        ZZZ,
+        /**
+         * SET BY DEFAULT FROM MATCH-MANAGER AFTER
+         * MOVEMENT OF WORKERS
+         */
+        INFORMATION
     }
     private MessageType type;
     private Object object;

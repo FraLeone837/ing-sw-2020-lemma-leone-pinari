@@ -2,7 +2,6 @@ package Controller.Communication;
 
 import Controller.MatchManager;
 
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -14,17 +13,32 @@ public class IntermediaryClass {
     private final Object lock = new Object();
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
     private boolean notified;
-    private CommunicationProxy communicationProxy;
+    private ArrayList<CommunicationProxy> communicationProxies;
 
     public IntermediaryClass(){
         notified = false;
-        this.communicationProxy = null;
+        this.communicationProxies = null;
         matchManager = new MatchManager(1,this);
     }
 
+
+
+    /**
+     * used to communicate with all 2/3 players of a game
+     * @param msg
+     */
+    public void Broadcast(Message msg){
+        for(ClientHandler cl : clientHandlerArrayList) {
+            cl.sendMessage(msg.getType(), msg);
+        }
+    }
+    /**
+     *
+     * @param communicationProxy
+     */
     public void setCommunicationProxy(CommunicationProxy communicationProxy) {
         synchronized (lock){
-            this.communicationProxy = communicationProxy;
+            this.communicationProxies.add(communicationProxy);
             notified = true;
             notifyAll();
         }
@@ -42,6 +56,11 @@ public class IntermediaryClass {
         return matchManager.isAnyPlayerConnected();
     }
 
+    /**
+     *
+     * @returns the communication proxy from which to call
+     * and send messages to the client
+     */
     public CommunicationProxy getNewCommunicationProxy(){
         synchronized (lock){
             while(!notified){
@@ -51,7 +70,10 @@ public class IntermediaryClass {
                     e.printStackTrace();
                 }
             }
+            //if there are no more clients to get we need to wait
+            if(communicationProxies.size() == 0)
+            notified = false;
         }
-        return communicationProxy;
+        return communicationProxies.get(0);
     }
 }

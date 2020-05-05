@@ -1,6 +1,8 @@
 package Controller.Communication;
 
+import Controller.God;
 import Model.Index;
+import Model.Worker;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,19 +19,22 @@ public class CommunicationProxy implements Runnable, MessageObservers{
 
     //Message updated from matchManager
     private Message toSend;
-//    private final Object sendLock = new Object();
 
     //Message to be requested from matchManager
     private Message received;
     private final Object receivedLock = new Object();
 
+    /**
+     *
+     */
     private final Object gameSideLock = new Object();
     private Message gameSideMessage;
 
     /**
      * if id = -1 then it needs to be set up
      * from matchManager
-     * @param cl
+     * @param cl not null
+     * @param ic not null
      */
     public CommunicationProxy(ClientHandler cl, IntermediaryClass ic ){
         this.clientHandler = cl;
@@ -59,10 +64,11 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     }
 
     /**
-     * is always asleep, awakes only when matchManager asks them to wake up
+     * is always asleep, wakes up only when matchManager asks them to wake up
      * or when a message is received and forwards it to matchManager
      */
     public void handleConnection() throws IOException {
+        ic.setCommunicationProxy(this);
         boolean gameRunning = true;
         while(gameRunning){
             received = null;
@@ -82,38 +88,28 @@ public class CommunicationProxy implements Runnable, MessageObservers{
              */
             Message.MessageType typeCopy = received.getType();
             switch(typeCopy){
+                //Beginning of connection
                 case JOIN_GAME:
                     toSend = new Message(Message.MessageType.GET_NAME, "What is your name?");
                     break;
+                //Information asked, after which the player waits
+                case NUMBER_PLAYERS:
                 case GET_NAME:
-                    if(!ic.isAnyPlayerConnected())
-                        toSend = new Message(Message.MessageType.NUMBER_PLAYERS, "How many players do you want to join?");
-                    else toSend = new Message(Message.MessageType.WAIT_START, "Waiting for other player/s to join");
-                    gameRunning = false;
+                    toSend = new Message(Message.MessageType.WAIT_START, "Waiting for other player/s to join");
+                    break;
+
+
+                //method used to give all information to of board to client after a movement
+//                case MOVE_INDEX_REQ:
+//                case BUILD_INDEX_REQ:
+//                case CHOOSE_INDEX_FIRST_WORKER:
+//                case CHOOSE_INDEX_SEC_WORKER:
+                case INFORMATION:
+                    ic.Broadcast(new Message(Message.MessageType.ISLAND_INFO, ic.getMatchManager().getInformationArray()));
                     break;
                 case ZZZ:
                     break;
-//                case GAME_START:
-//                    getGameStart();
-//                    toSend = new Message(Message.MessageType.GAME_START, waitForStart());
-//                    break;
-//                case CHOOSE_INDEX_FIRST_WORKER:
-//                    toSend = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, waitForIndexList());
-//                    break;
-//                case CHOOSE_INDEX_SEC_WORKER:
-//                    toSend = new Message(Message.MessageType.CHOOSE_INDEX_SEC_WORKER, waitForIndexList());
-//                case CHOOSE_WORKER:
-//                    waitForManager();
-//                    toSend = new Message(Message.MessageType.MOVE_INDEX_REQ, waitForIndexList());
-//                    break;
-//                case MOVE_INDEX_REQ:
-//                    toSend = new Message(Message.MessageType.BUILD_INDEX_REQ, waitForIndexList());
-//                    break;
-//                case BUILD_INDEX_REQ:
-//                    toSend = new Message(Message.MessageType.FINISHED_TURN, "You finished your turn.");
-//                    break;
-//                case ISLAND_INFO:
-//                    break;
+
                 default:
             }
 
@@ -137,7 +133,8 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 MsT == Message.MessageType.GET_NAME ||
             MsT == Message.MessageType.GAME_START ||
             MsT == Message.MessageType.JOIN_GAME ||
-            MsT == Message.MessageType.FINISHED_TURN)
+            MsT == Message.MessageType.FINISHED_TURN||
+            MsT == Message.MessageType.INFORMATION)
             return;
 
         synchronized (gameSideLock){
@@ -152,19 +149,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
 
     }
 
-    //useless
-    private void getGameStart(){
-        synchronized (gameSideLock){
-            while(gameSideMessage == null){
-                try{
-                    gameSideLock.wait();
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
 
-        }
-    }
 
     /**
      * Updates the object to be sent from game side.
@@ -174,6 +159,9 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * @return right value of the answer (index/int for the worker/string for the name)
      */
     public Object sendMessage(Message.MessageType messageType, Object toSend){
+        /**
+         * prepare to send a message
+         */
         synchronized (gameSideLock){
             //converts gameSideMessage into a certain message type
             convertToMessage(messageType,toSend);
@@ -181,6 +169,10 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             gameSideLock.notifyAll();
         }
         Message copy;
+
+        /**
+         * prepare to receive message
+         */
         synchronized (this.receivedLock){
             while(received.getType() != messageType){
                 try{
@@ -190,7 +182,8 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 }
             }
             copy = received;
-            received.setType(Message.MessageType.ZZZ);
+            //MatchManager gets the one object so we make it default
+            received.setType(Message.MessageType.INFORMATION);
         }
 
         return convertToSpecificObject(copy);
@@ -212,7 +205,9 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                     return "Worker 2";
                 }
             case NUMBER_PLAYERS:
+                return copy.getObject();
             case CHOOSE_INDEX_FIRST_WORKER:
+                return (Object)convertFromIntToIndex((int)copy.getObject());
             case MOVEMENT:
             default:
                 return copy;
@@ -220,8 +215,17 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         }
     }
 
+    private Object convertFromIntToIndex(int number) {
+        int x = number % 5;
+        int y = (number - x)/5;
+        Index ix = new Index(x,y,-1);
+        return (Object)ix;
+    }
+
+
+
     /**
-     * sets this.gameSideMessage to a certain Message according to protocol
+     * sets this.toSend to a certain Message according to protocol
      * @param messageType kind of message
      * @param toSend depending on what toSend CommProxy sends a flag or other
      */
@@ -234,47 +238,57 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             case CHOOSE_INDEX_SEC_WORKER:
 
             case MOVE_INDEX_REQ:
-
-
-            case GAME_START:
-            gameSideMessage = new Message(messageType,toSend);
+            this.toSend = new Message(messageType,convertFromIndexToInts((Index[])toSend));
             break;
-            case ISLAND_INFO:
-            gameSideMessage = new Message(messageType, clientHandler.getIslandInfo());
+            case YOUR_GOD:
+            case GAME_START:
+            this.toSend = new Message(messageType,toSend);
             break;
         }
 
     }
 
     /**
-     *
-     * @return a list of index not null
+     * converts all indexes to an array of ints from 0-24 which are the cells
+     * @param toSend
      */
-    private Index[] waitForIndexList(){
-        List<Index> copy;
-        synchronized (gameSideLock){
-            while(gameSideMessage.getType() != Message.MessageType.BUILD_INDEX_REQ ||
-                  gameSideMessage.getType() != Message.MessageType.MOVE_INDEX_REQ ||
-                  gameSideMessage.getType() != Message.MessageType.CHOOSE_INDEX_FIRST_WORKER||
-                  gameSideMessage.getType() != Message.MessageType.CHOOSE_INDEX_SEC_WORKER)
-            {
-                gameSideMessage.setType(Message.MessageType.ZZZ);
-
-                try{
-                    gameSideLock.wait();
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-            copy = (List<Index>)gameSideMessage;
-            gameSideMessage = null;
+    private int[] convertFromIndexToInts(Index[] toSend) {
+        int[] zzz = new int[toSend.length];
+        int x = 0;
+        for(Index ix: toSend){
+            zzz[x] = ix.getX() + ix.getY()*5;
+            x++;
         }
-        Index[] c = new Index[copy.size()];
-        int i = 0;
-        for(Index ix : copy){
-            c[i] = ix;
-            i++;
-        }
-        return c;
+        return zzz;
     }
+
+    /**
+     * return the NAME in first cell and GOD DESCRIPTION in second cell
+     * @param god not null, god of this player
+     * @return
+     */
+    public String[] godDescription(God god){
+        String[] x = new String[2];
+        x[0] = god.getName();
+        x[1] = god.getDescription();
+        return x;
+    }
+
+    /**
+     * returns 1 if you can move only the first worker, 2 the second, 3 both
+     * @param worker1 can be null
+     * @param worker2 can be null
+     * @return
+     */
+    public int WorkersToInt(Worker worker1, Worker worker2){
+        int flag = 0;
+        if(worker2 != null){
+            flag = 2;
+        }
+        if(worker1 != null){
+            flag++;
+        }
+        return flag;
+    }
+
 }
