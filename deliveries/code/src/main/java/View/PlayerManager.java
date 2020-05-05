@@ -23,21 +23,28 @@ public interface PlayerManager {
      * @param ids the ArrayList with the ids of all the matches
      * @return the id of the match that the player has choosen to join
      */
-    public abstract int listMatch(List<Integer> ids);
+    //public abstract int listMatch(List<Integer> ids);
+
+    /**
+     * If there isn't any match on the server, the player is asked to create a new one
+     * So this method ask the player how many players it wants this match to have
+     * @return the number of player of the match (could be 2 or 3)
+     */
+    public abstract int chooseNumberPlayers();
 
     /**
      * Ask the player where to place his workers at the start of the game
      * @param firstWorker true if the player hasn't place any worker before
      * @return the index in which to place the worker
      */
-    public abstract Index placeWorker(boolean firstWorker);
+    public abstract int placeWorker(boolean firstWorker, int[] possiblePositions);
 
     /**
      * Ask the player which of its workers to use in this turn
      * @param workers the list of the workers that can be moved
      * @return the chosen worker
      */
-    public abstract Index chooseWorker(List<Worker> workers);
+    public abstract int chooseWorker(int workers);
 
     /**
      * Ask the player in which of the possible cells it wants to move the
@@ -45,12 +52,12 @@ public interface PlayerManager {
      * @param movements list of the possible movements
      * @return the chosen movement
      */
-    public abstract Index chooseMovement(List<Index> movements);
+    public abstract int chooseMovement(int[] movements);
 
     /**
      * Ask the player in which of the possible cells it wants the worker to build
      * @param buildings list of the possible cells to build in
      * @return the chosen cell to build in
      */
-    public abstract Index chooseBuilding(List<Index> buildings);
+    public abstract int chooseBuilding(int[] buildings);
 }

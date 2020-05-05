@@ -1,13 +1,10 @@
 package View;
 
 import Controller.God;
-import Model.Cell;
-import Model.Index;
-import Model.Island;
-import Model.Player;
 
 public class CliGameManager implements GameManager {
 
+    private int idFirstWorker;
 
     @Override
     public void startMatch() {
@@ -20,6 +17,11 @@ public class CliGameManager implements GameManager {
         System.out.println("Corrispondere iniziare");
     }
 
+    public void printIdWorkers(int idFirstWorker){
+        this.idFirstWorker = idFirstWorker;
+        System.out.println("Your workers will be the ones with ids " + idFirstWorker + " and " + (idFirstWorker+1));
+    }
+
     @Override
     public void printReadyToStart(boolean starting, God assigned) {
         System.out.println("Both the players are here, the match can start!");
@@ -30,7 +32,7 @@ public class CliGameManager implements GameManager {
         System.out.println("You've been assigned the God " + assigned.getName());
     }
     @Override
-    public void updateMap(int[][][] island, Player player) {
+    public void updateMap(int[][][] island) {
         System.out.println("  a b c d e ");
         for(int y=0; y<5; y++){
             System.out.print(y+1+" ");

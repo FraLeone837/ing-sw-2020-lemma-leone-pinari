@@ -1,7 +1,6 @@
 package View;
 
-import Controller.Message;
-import Controller.ViewManager;
+import Controller.Communication.Message;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -44,20 +43,29 @@ public class Client implements Runnable, ServerObserver
         serverAdapter.requestSending(messageOut);
 
         while (true) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
+
+            messageOut = null;
+
+            synchronized (this) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                messageIn = null;
+
+                serverAdapter.requestSending(messageOut);
+                while (messageIn == null) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
 
             ui.receivedServerInput(messageIn);
-
-            try {
-                wait();
-            } catch (InterruptedException e) {
-            }
-
-            serverAdapter.requestSending(messageOut);
-
         }
 
         //serverAdapter.stop();

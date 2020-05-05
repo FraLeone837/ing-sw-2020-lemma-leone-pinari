@@ -1,6 +1,6 @@
 package View;
 
-import Controller.Message;
+import Controller.Communication.Message;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
