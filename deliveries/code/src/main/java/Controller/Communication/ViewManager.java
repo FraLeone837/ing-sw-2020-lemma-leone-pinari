@@ -37,6 +37,10 @@ public class ViewManager
                 thread.start();
             } catch (IOException e) {
                 System.out.println("connection dropped");
+                if(iC.MatchRunning()){
+                    iC.Broadcast(new Message(Message.MessageType.END_GAME, "Connection dropped from one player, game interrupted and finished"));
+                    iC.terminateGame();
+                }
             }
         }
     }

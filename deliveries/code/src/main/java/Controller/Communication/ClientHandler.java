@@ -110,62 +110,13 @@ public class ClientHandler implements Runnable
 
                     output.writeObject(gson.toJson(toSendMsg));
 
+                    if(toSendMsg.getType() == Message.MessageType.END_GAME)
+                        client.close();
                 }
             }
         } catch (ClassNotFoundException e ){
             //resendMessage()
         }
-//
-//        try {
-//            Object initialInput = input.readObject();
-//            String initialRequest = (String)initialInput;
-//            Gson gson = new Gson();
-//            Message initMessage = gson.fromJson(initialRequest,Message.class);
-//            Message toSend = null;
-//            switch (initMessage.getType()){
-//                case JOIN_GAME:
-//                    toSend = new Message(Message.MessageType.GET_NAME, "What is your name");
-//                    //match
-//                    //This method creates a new game from scratch or connects people to another one already created
-//                    //constructor getFreeGame();
-//                    break;
-//                case GET_NAME:
-//                    // flag = JoinGame(); if flag ask for number of players, otherwise give a ping or a game_started signal
-//                    break;
-//                case NUMBER_PLAYERS:
-//                    // a
-//
-//            }
-//            /* responds to input from the client */
-//            while (true) {
-//
-//                if(writes == true){
-//                    Object next = input.readObject();
-//                    String str = (String)next;
-//                    currentMessage = gson.fromJson(str, Message.class);
-//                    Message.MessageType msgType = currentMessage.getType();
-////                Player player = (Player)received.getFirstObject();
-//                    switch (msgType){
-//                        case ISLAND_INFO:
-//                            toSend = getIslandInfo();
-//                            break;
-//                        case MOVEMENT:
-//                            toSend = getIslandInfo();
-//                            break;
-//                        case CHOOSE_WORKER:
-//
-//                            //discard
-//                    }
-//
-////                Message toSend = new Message(Message.MessageType.ISLAND_INFO, tosnd);
-//                    String converted = gson.toJson(toSend);
-//                    output.writeObject(converted);
-//                }
-//            }
-//        } catch (ClassNotFoundException | ClassCastException e) {
-//            System.out.println("invalid stream from client");
-//        }
-
         client.close();
     }
 
@@ -185,58 +136,13 @@ public class ClientHandler implements Runnable
         return new Message(Message.MessageType.ISLAND_INFO, ic.getMatchManager().getInformationArray());
     }
 
-    /**
-     *
-     * @return a new Message of type ping
-     */
-    private Message Ping(){
-        return new Message(Message.MessageType.PING_IS_ALIVE, "Are you alive?");
-    }
-
     public Message getCurrentMessage() {
         return currentMessage;
     }
 
-     public Worker chooseWorker(int flag){
-        //get information on which worker to play
-        this.sendMessage(Message.MessageType.CHOOSE_WORKER,flag);
+    public void terminateGame(){
+        this.personalProxy.sendMessage(Message.MessageType.END_GAME,null);
 
-
-        //stub
-        return new Worker(-1);
     }
-
-    /** Sends a message to the view from client
-     *  if not already of type Message, it converts it
-     * @param messageType one of the enum types
-     * @param message might be overwritten based on a protocol (i.e. player lost, message is null, so it gets overwritten)
-     */
-    public void sendMessage(Message.MessageType messageType, Object message){
-        Gson gson = new Gson();
-
-        if(!(message instanceof Message)){
-//            message = convertToMessage(message);
-            switch (messageType){
-                case MOVE_INDEX_REQ:
-                    break;
-                case PLAYER_LOST:
-                    message = new Message(messageType,"You lost! From this point on you can only view the match until it ends.");
-                    break;
-            }
-        }
-        String converted = gson.toJson(message);
-        try{
-            ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
-            output.writeObject(converted);
-        } catch (IOException e){
-            System.out.println("Invalid IO:\n" + e);
-        }
-        catch( ClassCastException e ){
-            System.out.println("Invalid stream:\n" + e);
-        }
-
-        return;
-    }
-
 }
 

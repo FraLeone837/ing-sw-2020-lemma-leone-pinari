@@ -110,7 +110,12 @@ public class Message {
          * SET BY DEFAULT FROM MATCH-MANAGER AFTER
          * MOVEMENT OF WORKERS
          */
-        INFORMATION
+        INFORMATION,
+        /**
+         * message sent when one of the players disconnects
+         * after which the game ends and every data is lost
+         */
+        END_GAME
     }
     private MessageType type;
     private Object object;

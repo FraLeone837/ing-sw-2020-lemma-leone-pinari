@@ -13,29 +13,52 @@ public class IntermediaryClass {
     private final Object lock = new Object();
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
     private boolean notified;
-    private ArrayList<CommunicationProxy> communicationProxies;
+    private boolean running;
+    private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
 
     public IntermediaryClass(){
+        running = false;
         notified = false;
-        this.communicationProxies = null;
         matchManager = new MatchManager(1,this);
     }
 
+    /**
+     * method that finishes game and clears all threads after a 10 second period
+     */
+    public void terminateGame(){
+        this.matchManager = new MatchManager(1, this);
+        this.running = false;
+        this.notified = false;
+        for(ClientHandler cl : clientHandlerArrayList){
+            cl.terminateGame();
+        }
+        clientHandlerArrayList = new ArrayList<>();
+        communicationProxies = new ArrayList<>();
 
+    }
+
+    /**
+     * to be called from MatchManager whenever game starts
+     * @param t
+     */
+    public void setMatchRunning(boolean t){
+        running = t;
+    }
+
+    public boolean MatchRunning(){
+        return running;
+    }
 
     /**
      * used to communicate with all 2/3 players of a game
      * @param msg
      */
     public void Broadcast(Message msg){
-        for(ClientHandler cl : clientHandlerArrayList) {
+        for(CommunicationProxy cl : communicationProxies) {
             cl.sendMessage(msg.getType(), msg);
         }
     }
-    /**
-     *
-     * @param communicationProxy
-     */
+
     public void setCommunicationProxy(CommunicationProxy communicationProxy) {
         synchronized (lock){
             this.communicationProxies.add(communicationProxy);
@@ -74,6 +97,6 @@ public class IntermediaryClass {
             if(communicationProxies.size() == 0)
             notified = false;
         }
-        return communicationProxies.get(0);
+        return communicationProxies.get(communicationProxies.size()-1);
     }
 }

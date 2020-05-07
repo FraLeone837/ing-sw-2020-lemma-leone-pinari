@@ -130,8 +130,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      */
     private void waitForGameMessage(Message.MessageType MsT) {
         if(MsT == Message.MessageType.PING_IS_ALIVE ||
-                MsT == Message.MessageType.GET_NAME ||
-            MsT == Message.MessageType.GAME_START ||
+            MsT == Message.MessageType.GET_NAME ||
             MsT == Message.MessageType.JOIN_GAME ||
             MsT == Message.MessageType.FINISHED_TURN||
             MsT == Message.MessageType.INFORMATION)
@@ -250,7 +249,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
 
     /**
      * converts all indexes to an array of ints from 0-24 which are the cells
-     * @param toSend
+     * @param toSend not null, might contain null
      */
     private int[] convertFromIndexToInts(Index[] toSend) {
         int[] zzz = new int[toSend.length];
@@ -265,7 +264,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     /**
      * return the NAME in first cell and GOD DESCRIPTION in second cell
      * @param god not null, god of this player
-     * @return
+     * @return not null
      */
     public String[] godDescription(God god){
         String[] x = new String[2];
@@ -278,7 +277,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * returns 1 if you can move only the first worker, 2 the second, 3 both
      * @param worker1 can be null
      * @param worker2 can be null
-     * @return
+     * @return not null {0,1,2,3}
      */
     public int WorkersToInt(Worker worker1, Worker worker2){
         int flag = 0;
