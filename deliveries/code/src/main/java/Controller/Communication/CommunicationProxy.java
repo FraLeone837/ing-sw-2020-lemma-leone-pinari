@@ -47,7 +47,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     @Override
     public void receivedMessage() {
         synchronized (receivedLock){
-            received = clientHandler.getCurrentMessage();
+            this.received = clientHandler.getCurrentMessage();
             this.receivedLock.notifyAll();
         }
     }
@@ -87,23 +87,12 @@ public class CommunicationProxy implements Runnable, MessageObservers{
              * messages to be sent automatically without any need of input from client/controller
              */
             Message.MessageType typeCopy = received.getType();
+            System.out.println(received);
             switch(typeCopy){
-                //Beginning of connection
-                case JOIN_GAME:
-                    toSend = new Message(Message.MessageType.GET_NAME, "What is your name?");
-                    break;
-                //Information asked, after which the player waits
                 case NUMBER_PLAYERS:
                 case GET_NAME:
                     toSend = new Message(Message.MessageType.WAIT_START, "Waiting for other player/s to join");
                     break;
-
-
-                //method used to give all information to of board to client after a movement
-//                case MOVE_INDEX_REQ:
-//                case BUILD_INDEX_REQ:
-//                case CHOOSE_INDEX_FIRST_WORKER:
-//                case CHOOSE_INDEX_SEC_WORKER:
                 case INFORMATION:
                     ic.Broadcast(new Message(Message.MessageType.ISLAND_INFO, ic.getMatchManager().getInformationArray()));
                     break;
@@ -169,6 +158,8 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         }
         Message copy;
 
+        if(!isWaitingForResponse(messageType))
+            return new Object();
         /**
          * prepare to receive message
          */
@@ -214,17 +205,9 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         }
     }
 
-    private Object convertFromIntToIndex(int number) {
-        int x = number % 5;
-        int y = (number - x)/5;
-        Index ix = new Index(x,y,-1);
-        return (Object)ix;
-    }
-
-
-
     /**
      * sets this.toSend to a certain Message according to protocol
+     * method used to send a message
      * @param messageType kind of message
      * @param toSend depending on what toSend CommProxy sends a flag or other
      */
@@ -237,14 +220,64 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             case CHOOSE_INDEX_SEC_WORKER:
 
             case MOVE_INDEX_REQ:
-            this.toSend = new Message(messageType,convertFromIndexToInts((Index[])toSend));
-            break;
-            case YOUR_GOD:
+                this.toSend = new Message(messageType,convertFromIndexToInts((Index[])toSend));
+                break;
+
             case GAME_START:
-            this.toSend = new Message(messageType,toSend);
-            break;
+                this.toSend = new Message(messageType, convertFromPlayerIDtoInt((int) toSend));
+                break;
+
+            case GET_NAME:
+            case PLAYER_LOST:
+            case PLAYER_WON:
+            case MOVEMENT:
+            case YOUR_GOD:
+                this.toSend = new Message(messageType,toSend);
+                break;
         }
 
+    }
+
+    /**
+     * Only some messages wait for an input client-side
+     * we check here if our message is one of those
+     * @param messageType
+     * @return
+     */
+    private boolean isWaitingForResponse(Message.MessageType messageType) {
+        switch (messageType){
+            case ISLAND_INFO:
+            case YOUR_GOD:
+            case WAIT_START:
+            case GAME_START:
+            case PLAYER_LOST:
+            case PLAYER_WON:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * orders any index into a number of 0-24
+     * @param number
+     * @return
+     */
+    private Object convertFromIntToIndex(int number) {
+        int x = number % 5;
+        int y = (number - x)/5;
+        Index ix = new Index(x,y,-1);
+        return (Object)ix;
+    }
+
+
+
+    private int convertFromPlayerIDtoInt(int toSend) {
+        if(toSend == 1) return 1;
+        if(toSend == 2) return 3;
+        if(toSend == 3) return 5;
+        System.out.println("ERROR - convertFromPlayerIDtoInt!");
+        return -1;
     }
 
     /**

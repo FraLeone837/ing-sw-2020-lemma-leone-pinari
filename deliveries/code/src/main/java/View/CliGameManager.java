@@ -84,7 +84,7 @@ public class CliGameManager implements GameManager {
         if(win)
             System.out.println("You win!");
         else
-            System.out.println("You loose.");
+            System.out.println("You lose.");
     }
 
 

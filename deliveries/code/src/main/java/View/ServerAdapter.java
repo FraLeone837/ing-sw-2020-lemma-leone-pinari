@@ -59,8 +59,8 @@ public class ServerAdapter implements Runnable
 
     public synchronized void requestSending(Message msg)
     {
-        nextCommand = Commands.SEND_MESSAGE;
         messageToSend = msg;
+        nextCommand = Commands.SEND_MESSAGE;
         notifyAll();
     }
 
@@ -110,10 +110,18 @@ public class ServerAdapter implements Runnable
 
     private synchronized void doSendMessage() throws IOException, ClassNotFoundException
     {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        //We have problem if you send message with GsonBuilder ecc ecc
+        //Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        Gson gson = new Gson();
 
         String converted = gson.toJson(messageToSend);
-        System.out.println(converted);
+        try{
+            System.out.println("Read the next message please");
+            wait(1000);
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        System.out.println("Message to send is: " + messageToSend );
 
         /* send the string to the server and get the new string back */
         outputStm.writeObject(converted);

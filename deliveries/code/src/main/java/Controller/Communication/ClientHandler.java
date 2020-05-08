@@ -1,8 +1,5 @@
 package Controller.Communication;
 
-
-import Controller.MatchManager;
-import Model.Worker;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -80,7 +77,7 @@ public class ClientHandler implements Runnable
         System.out.println("Connected to " + client.getInetAddress());
         ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
         ObjectInputStream input = new ObjectInputStream(client.getInputStream());
-        System.out.println("WHATS WRONG?");
+//        System.out.println("WHATS WRONG?");
 //        notifyObservers();
         /**
          * Read first object afterwards reply.
@@ -89,12 +86,15 @@ public class ClientHandler implements Runnable
         try{
             Object in = input.readObject();
             //PROBLEM??? WHY!
-            System.out.println("If you're reading this it is a good sign.");
+//            System.out.println("If you're reading this it is a good sign.");
             String inText = (String)in;
+            System.out.println("inText: " + inText);
             Gson gson = new Gson();
-            currentMessage = gson.fromJson(inText,Message.class);
-            System.out.println("HELLO?");
+            this.currentMessage = gson.fromJson(inText,Message.class);
+            System.out.println(currentMessage);
+//            System.out.println("HELLO?");
             notifyObservers();
+
             synchronized (sendLock){
                 while(toSendMsg == null){
                     toSendMsg = null;

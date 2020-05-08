@@ -48,6 +48,12 @@ public class Message {
          */
         PLAYER_LOST,
         /**
+         * sends a Message to the
+         * client that he cannot write any input anymore and
+         * that the game ended
+         */
+        PLAYER_WON,
+        /**
          * sent from server to client
          * asks information on where to move
          * from the given indices
