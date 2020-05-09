@@ -1,8 +1,7 @@
 package ControllerTest;
 
-import Model.Index;
-import Model.Match;
-import Model.Worker;
+import Controller.*;
+import Model.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -85,6 +84,20 @@ public class Utils {
         return  new Index(x,y,z);
     }
 
+    public Index getPseudoAdjacentTwoLevelsBelow(Index index){
+        Index ix = getPseudoAdjacent(index);
+        if(index.getZ() == 2 || index.getZ() == 3){
+            System.out.println("HEYA!");
+            ix = new Index(ix.getX(), ix.getY(), ix.getZ()-2);
+        }
+        return ix;
+    }
+
+
+    public Index getPseudoAdjacentTwoLevelsBelow(Worker index){
+        return getPseudoAdjacentTwoLevelsBelow(index.getPosition());
+    }
+
     public ArrayList<Index> getAllLevelsAbove(Worker worker){
         Index ix = worker.getPosition();
         System.out.println("Your Position: "+ix);
@@ -111,4 +124,27 @@ public class Utils {
         return inx_array;
     }
 
+    public God generateRandomGod() {
+        Random random = new Random();
+        int choice = random.nextInt(5);
+        switch (choice){
+            case 0:
+                return new Demeter();
+
+            case 1:
+                return new Athena();
+
+            case 2:
+                return new Atlas();
+
+            case 3:
+                return new Artemis();
+
+            case 4:
+            default:
+                return new Apollo();
+
+        }
+
+    }
 }

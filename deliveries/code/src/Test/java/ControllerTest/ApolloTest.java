@@ -4,6 +4,7 @@ import Controller.Apollo;
 import Controller.God;
 import Model.Index;
 import Model.Match;
+import Model.Player;
 import Model.Worker;
 import org.junit.Assert;
 import java.util.Random;
@@ -13,15 +14,6 @@ import static org.junit.Assert.*;
 
 public class ApolloTest {
 
-    //Workers coordinates before I move
-    private int x;
-    private int y;
-    private int z;
-
-    //Enemy coordinates before I move
-    private int ex;
-    private int ey;
-    private int ez;
 
     private Match match;
     private Worker myWorker;
@@ -34,12 +26,14 @@ public class ApolloTest {
         Utils utils = new Utils();
         Index ix = utils.generateRandomIndex();
         this.apollo = new Apollo();
-        apollo.getDescription();
-        apollo.getName();
+
         this.myWorker = new Worker();
         this.enemyWorker = new Worker();
+
         match = new Match(1);
         match.initWorker(myWorker, ix);
+
+        apollo.setup(match, new Player("nome", 1));
 
 
         Index index = utils.getPseudoAdjacent(myWorker);
@@ -50,12 +44,12 @@ public class ApolloTest {
     public void testTurn_SwitchPlaces_ExpectedSwitchedPlaces(){
         Utils utils = new Utils();
         Index oldPosition = myWorker.getPosition();
-
-
         Index buildIndex = utils.getPseudoAdjacent(enemyWorker);
 
         Index myWorkerLastPos = myWorker.getPosition();
         Index enemyWorkerLastPos = enemyWorker.getPosition();
+
+        System.out.println("New position " + enemyWorkerLastPos + "\nThis position " + myWorkerLastPos);
 
         apollo.turn(match, myWorker, enemyWorker.getPosition(), buildIndex);
 
@@ -64,6 +58,8 @@ public class ApolloTest {
         assertTrue(match.selectCell(buildIndex).isBuilding());
         assertNull(match.selectCell(oldPosition).getWorker());
     }
+
+
 
     @org.junit.Test
     public void testTurn_NormalMovement_CorrectOutput(){

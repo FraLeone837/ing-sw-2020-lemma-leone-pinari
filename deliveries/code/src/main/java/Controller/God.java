@@ -131,7 +131,7 @@ public abstract class God {
                             int z=0;
                             while(z < 4){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker()==worker){
+                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker() == worker){
                                     ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
                                     Boolean forbiddenCell = false;
                                     for(Invisible inv : invisibles){
