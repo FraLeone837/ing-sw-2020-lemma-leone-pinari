@@ -39,9 +39,7 @@ public class UserInterface implements Runnable {
             //playerManager = new GuiPlayerManager();
         }
         String ip = playerManager.getServerIp();
-        String name = playerManager.getName();
-        Message nameMessage = new Message(Message.MessageType.GET_NAME, name);
-        client = new Client(this, ip, nameMessage);
+        client = new Client(this, ip);
         Thread t = new Thread(client);
         t.start();
     }

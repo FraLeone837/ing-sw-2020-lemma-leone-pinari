@@ -14,17 +14,15 @@ public class Client implements Runnable, ServerObserver
     private String ip;
     public final static int SOCKET_PORT = 7777;
 
-    public Client(UserInterface ui, String ip, Message nameMessage){
+    public Client(UserInterface ui, String ip){
         this.ui = ui;
         this.ip = ip;
-        messageOut = nameMessage;
     }
 
 
     @Override
     public void run()
     {
-        System.out.println("IP address of server?");
 
         Socket server;
         try {
@@ -40,7 +38,21 @@ public class Client implements Runnable, ServerObserver
         Thread serverAdapterThread = new Thread(serverAdapter);
         serverAdapterThread.start();
 
-        serverAdapter.requestSending(messageOut);
+        synchronized (this) {
+            try {
+                wait(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //wait 4 second
+        //then joingame message
+        //then sendname after resp (ma vabbè sticazzi la gestisce lui la richiesta del nome)
+
+        Message msg = new Message(Message.MessageType.JOIN_GAME, null);
+        serverAdapter.requestSending(msg);
+
+        //serverAdapter.requestSending(messageOut);
 
         while (true) {
 
