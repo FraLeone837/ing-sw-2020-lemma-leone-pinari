@@ -14,18 +14,23 @@ public class IntermediaryClass {
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
     private boolean notified;
     private boolean running;
+    // Mm means MatchManager
+    private Thread threadOfMm;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
 
     public IntermediaryClass(){
-        running = false;
-        notified = false;
-        matchManager = new MatchManager(1,this);
+        this.running = false;
+        this.notified = false;
+        this.matchManager = new MatchManager(1,this);
+        this.threadOfMm = new Thread(matchManager);
+        this.threadOfMm.start();
     }
 
     /**
      * method that finishes game and clears all threads after a 10 second period
      */
     public void terminateGame(){
+        threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
         this.running = false;
         this.notified = false;
@@ -59,11 +64,15 @@ public class IntermediaryClass {
         }
     }
 
+    /**
+     * adds a new comm proxy for matchManager to use
+     * @param communicationProxy
+     */
     public void setCommunicationProxy(CommunicationProxy communicationProxy) {
         synchronized (lock){
             this.communicationProxies.add(communicationProxy);
             notified = true;
-            notifyAll();
+            lock.notifyAll();
         }
     }
 
