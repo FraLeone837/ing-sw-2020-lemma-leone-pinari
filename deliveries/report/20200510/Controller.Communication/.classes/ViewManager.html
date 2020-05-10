@@ -1,0 +1,134 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ViewManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">Controller.Communication</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ViewManager (Controller.Communication)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ViewManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package Controller.Communication;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.io.IOException;
+<i>4</i>&nbsp;import java.net.ServerSocket;
+<i>5</i>&nbsp;import java.net.Socket;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;
+<b class="nc"><i>8</i>&nbsp;public class ViewManager</b>
+<i>9</i>&nbsp;{
+<i>10</i>&nbsp;    public final static int SOCKET_PORT = 7777;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;    /** Passively opens the server side and waits for clients to connect with.
+<i>13</i>&nbsp;     *  Once connected calls clientHandler to do all the functionalities as a new Thread.
+<i>14</i>&nbsp;     * @param args not needed
+<i>15</i>&nbsp;     */
+<i>16</i>&nbsp;    public static void main(String[] args)
+<i>17</i>&nbsp;    {
+<i>18</i>&nbsp;        ServerSocket socket;
+<i>19</i>&nbsp;        try {
+<b class="nc"><i>20</i>&nbsp;            socket = new ServerSocket(SOCKET_PORT);</b>
+<b class="nc"><i>21</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>22</i>&nbsp;            System.out.println(&quot;cannot open server socket&quot;);</b>
+<b class="nc"><i>23</i>&nbsp;            System.exit(1);</b>
+<i>24</i>&nbsp;            return;
+<b class="nc"><i>25</i>&nbsp;        }</b>
+<i>26</i>&nbsp;
+<b class="nc"><i>27</i>&nbsp;        IntermediaryClass iC = new IntermediaryClass();</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;        while (true) {
+<i>31</i>&nbsp;            try {
+<i>32</i>&nbsp;                /* accepts connections; for every connection we accept,
+<i>33</i>&nbsp;                 * create a new Thread executing a ClientHandler */
+<b class="nc"><i>34</i>&nbsp;                Socket client = socket.accept();</b>
+<b class="nc"><i>35</i>&nbsp;                ClientHandler clientHandler = new ClientHandler(client, iC);</b>
+<b class="nc"><i>36</i>&nbsp;                Thread thread = new Thread(clientHandler, &quot;server_&quot; + client.getInetAddress());</b>
+<b class="nc"><i>37</i>&nbsp;                thread.start();</b>
+<b class="nc"><i>38</i>&nbsp;            } catch (IOException e) {</b>
+<b class="nc"><i>39</i>&nbsp;                System.out.println(&quot;connection dropped&quot;);</b>
+<b class="nc"><i>40</i>&nbsp;                if(iC.MatchRunning()){</b>
+<b class="nc"><i>41</i>&nbsp;                    iC.Broadcast(new Message(Message.MessageType.END_GAME, &quot;Connection dropped from one player, game interrupted and finished&quot;));</b>
+<b class="nc"><i>42</i>&nbsp;                    iC.terminateGame();</b>
+<i>43</i>&nbsp;                }
+<b class="nc"><i>44</i>&nbsp;            }</b>
+<i>45</i>&nbsp;        }
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-05-10 18:59</div>
+</div>
+</body>
+</html>

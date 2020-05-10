@@ -2,6 +2,7 @@ package ControllerTest;
 
 import Controller.*;
 import Model.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +23,7 @@ public class GodTest {
         Index ix = utils.generateRandomIndex();
         this.god = utils.generateRandomGod();
 
-        god.getDescription();
+        System.out.println(god.getDescription());
         System.out.println(god.getName());
 
         this.myWorker = new Worker();
@@ -37,6 +38,11 @@ public class GodTest {
         match.initWorker(this.enemyWorker,index);
     }
 
+    @After
+    public void tearDown(){
+        match = null;
+    }
+
     @Test
     public void whereToMoveTest(){
         ArrayList<Index> listWhereToMove = god.whereToMove(match,myWorker,myWorker.getPosition());
@@ -45,7 +51,9 @@ public class GodTest {
                         && ix.getX()>=0 && ix.getX()<5
                         && ix.getY()>=0 && ix.getY()<5);
         }
+
         for(Index ix : listWhereToMove){
+            if(!god.equals(new Apollo()))
             assertFalse(ix.equals(myWorker.getPosition()));
             assertTrue((match.selectCell(ix).getWorker() == null));
             assertTrue(ix.getZ() <= myWorker.getPosition().getZ());
@@ -59,26 +67,45 @@ public class GodTest {
 
     @Test
     public void whereToBuild(){
-        ArrayList<Index> listWhereToMove = god.whereToBuild(match,myWorker,myWorker.getPosition());
+        Utils utils =new Utils();
+        Index toMove;
+        do{
+            toMove = utils.getPseudoAdjacent(myWorker);
+
+        } while(toMove.getZ() != myWorker.getPosition().getZ());
+        ArrayList<Index> listWhereToMove = god.whereToBuild(match,myWorker,toMove);
         for(Index ix : listWhereToMove){
             assertTrue(ix.getZ()>=0 && ix.getZ()<4
                     && ix.getX()>=0 && ix.getX()<5
                     && ix.getY()>=0 && ix.getY()<5);
         }
+
         for(Index ix : listWhereToMove){
-            assertFalse(ix.equals(myWorker.getPosition()));
-            assertTrue((match.selectCell(ix).getWorker() == null));
+
+            assertFalse(toMove.equals(ix));
             assertTrue(ix.getZ() <= myWorker.getPosition().getZ());
-            assertTrue(((ix.getX()-1 == myWorker.getPosition().getX() || ix.getX()+1 == myWorker.getPosition().getX())
-                            || (ix.getX() == myWorker.getPosition().getX() && (ix.getY()+1 == myWorker.getPosition().getY() || ix.getY()-1 == myWorker.getPosition().getY() ))));
+            assertTrue(((ix.getX()-1 == toMove.getX() || ix.getX()+1 == toMove.getX())
+                            || (ix.getX() == toMove.getX() && (ix.getY()+1 == toMove.getY() || ix.getY()-1 == toMove.getY() ))));
             assertTrue(
-                    ((ix.getY()-1 == myWorker.getPosition().getY() || ix.getY()+1 == myWorker.getPosition().getY())
-                            || (ix.getY() == myWorker.getPosition().getY() && (ix.getX()+1 == myWorker.getPosition().getX() || ix.getX()-1 == myWorker.getPosition().getX() ))));
+                    ((ix.getY()-1 == toMove.getY() || ix.getY()+1 == toMove.getY())
+                            || (ix.getY() == toMove.getY() && (ix.getX()+1 == toMove.getX() || ix.getX()-1 == toMove.getX() ))));
         }
     }
 
     @Test
     public void checkWin(){
+        Index oldPosition = myWorker.getPosition();
+        Index nextPosition;
+        Utils utils = new Utils();
+        do{
+            nextPosition = utils.getPseudoAdjacent(myWorker);
+        } while(nextPosition.equals(enemyWorker));
 
+        god.turn(match, myWorker, nextPosition, utils.getPseudoAdjacent(nextPosition));
+
+        if(oldPosition.getZ() == 2 && nextPosition.getZ() == 3){
+            assertTrue(god.checkWin(match,myWorker));
+        }
+        else assertFalse(god.checkWin(match,myWorker));
     }
 }

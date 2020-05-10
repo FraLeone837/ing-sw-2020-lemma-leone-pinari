@@ -7,9 +7,13 @@ import Model.Match;
 import Model.Player;
 import Model.Worker;
 import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 public class ApolloTest {
@@ -87,6 +91,54 @@ public class ApolloTest {
 
 
         assertNull(match.selectCell(oldPosition).getWorker());
+    }
+
+    @Test
+    public void whereToMoveTest(){
+
+        ArrayList<Index> listWhereToMove = apollo.whereToMove(match,myWorker,myWorker.getPosition());
+        for(Index ix : listWhereToMove){
+            assertTrue(ix.getZ()>=0 && ix.getZ()<4
+                    && ix.getX()>=0 && ix.getX()<5
+                    && ix.getY()>=0 && ix.getY()<5);
+        }
+
+        for(Index ix : listWhereToMove){
+            assertTrue((match.selectCell(ix).getWorker() != myWorker ));
+            assertTrue(ix.getZ() <= myWorker.getPosition().getZ());
+            assertTrue(((ix.getX()-1 == myWorker.getPosition().getX() || ix.getX()+1 == myWorker.getPosition().getX())
+                    || (ix.getX() == myWorker.getPosition().getX() && (ix.getY()+1 == myWorker.getPosition().getY() || ix.getY()-1 == myWorker.getPosition().getY() ))));
+            assertTrue(
+                    ((ix.getY()-1 == myWorker.getPosition().getY() || ix.getY()+1 == myWorker.getPosition().getY())
+                            || (ix.getY() == myWorker.getPosition().getY() && (ix.getX()+1 == myWorker.getPosition().getX() || ix.getX()-1 == myWorker.getPosition().getX() ))));
+        }
+    }
+
+    @Test
+    public void whereToBuildTest(){
+        Utils utils =new Utils();
+        Index toMove;
+        do{
+            toMove = utils.getPseudoAdjacent(myWorker);
+
+        } while(toMove.getZ() != myWorker.getPosition().getZ());
+        ArrayList<Index> listWhereToMove = apollo.whereToBuild(match,myWorker,toMove);
+        for(Index ix : listWhereToMove){
+            assertTrue(ix.getZ()>=0 && ix.getZ()<4
+                    && ix.getX()>=0 && ix.getX()<5
+                    && ix.getY()>=0 && ix.getY()<5);
+        }
+
+        for(Index ix : listWhereToMove){
+
+            assertFalse(toMove.equals(ix));
+            assertTrue(ix.getZ() <= myWorker.getPosition().getZ());
+            assertTrue(((ix.getX()-1 == toMove.getX() || ix.getX()+1 == toMove.getX())
+                    || (ix.getX() == toMove.getX() && (ix.getY()+1 == toMove.getY() || ix.getY()-1 == toMove.getY() ))));
+            assertTrue(
+                    ((ix.getY()-1 == toMove.getY() || ix.getY()+1 == toMove.getY())
+                            || (ix.getY() == toMove.getY() && (ix.getX()+1 == toMove.getX() || ix.getX()-1 == toMove.getX() ))));
+        }
     }
 
 

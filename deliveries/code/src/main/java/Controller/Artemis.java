@@ -116,7 +116,7 @@ public class Artemis extends God {
      * @param worker the worker selected by the player
      * @return true if you can end the turn with the worker
      */
-    public Boolean canMoveOnce(Match match, Worker worker){
+    private Boolean canMoveOnce(Match match, Worker worker){
         ArrayList<Index> possibleMoves = whereToMove(match, worker, worker.getPosition());
         if(possibleMoves.isEmpty())
             return false;
@@ -136,7 +136,7 @@ public class Artemis extends God {
      * @param worker the worker selected by the player
      * @return true if you can end the turn with the worker moving twice
      */
-    public Boolean canMoveTwice(Match match, Worker worker){
+    private Boolean canMoveTwice(Match match, Worker worker){
         ArrayList<Index> possibleMoves = whereToMove(match, worker, worker.getPosition());
         if(possibleMoves.isEmpty())
             return false;
