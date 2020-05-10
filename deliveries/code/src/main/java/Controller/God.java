@@ -136,6 +136,7 @@ public abstract class God {
                             int z=0;
                             while(z < 4){
                                 Index checkedIndex = new Index(x,y,z);
+<<<<<<< HEAD
                                 if(!match.selectCell(checkedIndex).isBuilding()){
                                     if(match.selectCell(checkedIndex).getWorker()!=null || match.selectCell(checkedIndex).getWorker()==worker) {
                                         ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
@@ -145,6 +146,15 @@ public abstract class God {
                                                 forbiddenCell = true;
                                                 break;
                                             }
+=======
+                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker() == worker){
+                                    ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                    Boolean forbiddenCell = false;
+                                    for(Invisible inv : invisibles){
+                                        if(inv instanceof ForbiddenConstruction && inv.isIn(worker)){
+                                            forbiddenCell = true;
+                                            break;
+>>>>>>> 7483d462cf866c7f4ec3e880037d3849c6c5b577
                                         }
                                     }
                                     else

@@ -3,6 +3,7 @@ package ControllerTest;
 import Controller.Artemis;
 import Model.Index;
 import Model.Match;
+import Model.Player;
 import Model.Worker;
 
 import java.io.IOException;
@@ -23,31 +24,38 @@ public class ArtemisTest {
         this.artemis = new Artemis();
         artemis.getDescription();
         artemis.getName();
+
+
+
         this.myWorker = new Worker();
         this.match = new Match(1);
         Index index = utils.generateRandomIndex();
         match.initWorker(myWorker,index);
+        artemis.setup(match, new Player("nome", 1));
     }
 
     @org.junit.Test
     public void turnTest_MovesTwice_ChecksPosition(){
         artemis.setMoveAgain(true);
+
         Utils util = new Utils();
         Index oldPosition = myWorker.getPosition();
 
+        if(artemis.canMoveTwice(match,myWorker)){
+            Index firstMove = util.generateRandomIndex();
+            Index secondMove = util.generateRandomIndex();
+            Index firstBuild = util.generateRandomIndex();
+            while (firstMove.equals(secondMove)) {
+                secondMove = util.generateRandomIndex();
+            }
+            artemis.turn(match, myWorker, firstMove, secondMove, firstBuild);
 
-        Index firstMove = util.generateRandomIndex();
-        Index secondMove = util.generateRandomIndex();
-        Index firstBuild = util.generateRandomIndex();
-        while (firstMove.equals(secondMove)) {
-            secondMove = util.generateRandomIndex();
+            assertEquals(myWorker,match.selectCell(secondMove).getWorker());
+
+            assertFalse(match.selectCell(firstBuild).isEmpty());
+            assertNull(match.selectCell(oldPosition).getWorker());
+
         }
-        artemis.turn(match, myWorker, firstMove, secondMove, firstBuild);
-
-        assertEquals(myWorker,match.selectCell(secondMove).getWorker());
-
-        assertFalse(match.selectCell(firstBuild).isEmpty());
-        assertNull(match.selectCell(oldPosition).getWorker());
     }
 
     @org.junit.Test
