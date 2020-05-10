@@ -1,5 +1,7 @@
 package Controller;
 
+import Controller.Communication.CommunicationProxy;
+import Controller.Communication.Message;
 import Model.*;
 
 import java.util.ArrayList;
@@ -21,18 +23,18 @@ public class Athena extends God {
     }
 
     @Override
-    public void turn(Match m, Worker w) {
+    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
         resetPower(m, w);
         setPrevIndex(w.getPosition());
-            //Stub
-            Index index1 = new Index(1,3,3);
         //take index1 where to move from view
-        m.moveWorker(w, index1);
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
+        m.moveWorker(w, actualMoveIndex);
         checkWin(m, w);
         //take index2 where to build from view
-            //Stub
-            Index index2 = new Index(1,2,3);
-        m.build(w, index2);
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
+        m.build(w, actualBuildIndex);
         usePower(m, w);
     }
 
