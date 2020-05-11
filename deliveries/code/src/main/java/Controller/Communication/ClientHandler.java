@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class ClientHandler implements Runnable
 {
     private Socket client;
-    private IntermediaryClass ic;
     private Message currentMessage;
     private Message toSendMsg;
     //Parameter that shows if we can get the input from the other client
@@ -41,13 +40,9 @@ public class ClientHandler implements Runnable
         }
     }
 
-    public void updatedMessage(Message message){
-
-    }
 
     ClientHandler(Socket client, IntermediaryClass ic)
     {
-        this.ic = ic;
         this.client = client;
         this.writes = true;
         currentMessage = null;
@@ -77,22 +72,18 @@ public class ClientHandler implements Runnable
         System.out.println("Connected to " + client.getInetAddress());
         ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
         ObjectInputStream input = new ObjectInputStream(client.getInputStream());
-//        System.out.println("WHATS WRONG?");
-//        notifyObservers();
+
         /**
          * Read first object afterwards reply.
          * After that go into a while loop in which the client responds only to my requests
          */
         try{
             Object in = input.readObject();
-            //PROBLEM??? WHY!
-//            System.out.println("If you're reading this it is a good sign.");
             String inText = (String)in;
-            System.out.println("inText: " + inText);
             Gson gson = new Gson();
             this.currentMessage = gson.fromJson(inText,Message.class);
+
             System.out.println(currentMessage);
-//            System.out.println("HELLO?");
             notifyObservers();
 
             synchronized (sendLock){
@@ -128,21 +119,19 @@ public class ClientHandler implements Runnable
             obs.receivedMessage();
     }
 
-    /**
-     *
-     * @return the information of current island state
-     */
-    protected Message getIslandInfo(){
-        return new Message(Message.MessageType.ISLAND_INFO, ic.getMatchManager().getInformationArray());
-    }
 
     public Message getCurrentMessage() {
         return currentMessage;
     }
 
+    /**
+     * receives a local message that allows the game to terminate
+     */
     public void terminateGame(){
-        this.personalProxy.sendMessage(Message.MessageType.END_GAME,null);
-
+        this.personalProxy.sendMessage(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
+        this.currentMessage = new Message(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
+        notifyObservers();
     }
+
 }
 

@@ -7,19 +7,16 @@ import java.util.ArrayList;
 /**
  * Class needed so we could always go back to the original matchManager
  */
-
 public class IntermediaryClass {
     private MatchManager matchManager;
     private final Object lock = new Object();
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
     private boolean notified;
-    private boolean running;
     // Mm means MatchManager
     private Thread threadOfMm;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
 
     public IntermediaryClass(){
-        this.running = false;
         this.notified = false;
         this.matchManager = new MatchManager(1,this);
         this.threadOfMm = new Thread(matchManager);
@@ -34,7 +31,6 @@ public class IntermediaryClass {
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
         threadOfMm.start();
-        this.running = false;
         this.notified = false;
         for(ClientHandler cl : clientHandlerArrayList){
             cl.terminateGame();
@@ -44,17 +40,6 @@ public class IntermediaryClass {
 
     }
 
-    /**
-     * to be called from MatchManager whenever game starts
-     * @param t
-     */
-    public void setMatchRunning(boolean t){
-        running = t;
-    }
-
-    public boolean MatchRunning(){
-        return running;
-    }
 
     /**
      * used to communicate with all 2/3 players of a game
