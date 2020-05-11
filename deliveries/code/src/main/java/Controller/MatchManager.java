@@ -64,14 +64,11 @@ public class MatchManager implements Runnable{
             playerManagers.get(0).getPlayer().getName();
             return true;
         } catch (NullPointerException ne){
-
+            ne.printStackTrace();
         }
         return false;
     }
 
-    public void close(){
-
-    }
 
     public void setupPlayers(){
         ArrayList<String> names = new ArrayList<String>();
