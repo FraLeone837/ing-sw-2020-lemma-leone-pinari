@@ -116,12 +116,12 @@ public class ServerAdapter implements Runnable
 
         String converted = gson.toJson(messageToSend);
         try{
-            System.out.println("Read the next message please");
+            //System.out.println("Read the next message please");
             wait(1000);
         } catch (InterruptedException e){
             e.printStackTrace();
         }
-        System.out.println("Message to send is: " + messageToSend );
+        //System.out.println("Message to send is: " + messageToSend );
 
         /* send the string to the server and get the new string back */
         outputStm.writeObject(converted);
