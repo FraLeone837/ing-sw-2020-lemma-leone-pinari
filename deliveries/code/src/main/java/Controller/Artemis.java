@@ -1,5 +1,7 @@
 package Controller;
 
+import Controller.Communication.CommunicationProxy;
+import Controller.Communication.Message;
 import Model.*;
 
 import java.util.ArrayList;
@@ -30,14 +32,16 @@ public class Artemis extends God {
     }
 
     @Override
-    public void turn(Match m, Worker w) {
+    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
         setPrevIndex(w.getPosition());
         //take index1 where to move the first time
-            //Stub
-            Index index1 = new Index(2,2,1);
-        m.moveWorker(w, index1);
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
+        m.moveWorker(w, actualMoveIndex);
         checkWin(m, w);
         //ask to move another time
+        Boolean moveAgainAsked = (Boolean)communicationProxy.sendMessage(Message.MessageType.MOVE_AGAIN, null);
+        setMoveAgain(moveAgainAsked);
         if(moveAgain) {
             Cell cell = m.selectCell(prevIndex);
             ArrayList<Invisible> invisibles = cell.getForbidden();
@@ -47,16 +51,16 @@ public class Artemis extends God {
             }
             setPrevIndex(w.getPosition());
             //take index2 where to move a second time
-                //Stub
-                Index index2 = new Index(1,1,3);
-            m.moveWorker(w, index2);
+            Index tempMoveIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+            Index actualMoveIndex2 = correctIndex(m,tempMoveIndex2);
+            m.moveWorker(w, actualMoveIndex2);
             checkWin(m, w);
             resetPower(m, w);
         }
         //take index3 where to build
-            //Stub
-            Index index3 = new Index(1,2,3);
-        m.build(w, index3);
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
+        m.build(w, actualBuildIndex);
     }
 
     public void turn(Match m, Worker w,Index index1,Index index2,Index index3) {
@@ -106,13 +110,33 @@ public class Artemis extends God {
     }
 
     /**
-     * allows you to know if you can end the turn with the selected worker moving twice
+     * allows you to know if you can end the turn with the selected worker by moving once
+     *
+     * @param match the current match
+     * @param worker the worker selected by the player
+     * @return true if you can end the turn with the worker
+     */
+    private Boolean canMoveOnce(Match match, Worker worker){
+        ArrayList<Index> possibleMoves = whereToMove(match, worker, worker.getPosition());
+        if(possibleMoves.isEmpty())
+            return false;
+        for(Index index : possibleMoves){
+            ArrayList<Index> possibleBuildings = whereToBuild(match, worker, index);
+            if(!possibleBuildings.isEmpty())
+                return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * allows you to know if you can end the turn with the selected worker by moving twice
      *
      * @param match the current match
      * @param worker the worker selected by the player
      * @return true if you can end the turn with the worker moving twice
      */
-    public Boolean canMoveTwice(Match match, Worker worker){
+    private Boolean canMoveTwice(Match match, Worker worker){
         ArrayList<Index> possibleMoves = whereToMove(match, worker, worker.getPosition());
         if(possibleMoves.isEmpty())
             return false;
@@ -126,6 +150,13 @@ public class Artemis extends God {
                 }
             }
         }
+        return false;
+    }
+
+    @Override
+    public Boolean canMove(Match match, Worker worker){
+        if(canMoveOnce(match, worker) || canMoveTwice(match, worker))
+            return true;
         return false;
     }
 }

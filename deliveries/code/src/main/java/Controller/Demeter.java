@@ -1,5 +1,7 @@
 package Controller;
 
+import Controller.Communication.CommunicationProxy;
+import Controller.Communication.Message;
 import Model.*;
 
 import java.util.ArrayList;
@@ -39,19 +41,21 @@ public class Demeter extends God {
     }
 
     @Override
-    public void turn(Match m, Worker w) {
+    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
         setPrevIndex(w.getPosition());
-        //index1 = take index1 where to move the first time
-            //Stub
-            Index index1 = new Index(1,4,3);
-        m.moveWorker(w, index1);
+        //take index1 where to move the first time from the view
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
+        m.moveWorker(w, actualMoveIndex);
         checkWin(m, w);
         //take index2 where to build
-            //Stub
-            Index index2 = new Index(1,3,3);
-        setPrevBuildIndex(index2);
-        m.build(w, index2);
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
+        setPrevBuildIndex(actualBuildIndex);
+        m.build(w, actualBuildIndex);
         //ask to build another time
+        Boolean buildAgainAsked = (Boolean)communicationProxy.sendMessage(Message.MessageType.BUILD_AGAIN, null);
+        setBuildAgain(buildAgainAsked);
         if(buildAgain) {
             Cell cell = m.selectCell(prevBuildIndex);
             ArrayList<Invisible> invisibles = cell.getForbidden();
@@ -60,9 +64,9 @@ public class Demeter extends God {
                     inv.addWorker(w);
             }
             //take index3 where to build a second time
-                //Stub
-                Index index3 = new Index(2, 3, 3);
-            m.build(w, index3);
+            Index tempBuildIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+            Index actualBuildIndex2 = correctIndex(m,tempBuildIndex2);
+            m.build(w, actualBuildIndex2);
             resetPower(m, w);
         }
     }

@@ -4,24 +4,20 @@ import Controller.Apollo;
 import Controller.God;
 import Model.Index;
 import Model.Match;
+import Model.Player;
 import Model.Worker;
 import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 public class ApolloTest {
 
-    //Workers coordinates before I move
-    private int x;
-    private int y;
-    private int z;
-
-    //Enemy coordinates before I move
-    private int ex;
-    private int ey;
-    private int ez;
 
     private Match match;
     private Worker myWorker;
@@ -34,12 +30,14 @@ public class ApolloTest {
         Utils utils = new Utils();
         Index ix = utils.generateRandomIndex();
         this.apollo = new Apollo();
-        apollo.getDescription();
-        apollo.getName();
+
         this.myWorker = new Worker();
         this.enemyWorker = new Worker();
+
         match = new Match(1);
         match.initWorker(myWorker, ix);
+
+        apollo.setup(match, new Player("nome", 1));
 
 
         Index index = utils.getPseudoAdjacent(myWorker);
@@ -50,12 +48,12 @@ public class ApolloTest {
     public void testTurn_SwitchPlaces_ExpectedSwitchedPlaces(){
         Utils utils = new Utils();
         Index oldPosition = myWorker.getPosition();
-
-
         Index buildIndex = utils.getPseudoAdjacent(enemyWorker);
 
         Index myWorkerLastPos = myWorker.getPosition();
         Index enemyWorkerLastPos = enemyWorker.getPosition();
+
+        System.out.println("New position " + enemyWorkerLastPos + "\nThis position " + myWorkerLastPos);
 
         apollo.turn(match, myWorker, enemyWorker.getPosition(), buildIndex);
 
@@ -64,6 +62,8 @@ public class ApolloTest {
         assertTrue(match.selectCell(buildIndex).isBuilding());
         assertNull(match.selectCell(oldPosition).getWorker());
     }
+
+
 
     @org.junit.Test
     public void testTurn_NormalMovement_CorrectOutput(){
@@ -91,6 +91,54 @@ public class ApolloTest {
 
 
         assertNull(match.selectCell(oldPosition).getWorker());
+    }
+
+    @Test
+    public void whereToMoveTest(){
+
+        ArrayList<Index> listWhereToMove = apollo.whereToMove(match,myWorker,myWorker.getPosition());
+        for(Index ix : listWhereToMove){
+            assertTrue(ix.getZ()>=0 && ix.getZ()<4
+                    && ix.getX()>=0 && ix.getX()<5
+                    && ix.getY()>=0 && ix.getY()<5);
+        }
+
+        for(Index ix : listWhereToMove){
+            assertTrue((match.selectCell(ix).getWorker() != myWorker ));
+            assertTrue(ix.getZ() <= myWorker.getPosition().getZ());
+            assertTrue(((ix.getX()-1 == myWorker.getPosition().getX() || ix.getX()+1 == myWorker.getPosition().getX())
+                    || (ix.getX() == myWorker.getPosition().getX() && (ix.getY()+1 == myWorker.getPosition().getY() || ix.getY()-1 == myWorker.getPosition().getY() ))));
+            assertTrue(
+                    ((ix.getY()-1 == myWorker.getPosition().getY() || ix.getY()+1 == myWorker.getPosition().getY())
+                            || (ix.getY() == myWorker.getPosition().getY() && (ix.getX()+1 == myWorker.getPosition().getX() || ix.getX()-1 == myWorker.getPosition().getX() ))));
+        }
+    }
+
+    @Test
+    public void whereToBuildTest(){
+        Utils utils =new Utils();
+        Index toMove;
+        do{
+            toMove = utils.getPseudoAdjacent(myWorker);
+
+        } while(toMove.getZ() != myWorker.getPosition().getZ());
+        ArrayList<Index> listWhereToMove = apollo.whereToBuild(match,myWorker,toMove);
+        for(Index ix : listWhereToMove){
+            assertTrue(ix.getZ()>=0 && ix.getZ()<4
+                    && ix.getX()>=0 && ix.getX()<5
+                    && ix.getY()>=0 && ix.getY()<5);
+        }
+
+        for(Index ix : listWhereToMove){
+
+            assertFalse(toMove.equals(ix));
+            assertTrue(ix.getZ() <= myWorker.getPosition().getZ());
+            assertTrue(((ix.getX()-1 == toMove.getX() || ix.getX()+1 == toMove.getX())
+                    || (ix.getX() == toMove.getX() && (ix.getY()+1 == toMove.getY() || ix.getY()-1 == toMove.getY() ))));
+            assertTrue(
+                    ((ix.getY()-1 == toMove.getY() || ix.getY()+1 == toMove.getY())
+                            || (ix.getY() == toMove.getY() && (ix.getX()+1 == toMove.getX() || ix.getX()-1 == toMove.getX() ))));
+        }
     }
 
 

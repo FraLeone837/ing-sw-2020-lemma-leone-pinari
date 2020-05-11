@@ -52,6 +52,8 @@ public class AthenaTest {
         match.initWorker(enemyWorker,utils.generateRandomIndex());
         match.initWorker(enemyWorker2,utils.generateRandomIndex());
         athena.setup(match,me);
+
+
     }
 
     @After

@@ -13,7 +13,6 @@ public class MatchManager implements Runnable{
     private ArrayList<PlayerManager> playerManagers = new ArrayList<>();
     private Match match;
     private IntermediaryClass intermediaryClass;
-    //
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
 //    private ArrayList<ClientHandler> clientHandlers;
 
@@ -70,5 +69,18 @@ public class MatchManager implements Runnable{
 
     public void close(){
 
+    }
+
+    public void setup(){
+        //ask all useful info (number of players, ecc)
+        for(PlayerManager playerManager : playerManagers){
+            playerManager.setup(match);
+        }
+    }
+
+    public void turn(){
+        for(PlayerManager playerManager : playerManagers){
+            playerManager.turn(match);
+        }
     }
 }

@@ -3,6 +3,7 @@ package ControllerTest;
 import Controller.Atlas;
 import Model.Index;
 import Model.Match;
+import Model.Player;
 import Model.Worker;
 
 import static junit.framework.TestCase.assertTrue;
@@ -23,6 +24,8 @@ public class AtlasTest {
         atlas.getName();
         Utils utils = new Utils();
         match.initWorker(myWorker, utils.generateRandomIndex());
+
+        atlas.setup(match, new Player("nome", 1));
     }
 
     @org.junit.Test

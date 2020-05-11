@@ -1,5 +1,7 @@
 package Controller;
 
+import Controller.Communication.CommunicationProxy;
+import Controller.Communication.Message;
 import Model.*;
 
 import java.util.ArrayList;
@@ -17,15 +19,12 @@ public abstract class God {
     public abstract String getDescription();
 
     /**
-     * this variable is for store the previous position of the worker that moves so, if the player wants to move again,
-     * he cannot come back in the previous position
+     * this variable is for store the previous position of the worker that moves,
+     * so we can check if the player wins after the movement and, if the god allows the player to move twice,
+     * he cannot come back in the previous position when moving the second time
      */
     Index prevIndex;
 
-    /**
-     * stores the previous index of a worker in an attribute when it moves, in order to check if the owner win
-     * @param prev the index of the starting cell of the worker
-     */
     public void setPrevIndex(Index prev){
         prevIndex = prev;
     }
@@ -36,23 +35,35 @@ public abstract class God {
      * @param m the match that the server is managing
      * @param w the worker selected by the player
      */
-    public void turn(Match m, Worker w){
+    public void turn(Match m, CommunicationProxy communicationProxy, Worker w){
         setPrevIndex(w.getPosition());
         //take index1 where to move from view
-            //stub
-            Index index1 = new Index(1,2,3);
-        m.moveWorker(w,index1);
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
+        m.moveWorker(w,actualMoveIndex);
         checkWin(m, w);
         //take index2 where to build from view
-            //Stub
-            Index index2 = new Index(2,3,0);
-        m.build(w, index2);
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
+        m.build(w, actualBuildIndex);
+    }
+
+    public void turn(Match m, Worker w,Index index1,Index index2) {
+        setPrevIndex(w.getPosition());
+        //take index1 where to move from view
+        Index tempMoveIndex = index1;
+        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
+        m.moveWorker(w,actualMoveIndex);
+        checkWin(m, w);
+        //take index2 where to build from view
+        Index actualBuildIndex = index2;
+        m.build(w, actualBuildIndex);
     }
 
 
     /**
-     * this method is used at the beginning of the match to do actions that will be active for the whole duration of the game,
-     * such as putting the invisible blocks in every cell
+     * this method is used at the beginning of the match to prepare the game board io order to use the power of gods,
+     * for example putting the invisible blocks in every cell
      *
      * @param m the match that the server is managing
      * @param p the player whose god's power has to be set
@@ -80,6 +91,7 @@ public abstract class God {
         int currentX = index.getX();
         int currentY = index.getY();
         int currentZ = index.getZ();
+        Boolean forbiddenCell = true;
         for(int x = currentX-1; x < currentX+2; x++){
             if(x >= 0 && x < 5){
                 for(int y = currentY-1; y < currentY+2; y++){
@@ -88,14 +100,20 @@ public abstract class God {
                             int z=0;
                             while(z <= currentZ +1){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker()==worker){
-                                    ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
-                                    Boolean forbiddenCell = false;
-                                    for(Invisible inv : invisibles){
-                                        if(inv instanceof ForbiddenMove && inv.isIn(worker)){
-                                            forbiddenCell = true;
-                                            break;
+                                if(!match.selectCell(checkedIndex).isBuilding()){
+                                    if(match.selectCell(checkedIndex).getWorker() == null || match.selectCell(checkedIndex).getWorker()==worker) {
+                                        ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                        forbiddenCell = false;
+                                        for (Invisible inv : invisibles) {
+                                            if (inv instanceof ForbiddenMove && inv.isIn(worker)) {
+                                                forbiddenCell = true;
+                                                break;
+                                            }
                                         }
+                                    }
+                                    else{
+                                        forbiddenCell = true;
+                                        break;
                                     }
                                     if (!forbiddenCell)
                                         cellsWhereToMove.add(checkedIndex);
@@ -123,6 +141,7 @@ public abstract class God {
         ArrayList<Index> cellsWhereToBuild = new ArrayList<Index>();
         int currentX = index.getX();
         int currentY = index.getY();
+        Boolean forbiddenCell = true;
         for(int x = currentX-1; x < currentX+2; x++){
             if(x >= 0 && x < 5){
                 for(int y = currentY-1; y < currentY+2; y++){
@@ -131,18 +150,24 @@ public abstract class God {
                             int z=0;
                             while(z < 4){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(match.selectCell(checkedIndex).isEmpty() || match.selectCell(checkedIndex).getWorker()==worker){
-                                    ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
-                                    Boolean forbiddenCell = false;
-                                    for(Invisible inv : invisibles){
-                                        if(inv instanceof ForbiddenConstruction && inv.isIn(worker)){
-                                            forbiddenCell = true;
-                                            break;
+                                if(!match.selectCell(checkedIndex).isBuilding()){
+                                    if(match.selectCell(checkedIndex).getWorker()==null || match.selectCell(checkedIndex).getWorker()==worker) {
+                                        ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                        forbiddenCell = false;
+                                        for (Invisible inv : invisibles) {
+                                            if (inv instanceof ForbiddenConstruction && inv.isIn(worker)) {
+                                                forbiddenCell = true;
+                                                break;
+                                            }
                                         }
                                     }
-                                    if (!forbiddenCell)
-                                        cellsWhereToBuild.add(checkedIndex);
-                                    break;
+                                    else{
+                                        forbiddenCell = true;
+                                        break;
+                                    }
+                                        if (!forbiddenCell)
+                                            cellsWhereToBuild.add(checkedIndex);
+                                        break;
                                 }
                                 z++;
                             }
@@ -192,5 +217,23 @@ public abstract class God {
         return false;
     }
 
+    /**
+     * take from the view a two-dimensional index with no Z info and convert it into a three-dimensional index,
+     * according to the current game board
+     *
+     * @param match the current match
+     * @param index the index from the view
+     * @return the correct index for the match
+     */
+    public Index correctIndex(Match match, Index index){
+        int x = index.getX();
+        int y = index.getY();
+        Index currentIndex = index;
+        for(int z=0; z<4; z++){
+            currentIndex = new Index(x,y,z);
+            if(match.selectCell(currentIndex).isEmpty())
+                return currentIndex;
+        }
+        return currentIndex;
+    }
 }
-

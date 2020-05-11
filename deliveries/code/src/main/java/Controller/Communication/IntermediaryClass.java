@@ -32,6 +32,8 @@ public class IntermediaryClass {
     public void terminateGame(){
         threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
+        threadOfMm = new Thread(matchManager);
+        threadOfMm.start();
         this.running = false;
         this.notified = false;
         for(ClientHandler cl : clientHandlerArrayList){

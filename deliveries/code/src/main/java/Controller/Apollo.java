@@ -1,5 +1,7 @@
 package Controller;
 
+import Controller.Communication.CommunicationProxy;
+import Controller.Communication.Message;
 import Model.*;
 
 import java.util.ArrayList;
@@ -22,19 +24,19 @@ public class Apollo extends God {
     }
 
     @Override
-    public void turn(Match m, Worker w) {
+    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
         setPrevIndex(w.getPosition());
         //take index1 where to move from view
-            //stub
-            Index index1 = new Index(1,2,3);
-        Worker o = m.selectCell(index1).getWorker();
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actuaMovelIndex = correctIndex(m,tempMoveIndex);
+        Worker o = m.selectCell(actuaMovelIndex).getWorker();
         m.moveWorker(o, w.getPosition());
-        m.moveWorker(w,index1);
+        m.moveWorker(w,actuaMovelIndex);
         checkWin(m, w);
         //take index2 where to build from view
-            //Stub
-            Index index2 = new Index(2,3,0);
-        m.build(w, index2);
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
+        m.build(w, actualBuildIndex);
     }
 
     public void turn(Match m, Worker w, Index index1, Index index2) {
@@ -62,7 +64,7 @@ public class Apollo extends God {
                             int z=0;
                             while(z <= currentZ +1){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(!match.selectCell(checkedIndex).isBuilding() && !match.selectCell(checkedIndex).isDome()  ){
+                                if(!match.selectCell(checkedIndex).isBuilding()){
                                     ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
                                     Boolean forbiddenCell = false;
                                     for(Invisible inv : invisibles){
@@ -83,6 +85,19 @@ public class Apollo extends God {
             }
         }
         return cellsWhereToMove;
+    }
+
+    @Override
+    public Index correctIndex(Match match, Index index){
+        int x = index.getX();
+        int y = index.getY();
+        Index currentIndex = index;
+        for(int z=0; z<4; z++){
+            currentIndex = new Index(x,y,z);
+            if(!(match.selectCell(currentIndex).isBuilding()))
+                return currentIndex;
+        }
+        return currentIndex;
     }
 
 }
