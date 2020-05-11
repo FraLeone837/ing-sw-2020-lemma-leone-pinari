@@ -1,20 +1,23 @@
 package View;
 
 import Controller.Communication.Message;
-import Model.Index;
 
-import java.util.List;
+import javax.swing.*;
 
 public class UserInterface implements Runnable {
 
     private Mode mode;
+    private MainFrame mainFrame;
     private GameManager gameManager;
     private PlayerManager playerManager;
     Client client;
 
-    private boolean inputUi;
-    private boolean inputServer;
+    private boolean inputUi = false;
+    private boolean inputServer = false;
     Message messageIn;
+    Message messageOut;
+
+    String ip;
 
     private String godDescription;
 
@@ -32,16 +35,23 @@ public class UserInterface implements Runnable {
         this.mode = mode;
         if(mode== Mode.CLI){
             gameManager = new CliGameManager();
-            playerManager = new CliPlayerManager();
+            playerManager = new CliPlayerManager(this);
         }
         else{
-            //gameManager = new GuiGameManager();
-            //playerManager = new GuiPlayerManager();
+            gameManager = new GuiGameManager();
+            playerManager = new GuiPlayerManager(this);
+            /*SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    */mainFrame = new MainFrame();
+                    mainFrame.setPlayerManagerPanel(((GuiPlayerManager)playerManager).getPanel());
+                    mainFrame.setTopGameManagerPanel(((GuiGameManager)gameManager).getPanel());
+                    mainFrame.show();
+               /* }
+            });*/
         }
-        String ip = playerManager.getServerIp();
-        client = new Client(this, ip);
-        Thread t = new Thread(client);
-        t.start();
+        messageOut = new Message(Message.MessageType.JOIN_GAME);
+        playerManager.getServerIp();
     }
 
     /**
@@ -55,11 +65,11 @@ public class UserInterface implements Runnable {
         while(true){
             if(inputUi){
                 inputUi = false;
+                client.sendThis(messageOut);
             }
             if(inputServer){
                 inputServer = false;
                 identificationMessage(messageIn);
-                //client.sendThis(new Message(Message.MessageType.TYPE_0, playerManager.getServerIp()));
             }
 
             try {
@@ -85,10 +95,19 @@ public class UserInterface implements Runnable {
      * Method called by the PlayerManager when a new input is received
      * It notifies the thread of UserInterface to wake it up from the previous wait
      */
-    public void receivedUiInput(){
-        inputUi = true;
-        synchronized (this){
-            notify();
+    public void receivedUiInput(String input){
+        if(messageOut.getType().equals(Message.MessageType.JOIN_GAME)){
+            client = new Client(this, ip);
+            Thread t = new Thread(client);
+            t.start();
+        }
+        else{
+            inputUi = true;
+            messageOut.setObject(input);
+            this.ip=input;
+            synchronized (this){
+                notify();
+            }
         }
     }
 
@@ -100,7 +119,7 @@ public class UserInterface implements Runnable {
      */
     private void identificationMessage(Message msg){
         /*default message is ZZZ*/
-        Message response = new Message(Message.MessageType.ZZZ, null);
+        messageOut = new Message(Message.MessageType.ZZZ, null);
         switch(msg.getType()){
             case ISLAND_INFO:
                 gameManager.updateMap((int[][][])msg.getObject());
@@ -111,44 +130,46 @@ public class UserInterface implements Runnable {
                     ((CliPlayerManager) playerManager).setIdFirstWorker(idWorker1);
                     ((CliGameManager) gameManager).printIdWorkers(idWorker1);
                 }
-                response = new Message(Message.MessageType.ZZZ, null);
+                /*invia subito*/
+                //response = new Message(Message.MessageType.ZZZ, null);
                 break;
             case MOVE_INDEX_REQ:
-                int chosenMovement = playerManager.chooseMovement((int[])msg.getObject());
-                response = new Message(Message.MessageType.MOVE_INDEX_REQ, chosenMovement);
+                messageOut = new Message(Message.MessageType.MOVE_INDEX_REQ);
+                playerManager.chooseMovement((int[])msg.getObject());
                 break;
             case BUILD_INDEX_REQ:
-                int chosenBuilding = playerManager.chooseBuilding((int[])msg.getObject());
-                response = new Message(Message.MessageType.BUILD_INDEX_REQ, chosenBuilding);
+                messageOut = new Message(Message.MessageType.BUILD_INDEX_REQ);
+                playerManager.chooseBuilding((int[])msg.getObject());
                 break;
             case CHOOSE_WORKER:
-                int chosenWorker = playerManager.chooseWorker((int)msg.getObject());
-                response = new Message(Message.MessageType.CHOOSE_WORKER, chosenWorker);
+                messageOut = new Message(Message.MessageType.CHOOSE_WORKER);
+                playerManager.chooseWorker((int)msg.getObject());
                 break;
             case CHOOSE_INDEX_FIRST_WORKER:
-                int chosenIndexFirst = playerManager.placeWorker(true, (int[])msg.getObject());
-                response = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, chosenIndexFirst);
+                messageOut = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER);
+                playerManager.placeWorker(true, (int[])msg.getObject());
                 break;
             case CHOOSE_INDEX_SEC_WORKER:
-                int chosenIndexSecond = playerManager.placeWorker(false, (int[])msg.getObject());
-                response = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, chosenIndexSecond);
+                messageOut = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER);
+                playerManager.placeWorker(false, (int[])msg.getObject());
                 break;
             case WAIT_START:
                 gameManager.waitForPlayer();
                 break;
             case PING_IS_ALIVE:
-                response = new Message(Message.MessageType.PING_IS_ALIVE, null);
+                /*invia subito*/
+                //response = new Message(Message.MessageType.PING_IS_ALIVE, null);
                 break;
             case PLAYER_LOST:
                 gameManager.printWin(false);
                 break;
             case GET_NAME:
-                String playerName = playerManager.getName();
-                response = new Message(Message.MessageType.GET_NAME, playerName);
+                messageOut = new Message(Message.MessageType.GET_NAME);
+                playerManager.getName();
                 break;
             case NUMBER_PLAYERS:
                 break;
         }
-        client.sendThis(response);
     }
+
 }

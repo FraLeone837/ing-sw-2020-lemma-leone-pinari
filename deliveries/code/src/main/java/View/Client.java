@@ -45,9 +45,6 @@ public class Client implements Runnable, ServerObserver
                 e.printStackTrace();
             }
         }
-        //wait 4 second
-        //then joingame message
-        //then sendname after resp (ma vabbè sticazzi la gestisce lui la richiesta del nome)
 
         Message msg = new Message(Message.MessageType.JOIN_GAME, null);
         serverAdapter.requestSending(msg);
