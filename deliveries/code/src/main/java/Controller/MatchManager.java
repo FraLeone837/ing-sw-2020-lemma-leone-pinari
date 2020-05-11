@@ -44,7 +44,9 @@ public class MatchManager implements Runnable{
          * afterwards you need to connect this communicationProxy (canal of communication)
          * to a playerManager
          */
-        this.communicationProxies.add(intermediaryClass.getNewCommunicationProxy());
+        setupGame();
+        setupPlayers();
+        turn();
     }
 
     /**
@@ -71,8 +73,32 @@ public class MatchManager implements Runnable{
 
     }
 
-    public void setup(){
-        //ask all useful info (number of players, ecc)
+    public void setupPlayers(){
+        ArrayList<String> names = new ArrayList<String>();
+        //the first player connects
+        CommunicationProxy firstCP = intermediaryClass.getNewCommunicationProxy();
+        this.communicationProxies.add(firstCP);
+        String playerName = (String)firstCP.sendMessage(Message.MessageType.GET_NAME, "Enter your username: ");
+        names.add(playerName);
+        PlayerManager firstPlayer = new PlayerManager(new Player(playerName, 1), firstCP);
+        playerManagers.add(firstPlayer);
+        //ask how many players does he want to play with
+        int playersNumber = (int)firstCP.sendMessage(Message.MessageType.NUMBER_PLAYERS, "How many players do you want to play with?");
+        for (int x=2; x<=playersNumber; x++){
+            CommunicationProxy newCP = intermediaryClass.getNewCommunicationProxy();
+            this.communicationProxies.add(newCP);
+            playerName = (String)newCP.sendMessage(Message.MessageType.GET_NAME, "Enter your username: ");
+            while (names.contains(playerName)) {
+                playerName = (String)newCP.sendMessage(Message.MessageType.GET_NAME, "This username already exists. Enter another username: ");
+            }
+            names.add(playerName);
+            PlayerManager newPlayer = new PlayerManager(new Player(playerName, x), newCP);
+            playerManagers.add(newPlayer);
+        }
+        //give gods to the players
+    }
+
+    public void setupGame(){
         for(PlayerManager playerManager : playerManagers){
             playerManager.setup(match);
         }
