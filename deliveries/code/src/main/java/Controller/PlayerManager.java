@@ -39,11 +39,11 @@ public class PlayerManager {
     public void turn(Match match){
         if(god.canMove(match, player.getWorker1()) || god.canMove(match, player.getWorker2())) {
             //ask what worker to move
-            Worker worker = (Worker)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, null);
+            Worker worker = (Worker)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, "Choose a worker");
             god.turn(match, communicationProxy, worker);
         }
         else{
-            communicationProxy.sendMessage(Message.MessageType.PLAYER_LOST, null);
+            communicationProxy.sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
             match.removeWorker(player.getWorker1());
             match.removeWorker(player.getWorker2());
         }
