@@ -23,6 +23,7 @@ public class Client implements Runnable, ServerObserver
     @Override
     public void run()
     {
+
         Socket server;
         try {
             server = new Socket(ip, SOCKET_PORT);
@@ -37,7 +38,7 @@ public class Client implements Runnable, ServerObserver
         Thread serverAdapterThread = new Thread(serverAdapter);
         serverAdapterThread.start();
 
-        synchronized (this){
+        synchronized (this) {
             try {
                 wait(4000);
             } catch (InterruptedException e) {
@@ -45,16 +46,14 @@ public class Client implements Runnable, ServerObserver
             }
         }
 
+        Message msg = new Message(Message.MessageType.JOIN_GAME, null);
+        serverAdapter.requestSending(msg);
 
-        messageOut = new Message(Message.MessageType.JOIN_GAME, null);
-
-
-        serverAdapter.requestSending(messageOut);
+        //serverAdapter.requestSending(messageOut);
 
         while (true) {
 
             messageOut = null;
-            System.out.println("Put messageOut as null");
 
             synchronized (this) {
                 try {
@@ -63,10 +62,8 @@ public class Client implements Runnable, ServerObserver
                     e.printStackTrace();
                 }
                 messageIn = null;
-                System.out.println("Put messageIn as null and wait finished");
 
                 serverAdapter.requestSending(messageOut);
-                System.out.println("Sent a messageOut");
                 while (messageIn == null) {
                     try {
                         wait();

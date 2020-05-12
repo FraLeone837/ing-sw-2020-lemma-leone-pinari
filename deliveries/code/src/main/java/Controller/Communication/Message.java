@@ -129,9 +129,12 @@ public class Message {
     private MessageType type;
     private Object object;
 
+    public Message(MessageType type){
+        this.type = type;
+    }
+
     public Message(MessageType type, Object o){
         object = o;
-//        list.add(o);
         this.type = type;
     }
 
@@ -144,8 +147,8 @@ public class Message {
         this.type = mt;
     }
 
-    public Object getFirstObject(){
-        return object;
+    public void setObject(Object object){
+        this.object = object;
     }
 
     public Object getObject() {
