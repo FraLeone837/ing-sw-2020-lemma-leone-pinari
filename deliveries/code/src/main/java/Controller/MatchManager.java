@@ -6,7 +6,9 @@ import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
 import Model.*;
 
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MatchManager implements Runnable{
 
@@ -44,9 +46,11 @@ public class MatchManager implements Runnable{
          * afterwards you need to connect this communicationProxy (canal of communication)
          * to a playerManager
          */
-        setupGame();
         setupPlayers();
-        turn();
+        setupGame();
+        while(true) {
+            turn();
+        }
     }
 
     /**
@@ -73,6 +77,9 @@ public class MatchManager implements Runnable{
 
     }
 
+    /**
+     * connect the players (2 or 3) and give a god to each of them
+     */
     public void setupPlayers(){
         ArrayList<String> names = new ArrayList<String>();
         //the first player connects
@@ -96,17 +103,83 @@ public class MatchManager implements Runnable{
             playerManagers.add(newPlayer);
         }
         //give gods to the players
+        giveGods();
     }
 
+    /**
+     * each player puts his own invisible blocks on the game board if his god foresees it, and sets his workers
+     */
     public void setupGame(){
+        ArrayList<Index> possiblePosition = new ArrayList<Index>();
+        for (int x=0; x<5; x++){
+            for (int y=0; y<5; y++){
+                Index index = new Index(x, y, 0);
+                possiblePosition.add(index);
+            }
+        }
         for(PlayerManager playerManager : playerManagers){
             playerManager.setup(match);
+            CommunicationProxy CP = playerManager.getCommunicationProxy();
+            Index position1 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, possiblePosition);
+            Index correctPosition1 = playerManager.getGod().correctIndex(match, position1);
+            possiblePosition.remove(correctPosition1);
+            Index position2 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_SEC_WORKER, possiblePosition);
+            Index correctPosition2 = playerManager.getGod().correctIndex(match, position2);
+            possiblePosition.remove(correctPosition2);
         }
     }
 
+    /**
+     * each player moves a worker and builds. If he cannot do this with none of his workers he loses
+     */
     public void turn(){
         for(PlayerManager playerManager : playerManagers){
             playerManager.turn(match);
+            if(playerManager.getGod().getInGame()==false){
+                playerManager.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
+                match.removeWorker(playerManager.getPlayer().getWorker1());
+                match.removeWorker(playerManager.getPlayer().getWorker2());
+                match.removePlayer(playerManager.getPlayer());
+                playerManagers.remove(playerManager);
+            }
+        }
+    }
+
+    /**
+     * give randomly a god to each player
+     */
+    public void giveGods(){
+        int numberOfGods = 5;
+        ArrayList<Integer> given = new ArrayList<Integer>();
+        Random godGen = new Random();
+        God god = new Apollo();
+        for(PlayerManager playerManager : playerManagers){
+            int godCode = godGen.nextInt(numberOfGods);
+            while(given.contains(godCode)){
+                godCode = godGen.nextInt(numberOfGods);
+            }
+            given.add(godCode);
+            switch (godCode){
+                case 0:
+                    god = new Apollo();
+                    break;
+                case 1:
+                    god = new Artemis();
+                    break;
+                case 2:
+                    god = new Athena();
+                    break;
+                case 3:
+                    god = new Atlas();
+                    break;
+                case 4:
+                    god = new Demeter();
+                    break;
+            }
+            playerManager.setGod(god);
+            CommunicationProxy CP = playerManager.getCommunicationProxy();
+            CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
+            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
         }
     }
 }
