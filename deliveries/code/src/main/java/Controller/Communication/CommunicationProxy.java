@@ -31,7 +31,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     private boolean acceptInput;
 
     private final Object gameSideLock = new Object();
-    private Message gameSideMessage;
 
     public void setAcceptInput(boolean acceptInput) {
         this.acceptInput = acceptInput;
@@ -75,9 +74,9 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * is always asleep, wakes up only when matchManager asks them to wake up
      * or when a message is received and forwards it to matchManager
      */
-    public void handleConnection() throws IOException {
+    private void handleConnection() throws IOException {
         ic.setCommunicationProxy(this);
-
+        ic.setClientHandlers(clientHandler);
         Thread t = new Thread(timer);
         t.start();
 
@@ -286,7 +285,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * @param messageType
      * @return
      */
-    private boolean isWaitingForResponse(Message.MessageType messageType) {
+        private boolean isWaitingForResponse(Message.MessageType messageType) {
         switch (messageType){
             case ISLAND_INFO:
             case YOUR_GOD:

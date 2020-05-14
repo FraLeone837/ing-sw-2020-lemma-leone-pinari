@@ -68,14 +68,11 @@ public class MatchManager implements Runnable{
             playerManagers.get(0).getPlayer().getName();
             return true;
         } catch (NullPointerException ne){
-
+            ne.printStackTrace();
         }
         return false;
     }
 
-    public void close(){
-
-    }
 
     /**
      * connect the players (2 or 3) and give a god to each of them
