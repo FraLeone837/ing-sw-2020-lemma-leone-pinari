@@ -18,6 +18,8 @@ public class PlayerManager {
 
     public void setGod(God god){
         this.god = god;
+        god.setInGame(true);
+        god.setWinner(false);
     }
 
 

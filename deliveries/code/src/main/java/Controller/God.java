@@ -66,7 +66,10 @@ public abstract class God {
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
         Index actualMoveIndex = correctIndex(m,tempMoveIndex);
         m.moveWorker(w,actualMoveIndex);
-        checkWin(m, w);
+        if(checkWin(m, w)){
+            setWinner(true);
+            return;
+        }
         ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
@@ -130,9 +133,13 @@ public abstract class God {
                             int z=0;
                             while(z <= currentZ +1){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(!match.selectCell(checkedIndex).isBuilding()){
-                                    if(match.selectCell(checkedIndex).getWorker() == null || match.selectCell(checkedIndex).getWorker()==worker) {
-                                        ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                Cell checkedCell = match.selectCell(checkedIndex);
+                                if(checkedCell.isDome()){
+                                    break;
+                                }
+                                if(!checkedCell.isBuilding()){
+                                    if(checkedCell.getWorker() == null || checkedCell.getWorker()==worker) {
+                                        ArrayList<Invisible> invisibles = checkedCell.getForbidden();
                                         forbiddenCell = false;
                                         for (Invisible inv : invisibles) {
                                             if (inv instanceof ForbiddenMove && inv.isIn(worker)) {
@@ -145,8 +152,10 @@ public abstract class God {
                                         forbiddenCell = true;
                                         break;
                                     }
-                                    if (!forbiddenCell)
+                                    if (!forbiddenCell) {
                                         cellsWhereToMove.add(checkedIndex);
+                                        forbiddenCell = true;
+                                    }
                                     break;
                                 }
                                 z++;
@@ -180,9 +189,13 @@ public abstract class God {
                             int z=0;
                             while(z < 4){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(!match.selectCell(checkedIndex).isBuilding()){
-                                    if(match.selectCell(checkedIndex).getWorker()==null || match.selectCell(checkedIndex).getWorker()==worker) {
-                                        ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                Cell checkedCell = match.selectCell(checkedIndex);
+                                if(checkedCell.isDome()){
+                                    break;
+                                }
+                                if(!checkedCell.isBuilding()){
+                                    if(checkedCell.getWorker()==null || checkedCell.getWorker()==worker) {
+                                        ArrayList<Invisible> invisibles = checkedCell.getForbidden();
                                         forbiddenCell = false;
                                         for (Invisible inv : invisibles) {
                                             if (inv instanceof ForbiddenConstruction && inv.isIn(worker)) {
@@ -195,9 +208,11 @@ public abstract class God {
                                         forbiddenCell = true;
                                         break;
                                     }
-                                        if (!forbiddenCell)
+                                        if (!forbiddenCell){
                                             cellsWhereToBuild.add(checkedIndex);
-                                        break;
+                                            forbiddenCell = true;
+                                        }
+                                    break;
                                 }
                                 z++;
                             }

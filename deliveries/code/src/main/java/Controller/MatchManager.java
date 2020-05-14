@@ -16,10 +16,9 @@ public class MatchManager implements Runnable{
     private Match match;
     private IntermediaryClass intermediaryClass;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
-//    private ArrayList<ClientHandler> clientHandlers;
+    private Boolean matchInProgress;
 
-
-    /**             !!TO BE USED!!
+    /**
      * starts with only the first player who is also the creator of the match
      * @param id is id of match used for multiple matches
      * @param intermediaryClass is the class that connects all two/three clientHandlers together
@@ -28,27 +27,14 @@ public class MatchManager implements Runnable{
     public MatchManager(int id, IntermediaryClass intermediaryClass){
         this.intermediaryClass = intermediaryClass;
         this.match = new Match(id);
+        this.matchInProgress = true;
     }
 
     @Override
     public void run() {
-        /**
-         *                  Important
-         */
-        // call another method after having received the number of players,
-        // fuf() that calls intermediaryClass.getNewCommunicationProxy()
-        // puts it in position 1 and of communicationProxies and successively
-        // creates the new player manager and connects them two together
-        // communicationProxy.sendMessage(messageType, object) is to be called
-        // and returns an object according to protocol
-        /**
-         * goes on to wait for the first Player to be connected
-         * afterwards you need to connect this communicationProxy (canal of communication)
-         * to a playerManager
-         */
         setupPlayers();
         setupGame();
-        while(true) {
+        while(matchInProgress) {
             turn();
         }
     }
@@ -127,11 +113,22 @@ public class MatchManager implements Runnable{
     }
 
     /**
-     * each player moves a worker and builds. If he cannot do this with none of his workers he loses
+     * each player moves a worker and builds. If he cannot do this with none of his workers he loses,
+     * if he is the last remained player, he wins
      */
     public void turn(){
         for(PlayerManager playerManager : playerManagers){
+            if(playerManagers.size()==1){
+                giveVictory(playerManager);
+                matchInProgress = false;
+                return;
+            }
             playerManager.turn(match);
+            if(playerManager.getGod().getWinner()==true){
+                giveVictory(playerManager);
+                matchInProgress = false;
+                return;
+            }
             if(playerManager.getGod().getInGame()==false){
                 playerManager.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
                 match.removeWorker(playerManager.getPlayer().getWorker1());
@@ -177,6 +174,15 @@ public class MatchManager implements Runnable{
             CommunicationProxy CP = playerManager.getCommunicationProxy();
             CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+        }
+    }
+
+    public void giveVictory(PlayerManager playerManager){
+        playerManager.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_WON, "YOU WON!");
+        playerManagers.remove(playerManager);
+        for (PlayerManager playerManager1 : playerManagers){
+            playerManager1.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
+            playerManagers.remove(playerManager1);
         }
     }
 }
