@@ -45,9 +45,17 @@ public class Client implements Runnable, ServerObserver
                 e.printStackTrace();
             }
         }
-
+        messageIn = null;
         Message msg = new Message(Message.MessageType.JOIN_GAME, null);
         serverAdapter.requestSending(msg);
+        synchronized (this) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        ui.receivedServerInput(messageIn);
 
         synchronized (this){
             try{

@@ -45,7 +45,7 @@ public class CliPlayerManager implements PlayerManager{
         do{
             number = scanner.nextInt();
         } while(number!=2 && number!=3);
-        ui.receivedUiInput(Integer.toString(number));
+        ui.receivedUiInput(number);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CliPlayerManager implements PlayerManager{
                     invalidInput = false;
             }
         } while(invalidInput);
-        ui.receivedUiInput(Integer.toString(chosenPosition));
+        ui.receivedUiInput(chosenPosition);
     }
 
     @Override
@@ -84,21 +84,21 @@ public class CliPlayerManager implements PlayerManager{
                 } while(chosenWorker!=idFirstWorker && chosenWorker!=(idFirstWorker+1));
                 break;
         }
-        ui.receivedUiInput(Integer.toString(chosenWorker));
+        ui.receivedUiInput(chosenWorker);
     }
 
     @Override
     public void chooseMovement(int[] movements) {
         System.out.println(LABEL_CHOOSE_WHERE_TO_MOVE);
         System.out.println("Possible movements are: " + movements);
-        ui.receivedUiInput(Integer.toString(validCoordinatesInput(movements)));
+        ui.receivedUiInput(validCoordinatesInput(movements));
     }
 
     @Override
     public void chooseBuilding(int[] buildings) {
         System.out.println(LABEL_CHOOSE_WHERE_TO_BUILD);
         System.out.println("Possible buildings are: " + buildings);
-        ui.receivedUiInput(Integer.toString(validCoordinatesInput(buildings)));
+        ui.receivedUiInput(validCoordinatesInput(buildings));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class CliPlayerManager implements PlayerManager{
         do{
             answer = scanner.nextLine();
         }while(answer!="dome" && answer!="building");
-        ui.receivedUiInput(Boolean.toString(answer.equals("dome")));
+        ui.receivedUiInput(answer.equals("dome"));
     }
 
     /**

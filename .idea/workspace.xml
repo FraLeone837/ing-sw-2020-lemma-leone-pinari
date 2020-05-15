@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f9499d06-4555-4b26-a23e-da8653dd9100" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/CliPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/CliPlayerManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiPlayerManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/PlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/PlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,6 +31,12 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -44,8 +49,16 @@
       <option name="presentableId" value="Default" />
       <updated>1589227011498</updated>
       <workItem from="1589227012770" duration="48000" />
-      <workItem from="1589539542932" duration="493000" />
+      <workItem from="1589539542932" duration="3138000" />
     </task>
+    <task id="LOCAL-00001" summary="Build dome added client side">
+      <created>1589540064104</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1589540064104</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -63,10 +76,22 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Build dome added client side" />
+    <option name="LAST_COMMIT_MESSAGE" value="Build dome added client side" />
+  </component>
   <component name="WindowStateProjectService">
     <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser" timestamp="1589539986380">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1280.800@0.0.1280.800" timestamp="1589539986380" />
+    <state x="126" y="0" key="CommitChangelistDialog2" timestamp="1589540063757">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="126" y="0" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1589540063757" />
+    <state x="240" y="140" key="Vcs.Push.Dialog.v2" timestamp="1589540075908">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="240" y="140" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1589540075908" />
   </component>
 </project>

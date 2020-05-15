@@ -95,7 +95,7 @@ public class UserInterface implements Runnable {
      * Method called by the PlayerManager when a new input is received
      * It notifies the thread of UserInterface to wake it up from the previous wait
      */
-    public void receivedUiInput(String input){
+    public void receivedUiInput(Object input){
         if(messageOut.getType().equals(Message.MessageType.JOIN_GAME)){
             client = new Client(this, ip);
             Thread t = new Thread(client);
@@ -104,7 +104,7 @@ public class UserInterface implements Runnable {
         else{
             inputUi = true;
             messageOut.setObject(input);
-            this.ip=input;
+            this.ip=(String)input;
             synchronized (this){
                 notify();
             }
