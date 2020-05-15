@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ff5629d8-7c6c-4ea1-9ac9-b619c9aedc2e" name="Default Changelist" comment="" />
+    <list id="e046e3dc-6b7e-463e-a3c9-23f403e53622" name="Git" comment="">
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/CliPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/CliPlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiPlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/PlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/PlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task id="LOCAL-00001" summary="Git">
+      <created>1589539288374</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1589539288374</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="master" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Git" />
+    <option name="LAST_COMMIT_MESSAGE" value="Git" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="126" y="0" key="CommitChangelistDialog2" timestamp="1589539287942">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="126" y="0" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1589539287942" />
+    <state x="491" y="321" key="VCS.ChangelistChooser" timestamp="1589539440350">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="491" y="321" key="VCS.ChangelistChooser/0.0.1280.800@0.0.1280.800" timestamp="1589539440350" />
+    <state x="428" y="321" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1589539452872">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="428" y="321" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.800@0.0.1280.800" timestamp="1589539452872" />
+    <state x="246" y="195" key="git4idea.merge.GitPullDialog" timestamp="1589539349627">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="246" y="195" key="git4idea.merge.GitPullDialog/0.0.1280.800@0.0.1280.800" timestamp="1589539349627" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ing_sw_2020_lemma_leone_pinari$UserInterface.ic" NAME="UserInterface Coverage Results" MODIFIED="1588071714158" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>View.*</FILTER>
+    </SUITE>
+  </component>
+</project>
