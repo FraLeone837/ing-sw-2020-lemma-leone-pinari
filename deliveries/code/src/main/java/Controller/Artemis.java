@@ -17,6 +17,16 @@ public class Artemis extends God {
         this.moveAgain = moveAgain;
     }
 
+    /**
+     * this variable is for storing the position where the worker moves the first time,
+     * so if the player wants to move again, he cannot do it in the same position
+     */
+    private Index prevMoveIndex;
+
+    public void setPrevMoveIndex(Index prevMoveIndex) {
+        this.prevMoveIndex = prevMoveIndex;
+    }
+
 
     @Override
     public String getName() {
@@ -39,6 +49,7 @@ public class Artemis extends God {
             return;
         }
         setPrevIndex(w.getPosition());
+        setPrevMoveIndex(w.getPosition());
         //take index1 where to move the first time
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
         Index actualMoveIndex = correctIndex(m,tempMoveIndex);
@@ -47,6 +58,12 @@ public class Artemis extends God {
             setWinner(true);
             return;
         }
+        Cell cell = m.selectCell(prevMoveIndex);
+        ArrayList<Invisible> invisibles = cell.getForbidden();
+        for (Invisible inv : invisibles) {
+            if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
+                inv.addWorker(w);
+        }
         possibleMove = whereToMove(m, w, w.getPosition());
         if(!possibleMove.isEmpty()) {
             //ask to move another time
@@ -54,12 +71,6 @@ public class Artemis extends God {
             setMoveAgain(moveAgainAsked);
         }
         if(moveAgain) {
-            Cell cell = m.selectCell(prevIndex);
-            ArrayList<Invisible> invisibles = cell.getForbidden();
-            for (Invisible inv : invisibles) {
-                if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
-                    inv.addWorker(w);
-            }
             setPrevIndex(w.getPosition());
             //take index2 where to move a second time
             Index tempMoveIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
@@ -69,8 +80,8 @@ public class Artemis extends God {
                 setWinner(true);
                 return;
             }
-            resetPower(m, w);
         }
+        resetPower(m, w);
         ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
@@ -121,7 +132,7 @@ public class Artemis extends God {
     @Override
     public void resetPower(Match m, Worker w) {
         setMoveAgain(false);
-        Cell cell = m.selectCell(prevIndex);
+        Cell cell = m.selectCell(prevMoveIndex);
         ArrayList<Invisible> invisibles = cell.getForbidden();
         for(Invisible inv : invisibles){
             if(inv instanceof ForbiddenMove && w.getOwner()==inv.getCreator())
