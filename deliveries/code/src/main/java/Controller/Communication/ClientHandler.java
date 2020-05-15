@@ -11,6 +11,19 @@ import java.util.ArrayList;
 
 public class ClientHandler implements Runnable
 {
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
+
+
     private Socket client;
     private Message currentMessage;
     private Message toSendMsg;
@@ -36,6 +49,7 @@ public class ClientHandler implements Runnable
     public void setToSendMsg(Message message){
         this.toSendMsg = message;
         synchronized (sendLock){
+            System.out.println("Notifying all in clientHandler for sendlock");
             sendLock.notifyAll();
         }
     }
@@ -77,38 +91,43 @@ public class ClientHandler implements Runnable
          * Read first object afterwards reply.
          * After that go into a while loop in which the client responds only to my requests
          */
-        try{
-            Object in = input.readObject();
-            String inText = (String)in;
-            Gson gson = new Gson();
-            this.currentMessage = gson.fromJson(inText,Message.class);
+        while(true){
+            try{
+                System.out.println(ANSI_RED + "About to read" + ANSI_RESET);
 
-            System.out.println(currentMessage);
-            notifyObservers();
+                Object in = input.readObject();
+                String inText = (String)in;
+                Gson gson = new Gson();
+                this.currentMessage = gson.fromJson(inText,Message.class);
 
-            synchronized (sendLock){
-                while(toSendMsg == null){
-                    toSendMsg = null;
+                System.out.println("Messaggio ricevuto clienthandler" + currentMessage);
+                notifyObservers();
 
-                    try{
-                        sendLock.wait();
+                synchronized (sendLock){
+                    while(toSendMsg == null){
+                        toSendMsg = null;
 
-                    } catch (InterruptedException e){
-                        e.printStackTrace();
+                        try{
+                            System.out.println("WAITING ON A SEND MESSAGE - clientHandler");
+                            sendLock.wait();
+                        } catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
                         System.out.println("\nTheoretically we have a new toSendMsg which is: " + toSendMsg);
+                        if(toSendMsg == null) continue;
+
+                        output.writeObject(gson.toJson(toSendMsg));
+
+                        if(toSendMsg.getType() == Message.MessageType.END_GAME)
+                            client.close();
                     }
-                    if(toSendMsg == null) continue;
-
-                    output.writeObject(gson.toJson(toSendMsg));
-
-                    if(toSendMsg.getType() == Message.MessageType.END_GAME)
-                        client.close();
                 }
+            } catch (ClassNotFoundException e ){
+                //resendMessage()
             }
-        } catch (ClassNotFoundException e ){
-            //resendMessage()
+            toSendMsg = null;
         }
-        client.close();
+
     }
 
     private void notifyObservers() {

@@ -40,7 +40,7 @@ public class Client implements Runnable, ServerObserver
 
         synchronized (this) {
             try {
-                wait(4000);
+                wait(2500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -48,6 +48,15 @@ public class Client implements Runnable, ServerObserver
 
         Message msg = new Message(Message.MessageType.JOIN_GAME, null);
         serverAdapter.requestSending(msg);
+
+        synchronized (this){
+            try{
+                wait();
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+        ui.receivedServerInput(messageIn);
 
         //serverAdapter.requestSending(messageOut);
 

@@ -172,6 +172,8 @@ public class UserInterface implements Runnable {
                 playerManager.getName();
                 break;
             case NUMBER_PLAYERS:
+                messageOut = new Message(Message.MessageType.NUMBER_PLAYERS);
+                playerManager.chooseNumberPlayers();
                 break;
         }
     }

@@ -115,18 +115,14 @@ public class ServerAdapter implements Runnable
         Gson gson = new Gson();
 
         String converted = gson.toJson(messageToSend);
-        try{
-            //System.out.println("Read the next message please");
-            wait(1000);
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
-        //System.out.println("Message to send is: " + messageToSend );
+        System.out.println("Message to send is: " + messageToSend );
 
         /* send the string to the server and get the new string back */
         outputStm.writeObject(converted);
-        String newStr = (String)inputStm.readObject();
+        System.out.println("");
 
+
+        String newStr = (String)inputStm.readObject();
         /* copy the list of observers in case some observers changes it from inside
          * the notification method */
         List<ServerObserver> observersCpy;
@@ -135,7 +131,7 @@ public class ServerAdapter implements Runnable
         }
 
         Message msg = gson.fromJson(newStr, Message.class);
-
+        System.out.println("Received message is " + msg);
         /* notify the observers that we got the string */
         for (ServerObserver observer: observersCpy) {
             observer.didReceiveMessage(msg);

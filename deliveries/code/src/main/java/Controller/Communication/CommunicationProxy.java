@@ -15,7 +15,7 @@ import java.util.List;
 public class CommunicationProxy implements Runnable, MessageObservers{
     //counts the time since last message
     private Timer timer;
-    private static int timeConstant = 35;
+    private static int timeConstant = 99999;
 
     private ClientHandler clientHandler;
     //serves for methods referring to matchManager
@@ -23,14 +23,15 @@ public class CommunicationProxy implements Runnable, MessageObservers{
 
     //Message updated from matchManager
     private Message toSend;
+    private final Object gameSideLock = new Object();
+    private boolean isWaitingToSend;
 
     //Message to be requested from matchManager
-    private Message received;
+    private Message received = new Message(Message.MessageType.ZZZ,"have not received anything");
     private final Object receivedLock = new Object();
 
     private boolean acceptInput;
 
-    private final Object gameSideLock = new Object();
 
     public void setAcceptInput(boolean acceptInput) {
         this.acceptInput = acceptInput;
@@ -59,7 +60,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     @Override
     public void run() {
         try{
-            this.timer = new Timer(35,ic);
+            this.timer = new Timer(timeConstant,ic);
             handleConnection();
 
         } catch (IOException e){
@@ -81,7 +82,9 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         t.start();
 
         while(true){
-            received = null;
+            received.setType(Message.MessageType.ZZZ);
+            isWaitingToSend = false;
+            //received = null;
             synchronized (receivedLock){
                 try{
                     receivedLock.wait();
@@ -92,12 +95,12 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             }
 
 
-            if(received == null) continue;
+//            if(received == null) continue;
             /**
              * messages to be sent automatically without any need of input from client/controller
              */
             Message.MessageType typeCopy = received.getType();
-            System.out.println(received);
+            System.out.println("What Comm proxy received: " + received);
             //if we do not accept input we put type zzz and consider it as useless input
             if(!acceptInput)
                 received.setType(Message.MessageType.ZZZ);
@@ -117,10 +120,10 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 default:
             }
 
-            timer.setCurrentSecond(timeConstant);
-
             waitForGameMessage(typeCopy);
 
+            timer.setCurrentSecond(timeConstant);
+            System.out.println("About to send message to client handler from com proxy");
             clientHandler.setToSendMsg(toSend);
 
         }
@@ -128,29 +131,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
 
     }
 
-    /**
-     * controls if we need to wait for game messaged before sending
-     * a certain type of msg
-     * It is the list of messages that do not need input from
-     * GameManager to be sent
-     */
-    private void waitForGameMessage(Message.MessageType MsT) {
-        if(MsT == Message.MessageType.PING_IS_ALIVE ||
-            MsT == Message.MessageType.FINISHED_TURN||
-            MsT == Message.MessageType.INFORMATION)
-            return;
-
-        synchronized (gameSideLock){
-            try{
-                System.out.println("GameSideLock");
-                gameSideLock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-    }
 
 
 
@@ -165,11 +145,26 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         /**
          * prepare to send a message
          */
+        /**
+         * if it is the first message the match manager is sending
+         * he will have to wait until client sends Join_Game
+         */
+        if(messageType == Message.MessageType.GET_NAME){
+            sentJoinGame();
+        }
         synchronized (gameSideLock){
+            while(this.isWaitingToSend == false){
+                try{
+                    gameSideLock.wait();
+                } catch (InterruptedException e ){
+                    e.printStackTrace();
+                }
+            }
             //converts gameSideMessage a.k.a toSend into a certain message type
             convertToMessage(messageType,toSend);
             //releases lock and notifies that object has changed
             gameSideLock.notifyAll();
+            System.out.println("GameSideLock notified --:-- What Comm proxy sent: "+ messageType + "  " + this);
         }
         Message copy;
 
@@ -182,6 +177,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         synchronized (this.receivedLock){
             while(received.getType() != messageType){
                 try{
+                    System.out.println("Waiting for message to return - received lock wait");
                     receivedLock.wait();
                 } catch (InterruptedException e){
                     e.printStackTrace();
@@ -198,7 +194,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     }
 
     /**
-     * if we get input that changes the board returns true
+     * if we get input that changes the board, returns true
      * @param messageType
      * @return
      */
@@ -229,13 +225,11 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 } else {
                     return "Worker 2";
                 }
-            case NUMBER_PLAYERS:
-                return copy.getObject();
             case CHOOSE_INDEX_FIRST_WORKER:
                 return (Object)convertFromIntToIndex((int)copy.getObject());
             case MOVEMENT:
             default:
-                return copy;
+                return copy.getObject();
 
         }
     }
@@ -255,26 +249,27 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 this.toSend = new Message(messageType,convertFromIndexToInts((Index[])toSend));
                 break;
 
-
             case GAME_START:
                 this.toSend = new Message(messageType, convertFromPlayerIDtoInt((int) toSend));
-                break;
-
-
-            case MOVE_AGAIN:
-            case BUILD_AGAIN:
-            case GET_NAME:
-            case PLAYER_LOST:
-            case PLAYER_WON:
-            case MOVEMENT:
-            case YOUR_GOD:
-                this.toSend = new Message(messageType,toSend);
                 break;
 
             case END_GAME:
                 this.toSend = new Message(messageType, toSend);
                 this.received = new Message(messageType, "CloseTheGame - connection error");
                 break;
+
+//            case MOVE_AGAIN:
+//            case BUILD_AGAIN:
+//            case GET_NAME:
+//            case BUILD_DOME:
+//            case PLAYER_LOST:
+//            case PLAYER_WON:
+//            case MOVEMENT:
+//            case YOUR_GOD:
+//                this.toSend = new Message(messageType,toSend);
+//                break;
+            default:
+                this.toSend = new Message(messageType,toSend);
         }
 
     }
@@ -349,21 +344,48 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         return x;
     }
 
+    private boolean sentJoinGame(){
+        synchronized (receivedLock){
+            while(received.getType() != Message.MessageType.JOIN_GAME){
+                try{
+                    receivedLock.wait();
+                } catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
+
+
+
     /**
-     * returns 1 if you can move only the first worker, 2 the second, 3 both
-     * @param worker1 can be null
-     * @param worker2 can be null
-     * @return not null {0,1,2,3}
+     * controls if we need to wait for game message before sending
+     * a certain type of msg
+     * It is the list of messages that do not need input from
+     * GameManager to be sent
      */
-    public int WorkersToInt(Worker worker1, Worker worker2){
-        int flag = 0;
-        if(worker2 != null){
-            flag = 2;
+    private void waitForGameMessage(Message.MessageType MsT) {
+
+        if(MsT == Message.MessageType.PING_IS_ALIVE ||
+                MsT == Message.MessageType.FINISHED_TURN||
+                MsT == Message.MessageType.INFORMATION)
+            return;
+        isWaitingToSend = true;
+
+        synchronized (gameSideLock){
+            gameSideLock.notifyAll();
+            try{
+                System.out.println("GameSideLock in waitForGameMessage");
+                gameSideLock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Notified");
+
         }
-        if(worker1 != null){
-            flag++;
-        }
-        return flag;
+
     }
 
 }
