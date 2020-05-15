@@ -12,6 +12,7 @@ public class IntermediaryClass {
     private final Object lock = new Object();
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
     private boolean notified;
+    private int counter = 0;
     // Mm means MatchManager
     private Thread threadOfMm;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
@@ -97,6 +98,8 @@ public class IntermediaryClass {
             if(communicationProxies.size() == 0)
             notified = false;
         }
-        return communicationProxies.get(communicationProxies.size()-1);
+        notified = false;
+        this.counter = this.counter+1;
+        return communicationProxies.get(counter-1);
     }
 }

@@ -73,6 +73,7 @@ public class ClientHandler implements Runnable
             handleClientConnection();
         } catch (IOException e) {
             System.out.println("client " + client.getInetAddress() + " connection dropped");
+            terminateGame();
         }
     }
 
@@ -108,12 +109,12 @@ public class ClientHandler implements Runnable
                         toSendMsg = null;
 
                         try{
-//                            System.out.println("WAITING ON A SEND MESSAGE - clientHandler");
+                           System.out.println("WAITING ON A SEND MESSAGE - clientHandler");
                             sendLock.wait();
                         } catch (InterruptedException e){
                             e.printStackTrace();
                         }
-//                        System.out.println("\nTheoretically we have a new toSendMsg which is: " + toSendMsg);
+                        System.out.println(ANSI_BLUE+ "We have a new toSendMsg which is: " + toSendMsg + ANSI_RESET);
                         if(toSendMsg == null) continue;
 
                         output.writeObject(gson.toJson(toSendMsg));

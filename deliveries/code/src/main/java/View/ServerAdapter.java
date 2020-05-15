@@ -113,9 +113,10 @@ public class ServerAdapter implements Runnable
         //We have problem if you send message with GsonBuilder ecc ecc
         //Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
         Gson gson = new Gson();
-
-        String converted = gson.toJson(messageToSend);
+        Message copy = new Message(messageToSend.getType(),messageToSend.getObject());
+        String converted = gson.toJson(copy);
         System.out.println("Message to send is: " + messageToSend );
+        reset(messageToSend);
 
         /* send the string to the server and get the new string back */
         outputStm.writeObject(converted);
@@ -136,6 +137,10 @@ public class ServerAdapter implements Runnable
         for (ServerObserver observer: observersCpy) {
             observer.didReceiveMessage(msg);
         }
+    }
+
+    private void reset(Message messageToSend) {
+        this.messageToSend = null;
     }
 
 }

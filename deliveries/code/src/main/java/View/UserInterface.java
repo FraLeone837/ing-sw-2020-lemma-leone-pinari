@@ -158,6 +158,8 @@ public class UserInterface implements Runnable {
                 playerManager.placeWorker(false, (int[])msg.getObject());
                 break;
             case WAIT_START:
+                messageOut = new Message(Message.MessageType.ZZZ, "Ok waiting!");
+                receivedUiInput(messageOut);
                 gameManager.waitForPlayer();
                 break;
             case PING_IS_ALIVE:

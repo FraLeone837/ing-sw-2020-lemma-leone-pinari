@@ -40,7 +40,7 @@ public class Client implements Runnable, ServerObserver
 
         synchronized (this) {
             try {
-                wait(2500);
+                wait(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

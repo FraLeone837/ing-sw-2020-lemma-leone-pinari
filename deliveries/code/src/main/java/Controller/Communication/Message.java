@@ -125,7 +125,13 @@ public class Message {
 
         MOVE_AGAIN,
         BUILD_AGAIN,
-        BUILD_DOME
+        BUILD_DOME,
+        /**
+         * substitutes null value
+         * means that we have no msg received
+         */
+        YYY
+
     }
     private MessageType type;
     private Object object;
