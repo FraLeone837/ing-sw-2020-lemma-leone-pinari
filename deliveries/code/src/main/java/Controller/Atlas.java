@@ -22,7 +22,7 @@ public class Atlas extends God {
 
     @Override
     public String getDescription() {
-        return "Titan Shouldering the Heavens\n" +
+        return  "Titan Shouldering the Heavens\n" +
                 "Your Build: Your Worker\n" +
                 "may build a dome at any level\n" +
                 "including the ground.";
