@@ -25,14 +25,27 @@ public class Athena extends God {
     @Override
     public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
         resetPower(m, w);
+        ArrayList<Index> possibleMove = whereToMove(m, w, w.getPosition());
+        if(possibleMove.isEmpty()){
+            setInGame(false);
+            return;
+        }
         setPrevIndex(w.getPosition());
         //take index1 where to move from view
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
         Index actualMoveIndex = correctIndex(m,tempMoveIndex);
         m.moveWorker(w, actualMoveIndex);
-        checkWin(m, w);
+        if(checkWin(m, w)){
+            setWinner(true);
+            return;
+        }
+        ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
+        if(possibleBuild.isEmpty()){
+            setInGame(false);
+            return;
+        }
         //take index2 where to build from view
-        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
         Index actualBuildIndex = correctIndex(m,tempBuildIndex);
         m.build(w, actualBuildIndex);
         usePower(m, w);

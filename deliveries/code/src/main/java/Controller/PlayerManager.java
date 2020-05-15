@@ -18,6 +18,8 @@ public class PlayerManager {
 
     public void setGod(God god){
         this.god = god;
+        god.setInGame(true);
+        god.setWinner(false);
     }
 
 
@@ -29,6 +31,7 @@ public class PlayerManager {
      */
     public void setup(Match match){
         god.setup(match, player);
+        god.setInGame(true);
     }
 
     /**
@@ -39,13 +42,11 @@ public class PlayerManager {
     public void turn(Match match){
         if(god.canMove(match, player.getWorker1()) || god.canMove(match, player.getWorker2())) {
             //ask what worker to move
-            Worker worker = (Worker)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, "Choose a worker");
+            Worker worker = (Worker)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, 3);
             god.turn(match, communicationProxy, worker);
         }
         else{
-            communicationProxy.sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
-            match.removeWorker(player.getWorker1());
-            match.removeWorker(player.getWorker2());
+            god.setInGame(false);
         }
     }
 
@@ -55,6 +56,10 @@ public class PlayerManager {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public CommunicationProxy getCommunicationProxy(){
+        return communicationProxy;
     }
 
 

@@ -18,6 +18,26 @@ public abstract class God {
      */
     public abstract String getDescription();
 
+    Boolean inGame;
+
+    public void setInGame(Boolean bool){
+        this.inGame = bool;
+    }
+
+    public Boolean getInGame(){
+        return inGame;
+    }
+
+    Boolean winner;
+
+    public void setWinner(Boolean winner) {
+        this.winner = winner;
+    }
+
+    public Boolean getWinner() {
+        return winner;
+    }
+
     /**
      * this variable is for store the previous position of the worker that moves,
      * so we can check if the player wins after the movement and, if the god allows the player to move twice,
@@ -36,14 +56,27 @@ public abstract class God {
      * @param w the worker selected by the player
      */
     public void turn(Match m, CommunicationProxy communicationProxy, Worker w){
+        ArrayList<Index> possibleMove = whereToMove(m, w, w.getPosition());
+        if(possibleMove.isEmpty()){
+            setInGame(false);
+            return;
+        }
         setPrevIndex(w.getPosition());
         //take index1 where to move from view
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
         Index actualMoveIndex = correctIndex(m,tempMoveIndex);
         m.moveWorker(w,actualMoveIndex);
-        checkWin(m, w);
+        if(checkWin(m, w)){
+            setWinner(true);
+            return;
+        }
+        ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
+        if(possibleBuild.isEmpty()){
+            setInGame(false);
+            return;
+        }
         //take index2 where to build from view
-        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
         Index actualBuildIndex = correctIndex(m,tempBuildIndex);
         m.build(w, actualBuildIndex);
     }
@@ -100,9 +133,13 @@ public abstract class God {
                             int z=0;
                             while(z <= currentZ +1){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(!match.selectCell(checkedIndex).isBuilding()){
-                                    if(match.selectCell(checkedIndex).getWorker() == null || match.selectCell(checkedIndex).getWorker()==worker) {
-                                        ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                Cell checkedCell = match.selectCell(checkedIndex);
+                                if(checkedCell.isDome()){
+                                    break;
+                                }
+                                if(!checkedCell.isBuilding()){
+                                    if(checkedCell.getWorker() == null || checkedCell.getWorker()==worker) {
+                                        ArrayList<Invisible> invisibles = checkedCell.getForbidden();
                                         forbiddenCell = false;
                                         for (Invisible inv : invisibles) {
                                             if (inv instanceof ForbiddenMove && inv.isIn(worker)) {
@@ -115,8 +152,10 @@ public abstract class God {
                                         forbiddenCell = true;
                                         break;
                                     }
-                                    if (!forbiddenCell)
+                                    if (!forbiddenCell) {
                                         cellsWhereToMove.add(checkedIndex);
+                                        forbiddenCell = true;
+                                    }
                                     break;
                                 }
                                 z++;
@@ -150,9 +189,13 @@ public abstract class God {
                             int z=0;
                             while(z < 4){
                                 Index checkedIndex = new Index(x,y,z);
-                                if(!match.selectCell(checkedIndex).isBuilding()){
-                                    if(match.selectCell(checkedIndex).getWorker()==null || match.selectCell(checkedIndex).getWorker()==worker) {
-                                        ArrayList<Invisible> invisibles = match.selectCell(checkedIndex).getForbidden();
+                                Cell checkedCell = match.selectCell(checkedIndex);
+                                if(checkedCell.isDome()){
+                                    break;
+                                }
+                                if(!checkedCell.isBuilding()){
+                                    if(checkedCell.getWorker()==null || checkedCell.getWorker()==worker) {
+                                        ArrayList<Invisible> invisibles = checkedCell.getForbidden();
                                         forbiddenCell = false;
                                         for (Invisible inv : invisibles) {
                                             if (inv instanceof ForbiddenConstruction && inv.isIn(worker)) {
@@ -165,9 +208,11 @@ public abstract class God {
                                         forbiddenCell = true;
                                         break;
                                     }
-                                        if (!forbiddenCell)
+                                        if (!forbiddenCell){
                                             cellsWhereToBuild.add(checkedIndex);
-                                        break;
+                                            forbiddenCell = true;
+                                        }
+                                    break;
                                 }
                                 z++;
                             }

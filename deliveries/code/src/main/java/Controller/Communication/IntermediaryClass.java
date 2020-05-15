@@ -23,6 +23,11 @@ public class IntermediaryClass {
         this.threadOfMm.start();
     }
 
+    public void setClientHandlers(ClientHandler clientHandler) {
+            this.clientHandlerArrayList.add(clientHandler);
+
+    }
+
     /**
      * method that finishes game and clears all threads after a 10 second period
      */
@@ -35,9 +40,8 @@ public class IntermediaryClass {
         for(ClientHandler cl : clientHandlerArrayList){
             cl.terminateGame();
         }
-        clientHandlerArrayList = new ArrayList<>();
         communicationProxies = new ArrayList<>();
-
+        clientHandlerArrayList = new ArrayList<>();
     }
 
 

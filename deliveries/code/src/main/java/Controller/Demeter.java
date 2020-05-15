@@ -42,20 +42,36 @@ public class Demeter extends God {
 
     @Override
     public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
+        ArrayList<Index> possibleMove = whereToMove(m, w, w.getPosition());
+        if(possibleMove.isEmpty()){
+            setInGame(false);
+            return;
+        }
         setPrevIndex(w.getPosition());
         //take index1 where to move the first time from the view
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
         Index actualMoveIndex = correctIndex(m,tempMoveIndex);
         m.moveWorker(w, actualMoveIndex);
-        checkWin(m, w);
+        if(checkWin(m, w)){
+            setWinner(true);
+            return;
+        }
+        ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
+        if(possibleBuild.isEmpty()){
+            setInGame(false);
+            return;
+        }
         //take index2 where to build
-        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
         Index actualBuildIndex = correctIndex(m,tempBuildIndex);
         setPrevBuildIndex(actualBuildIndex);
         m.build(w, actualBuildIndex);
-        //ask to build another time
-        Boolean buildAgainAsked = (Boolean)communicationProxy.sendMessage(Message.MessageType.BUILD_AGAIN, null);
-        setBuildAgain(buildAgainAsked);
+        possibleBuild = whereToBuild(m, w, w.getPosition());
+        if(!possibleBuild.isEmpty()) {
+            //ask to build another time
+            Boolean buildAgainAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.BUILD_AGAIN, "Want to build again?");
+            setBuildAgain(buildAgainAsked);
+        }
         if(buildAgain) {
             Cell cell = m.selectCell(prevBuildIndex);
             ArrayList<Invisible> invisibles = cell.getForbidden();
@@ -64,7 +80,7 @@ public class Demeter extends God {
                     inv.addWorker(w);
             }
             //take index3 where to build a second time
-            Index tempBuildIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));
+            Index tempBuildIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
             Index actualBuildIndex2 = correctIndex(m,tempBuildIndex2);
             m.build(w, actualBuildIndex2);
             resetPower(m, w);
@@ -117,5 +133,6 @@ public class Demeter extends God {
             if(inv instanceof ForbiddenConstruction && w.getOwner()==inv.getCreator())
                 inv.removeWorkers();
         }
+        setBuildAgain(false);
     }
 }

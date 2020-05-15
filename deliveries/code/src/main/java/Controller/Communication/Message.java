@@ -124,7 +124,8 @@ public class Message {
         END_GAME,
 
         MOVE_AGAIN,
-        BUILD_AGAIN
+        BUILD_AGAIN,
+        BUILD_DOME
     }
     private MessageType type;
     private Object object;
