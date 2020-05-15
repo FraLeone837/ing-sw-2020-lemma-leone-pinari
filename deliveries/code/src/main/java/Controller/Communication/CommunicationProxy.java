@@ -15,7 +15,7 @@ import java.util.List;
 public class CommunicationProxy implements Runnable, MessageObservers{
     //counts the time since last message
     private Timer timer;
-    private static int timeConstant = 99999;
+    private static int timeConstant = 35;
 
     private ClientHandler clientHandler;
     //serves for methods referring to matchManager
@@ -90,7 +90,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                     receivedLock.wait();
                 } catch(InterruptedException e){
                     e.printStackTrace();
-                    System.out.println("\nTheoretically we have a received message and based on that we see what to do.");
+//                    System.out.println("\nTheoretically we have a received message and based on that we see what to do.");
                 }
             }
 
@@ -123,7 +123,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             waitForGameMessage(typeCopy);
 
             timer.setCurrentSecond(timeConstant);
-            System.out.println("About to send message to client handler from com proxy");
+//            System.out.println("About to send message to client handler from com proxy");
             clientHandler.setToSendMsg(toSend);
 
         }
@@ -164,7 +164,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             convertToMessage(messageType,toSend);
             //releases lock and notifies that object has changed
             gameSideLock.notifyAll();
-            System.out.println("GameSideLock notified --:-- What Comm proxy sent: "+ messageType + "  " + this);
+//            System.out.println("GameSideLock notified --:-- What Comm proxy sent: "+ messageType + "  " + this);
         }
         Message copy;
 
@@ -177,7 +177,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         synchronized (this.receivedLock){
             while(received.getType() != messageType){
                 try{
-                    System.out.println("Waiting for message to return - received lock wait");
+//                    System.out.println("Waiting for message to return - received lock wait");
                     receivedLock.wait();
                 } catch (InterruptedException e){
                     e.printStackTrace();
@@ -219,19 +219,21 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      */
     private Object convertToSpecificObject(Message copy) {
         switch (copy.getType()){
-            case CHOOSE_WORKER:
-                if((int)copy.getObject() == 1){
-                    return "Worker 1";
-                } else {
-                    return "Worker 2";
-                }
             case CHOOSE_INDEX_FIRST_WORKER:
-                return (Object)convertFromIntToIndex((int)copy.getObject());
+            case CHOOSE_INDEX_SEC_WORKER:
             case MOVEMENT:
+            case MOVE_INDEX_REQ:
+            case BUILD_INDEX_REQ:
+                int toReturnx = ((Double)copy.getObject()).intValue();
+                return (Object)convertFromIntToIndex(toReturnx);
+            case NUMBER_PLAYERS:
+                int toReturn = ((Double)copy.getObject()).intValue();
+                return (Object)toReturn;
             default:
                 return copy.getObject();
 
         }
+        //(Integer.parseInt((String)copy.getObject())) converts the object from string sent by json into integer
     }
 
     /**

@@ -100,7 +100,7 @@ public class ClientHandler implements Runnable
                 Gson gson = new Gson();
                 this.currentMessage = gson.fromJson(inText,Message.class);
 
-                System.out.println("Messaggio ricevuto clienthandler" + currentMessage);
+                System.out.println("Message received cl.handler: " + currentMessage +" " + this);
                 notifyObservers();
 
                 synchronized (sendLock){
@@ -108,12 +108,12 @@ public class ClientHandler implements Runnable
                         toSendMsg = null;
 
                         try{
-                            System.out.println("WAITING ON A SEND MESSAGE - clientHandler");
+//                            System.out.println("WAITING ON A SEND MESSAGE - clientHandler");
                             sendLock.wait();
                         } catch (InterruptedException e){
                             e.printStackTrace();
                         }
-                        System.out.println("\nTheoretically we have a new toSendMsg which is: " + toSendMsg);
+//                        System.out.println("\nTheoretically we have a new toSendMsg which is: " + toSendMsg);
                         if(toSendMsg == null) continue;
 
                         output.writeObject(gson.toJson(toSendMsg));

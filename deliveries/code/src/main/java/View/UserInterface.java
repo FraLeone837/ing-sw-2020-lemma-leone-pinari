@@ -104,7 +104,7 @@ public class UserInterface implements Runnable {
         else{
             inputUi = true;
             messageOut.setObject(input);
-            this.ip=(String)input;
+//            this.ip=(String)input;
             synchronized (this){
                 notify();
             }
