@@ -66,6 +66,12 @@ public class Demeter extends God {
         Index actualBuildIndex = correctIndex(m,tempBuildIndex);
         setPrevBuildIndex(actualBuildIndex);
         m.build(w, actualBuildIndex);
+        Cell cell = m.selectCell(prevBuildIndex);
+        ArrayList<Invisible> invisibles = cell.getForbidden();
+        for (Invisible inv : invisibles) {
+            if (inv instanceof ForbiddenConstruction && w.getOwner() == inv.getCreator())
+                inv.addWorker(w);
+        }
         possibleBuild = whereToBuild(m, w, w.getPosition());
         if(!possibleBuild.isEmpty()) {
             //ask to build another time
@@ -73,18 +79,12 @@ public class Demeter extends God {
             setBuildAgain(buildAgainAsked);
         }
         if(buildAgain) {
-            Cell cell = m.selectCell(prevBuildIndex);
-            ArrayList<Invisible> invisibles = cell.getForbidden();
-            for (Invisible inv : invisibles) {
-                if (inv instanceof ForbiddenConstruction && w.getOwner() == inv.getCreator())
-                    inv.addWorker(w);
-            }
             //take index3 where to build a second time
             Index tempBuildIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
             Index actualBuildIndex2 = correctIndex(m,tempBuildIndex2);
             m.build(w, actualBuildIndex2);
-            resetPower(m, w);
         }
+        resetPower(m, w);
     }
 
 
@@ -127,12 +127,12 @@ public class Demeter extends God {
 
     @Override
     public void resetPower(Match m, Worker w) {
-        Cell cell = m.selectCell(prevIndex);
+        setBuildAgain(false);
+        Cell cell = m.selectCell(prevBuildIndex);
         ArrayList<Invisible> invisibles = cell.getForbidden();
         for(Invisible inv : invisibles){
             if(inv instanceof ForbiddenConstruction && w.getOwner()==inv.getCreator())
                 inv.removeWorkers();
         }
-        setBuildAgain(false);
     }
 }
