@@ -64,6 +64,11 @@ public class GuiPlayerManager implements PlayerManager{
         validCells = buildings;
     }
 
+    @Override
+    public void buildDome() {
+
+    }
+
     public JPanel getPanel() {
         return panel;
     }

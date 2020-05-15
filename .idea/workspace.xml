@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f9499d06-4555-4b26-a23e-da8653dd9100" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/deliveries/code/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/CliPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/CliPlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiPlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/PlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/PlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,21 +22,16 @@
     <option name="version" value="1" />
   </component>
   <component name="ProjectId" id="1bmAhD7VywnEiUUlmfwOKatcYNM" />
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -47,8 +44,12 @@
       <option name="presentableId" value="Default" />
       <updated>1589227011498</updated>
       <workItem from="1589227012770" duration="48000" />
+      <workItem from="1589539542932" duration="493000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -60,5 +61,12 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser" timestamp="1589539986380">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1280.800@0.0.1280.800" timestamp="1589539986380" />
   </component>
 </project>

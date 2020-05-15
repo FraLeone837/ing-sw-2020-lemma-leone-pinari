@@ -101,6 +101,16 @@ public class CliPlayerManager implements PlayerManager{
         ui.receivedUiInput(Integer.toString(validCoordinatesInput(buildings)));
     }
 
+    @Override
+    public void buildDome() {
+        System.out.println(LABEL_BUILD_DOME);
+        String answer;
+        do{
+            answer = scanner.nextLine();
+        }while(answer!="dome" && answer!="building");
+        ui.receivedUiInput(Boolean.toString(answer.equals("dome")));
+    }
+
     /**
      * Set for first worker's id
      * @param id worker's id

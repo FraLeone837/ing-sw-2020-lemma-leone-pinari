@@ -141,6 +141,10 @@ public class UserInterface implements Runnable {
                 messageOut = new Message(Message.MessageType.BUILD_INDEX_REQ);
                 playerManager.chooseBuilding((int[])msg.getObject());
                 break;
+            case BUILD_DOME:
+                messageOut = new Message(Message.MessageType.BUILD_DOME);
+                playerManager.buildDome();
+                break;
             case CHOOSE_WORKER:
                 messageOut = new Message(Message.MessageType.CHOOSE_WORKER);
                 playerManager.chooseWorker((int)msg.getObject());
