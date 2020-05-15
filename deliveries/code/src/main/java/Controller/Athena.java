@@ -15,7 +15,7 @@ public class Athena extends God {
 
     @Override
     public String getDescription() {
-        return "Goddess of Wisdom\n" +
+        return  "Goddess of Wisdom\n" +
                 "Opponent’s Turn: If one of your\n" +
                 "Workers moved up on your last\n" +
                 "turn, opponent Workers cannot\n" +

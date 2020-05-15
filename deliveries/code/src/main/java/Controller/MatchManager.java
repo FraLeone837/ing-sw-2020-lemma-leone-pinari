@@ -143,7 +143,7 @@ public class MatchManager implements Runnable{
      * give randomly a god to each player
      */
     public void giveGods(){
-        int numberOfGods = 5;
+        int numberOfGods = 7;
         ArrayList<Integer> given = new ArrayList<Integer>();
         Random godGen = new Random();
         God god = new Apollo();
@@ -168,6 +168,12 @@ public class MatchManager implements Runnable{
                     break;
                 case 4:
                     god = new Demeter();
+                    break;
+                case 5:
+                    god = new Hephaestus();
+                    break;
+                case 6:
+                    god = new Pan();
                     break;
             }
             playerManager.setGod(god);

@@ -15,7 +15,7 @@ public class Apollo extends God {
 
     @Override
     public String getDescription() {
-        return "God Of Music\n" +
+        return  "God Of Music\n" +
                 "Your Move: Your Worker may\n" +
                 "move into an opponent Worker’s\n" +
                 "space (using normal movement\n" +

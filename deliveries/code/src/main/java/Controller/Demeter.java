@@ -34,7 +34,7 @@ public class Demeter extends God {
 
     @Override
     public String getDescription() {
-        return "Goddess of the Harvest\n" +
+        return  "Goddess of the Harvest\n" +
                 "Your Build: Your Worker may\n" +
                 "build one additional time, but not\n" +
                 "on the same space.";

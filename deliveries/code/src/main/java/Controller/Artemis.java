@@ -35,7 +35,7 @@ public class Artemis extends God {
 
     @Override
     public String getDescription() {
-        return "Goddess of the Hunt\n" +
+        return  "Goddess of the Hunt\n" +
                 "Your Move: Your Worker may\n" +
                 "move one additional time, but not\n" +
                 "back to the space it started on.";

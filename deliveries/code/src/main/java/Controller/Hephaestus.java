@@ -34,10 +34,10 @@ public class Hephaestus extends God {
 
     @Override
     public String getDescription() {
-        return "God of Blacksmiths\n"+
-        "Your Build: Your Worker may\n"+
-        "build one additional block (not\n"+
-        "dome) on top of your first block.";
+        return  "God of Blacksmiths\n" +
+                "Your Build: Your Worker may\n" +
+                "build one additional block (not\n" +
+                "dome) on top of your first block.";
     }
 
     @Override
