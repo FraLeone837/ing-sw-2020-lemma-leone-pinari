@@ -29,49 +29,49 @@ public class Atlas extends God {
     }
 
     @Override
-    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
-        ArrayList<Index> possibleMove = whereToMove(m, w, w.getPosition());
+    public void turn(Match match, CommunicationProxy communicationProxy, Worker worker) {
+        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
         if(possibleMove.isEmpty()){
             setInGame(false);
             return;
         }
-        setPrevIndex(w.getPosition());
+        setPrevIndex(worker.getPosition());
         //take index1 where to move from view
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
-        m.moveWorker(w, actualMoveIndex);
-        if(checkWin(m, w)){
+        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
+        match.moveWorker(worker, actualMoveIndex);
+        if(checkWin(match, worker)){
             setWinner(true);
             return;
         }
-        ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
+        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
             return;
         }
         //take index2 where to build from view
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
+        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
         //ask to build a building or a dome
         Boolean buildDomeAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.BUILD_DOME, "Want to build a dome?");
         setBuildDome(buildDomeAsked);
         if(buildDome)
-            m.buildDome(w, actualBuildIndex);
+            match.buildDome(worker, actualBuildIndex);
         else
-            m.build(w, actualBuildIndex);
+            match.build(worker, actualBuildIndex);
         setBuildDome(false);
     }
 
-    public void turn(Match m, Worker w, Index index1, Index index2) {
-        setPrevIndex(w.getPosition());
+    public void turn(Match match, Worker worker, Index index1, Index index2) {
+        setPrevIndex(worker.getPosition());
         //take index1 where to move from view
-        m.moveWorker(w, index1);
-        checkWin(m, w);
+        match.moveWorker(worker, index1);
+        checkWin(match, worker);
         //take index2 where to build from view
         //ask to build a building or a dome
         if(buildDome)
-            m.buildDome(w, index2);
+            match.buildDome(worker, index2);
         else
-            m.build(w, index2);
+            match.build(worker, index2);
     }
 }

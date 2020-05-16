@@ -126,6 +126,7 @@ public class Message {
         MOVE_AGAIN,
         BUILD_AGAIN,
         BUILD_DOME,
+        BUILD_BEFORE,
         /**
          * substitutes null value
          * means that we have no msg received

@@ -24,43 +24,43 @@ public class Apollo extends God {
     }
 
     @Override
-    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
-        ArrayList<Index> possibleMove = whereToMove(m, w, w.getPosition());
+    public void turn(Match match, CommunicationProxy communicationProxy, Worker worker) {
+        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
         if(possibleMove.isEmpty()){
             setInGame(false);
             return;
         }
-        setPrevIndex(w.getPosition());
+        setPrevIndex(worker.getPosition());
         //take index1 where to move from view
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actuaMovelIndex = correctIndex(m,tempMoveIndex);
-        Worker o = m.selectCell(actuaMovelIndex).getWorker();
-        m.moveWorker(o, w.getPosition());
-        m.moveWorker(w,actuaMovelIndex);
-        if(checkWin(m, w)){
+        Index actuaMovelIndex = correctIndex(match,tempMoveIndex);
+        Worker o = match.selectCell(actuaMovelIndex).getWorker();
+        match.moveWorker(o, worker.getPosition());
+        match.moveWorker(worker,actuaMovelIndex);
+        if(checkWin(match, worker)){
             setWinner(true);
             return;
         }
-        ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
+        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
             return;
         }
         //take index2 where to build from view
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
-        m.build(w, actualBuildIndex);
+        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
+        match.build(worker, actualBuildIndex);
     }
 
-    public void turn(Match m, Worker w, Index index1, Index index2) {
-        setPrevIndex(w.getPosition());
+    public void turn(Match match, Worker worker, Index index1, Index index2) {
+        setPrevIndex(worker.getPosition());
         //take index1 where to move from view
-        Worker o = m.selectCell(index1).getWorker();
-        m.moveWorker(o, w.getPosition());
-        m.moveWorker(w,index1);
-        checkWin(m, w);
+        Worker o = match.selectCell(index1).getWorker();
+        match.moveWorker(o, worker.getPosition());
+        match.moveWorker(worker,index1);
+        checkWin(match, worker);
         //take index2 where to build from view
-        m.build(w, index2);
+        match.build(worker, index2);
     }
 
     @Override

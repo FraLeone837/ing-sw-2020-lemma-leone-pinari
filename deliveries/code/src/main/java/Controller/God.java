@@ -52,64 +52,72 @@ public abstract class God {
     /**
      * this method manages the entire turn, from the movement of the worker to the building, taking into account god's power
      *
-     * @param m the match that the server is managing
-     * @param w the worker selected by the player
+     * @param match the match that the server is managing
+     * @param worker the worker selected by the player
      */
-    public void turn(Match m, CommunicationProxy communicationProxy, Worker w){
-        ArrayList<Index> possibleMove = whereToMove(m, w, w.getPosition());
+    public void turn(Match match, CommunicationProxy communicationProxy, Worker worker){
+        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
         if(possibleMove.isEmpty()){
             setInGame(false);
             return;
         }
-        setPrevIndex(w.getPosition());
+        setPrevIndex(worker.getPosition());
         //take index1 where to move from view
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
-        m.moveWorker(w,actualMoveIndex);
-        if(checkWin(m, w)){
+        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
+        match.moveWorker(worker,actualMoveIndex);
+        if(checkWin(match, worker)){
             setWinner(true);
             return;
         }
-        ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
+        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
             return;
         }
         //take index2 where to build from view
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
-        m.build(w, actualBuildIndex);
+        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
+        match.build(worker, actualBuildIndex);
     }
 
-    public void turn(Match m, Worker w,Index index1,Index index2) {
-        setPrevIndex(w.getPosition());
+    public void turn(Match match, Worker worker,Index index1,Index index2) {
+        setPrevIndex(worker.getPosition());
         //take index1 where to move from view
         Index tempMoveIndex = index1;
-        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
-        m.moveWorker(w,actualMoveIndex);
-        checkWin(m, w);
+        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
+        match.moveWorker(worker,actualMoveIndex);
+        checkWin(match, worker);
         //take index2 where to build from view
         Index actualBuildIndex = index2;
-        m.build(w, actualBuildIndex);
+        match.build(worker, actualBuildIndex);
     }
+
+    /**
+     * helps using powers in general, for example putting invisible block in the cells when there are to many to put
+     *
+     * @param match the match that the server is managing
+     * @param worker the worker that the player chose to move
+     */
+    public void usePower(Match match, Worker worker){}
 
 
     /**
      * this method is used at the beginning of the match to prepare the game board io order to use the power of gods,
      * for example putting the invisible blocks in every cell
      *
-     * @param m the match that the server is managing
-     * @param p the player whose god's power has to be set
+     * @param match the match that the server is managing
+     * @param player the player whose god's power has to be set
      */
-    public void setup(Match m, Player p){}
+    public void setup(Match match, Player player){}
 
     /**
      * delete all the workers from the invisible blocks managed by the current player when his god's power ends
      *
-     * @param m the current match
-     * @param w the worker selected by the player
+     * @param match the current match
+     * @param worker the worker selected by the player
      */
-    public void resetPower(Match m, Worker w){}
+    public void resetPower(Match match, Worker worker){}
 
     /**
      * allows you to know where you could move a worker if it was in a specific cell, taking forbiddenMove-blocks into account
