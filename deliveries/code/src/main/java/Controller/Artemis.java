@@ -42,100 +42,100 @@ public class Artemis extends God {
     }
 
     @Override
-    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
-        ArrayList<Index> possibleMove = whereToMove(m, w, w.getPosition());
+    public void turn(Match match, CommunicationProxy communicationProxy, Worker worker) {
+        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
         if(possibleMove.isEmpty()){
             setInGame(false);
             return;
         }
-        setPrevIndex(w.getPosition());
-        setPrevMoveIndex(w.getPosition());
+        setPrevIndex(worker.getPosition());
+        setPrevMoveIndex(worker.getPosition());
         //take index1 where to move the first time
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
-        m.moveWorker(w, actualMoveIndex);
-        if(checkWin(m, w)){
+        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
+        match.moveWorker(worker, actualMoveIndex);
+        if(checkWin(match, worker)){
             setWinner(true);
             return;
         }
-        Cell cell = m.selectCell(prevMoveIndex);
+        Cell cell = match.selectCell(prevMoveIndex);
         ArrayList<Invisible> invisibles = cell.getForbidden();
         for (Invisible inv : invisibles) {
-            if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
-                inv.addWorker(w);
+            if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
+                inv.addWorker(worker);
         }
-        possibleMove = whereToMove(m, w, w.getPosition());
+        possibleMove = whereToMove(match, worker, worker.getPosition());
         if(!possibleMove.isEmpty()) {
             //ask to move another time
             Boolean moveAgainAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.MOVE_AGAIN, "Want to move again?");
             setMoveAgain(moveAgainAsked);
         }
         if(moveAgain) {
-            setPrevIndex(w.getPosition());
+            setPrevIndex(worker.getPosition());
             //take index2 where to move a second time
             Index tempMoveIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-            Index actualMoveIndex2 = correctIndex(m,tempMoveIndex2);
-            m.moveWorker(w, actualMoveIndex2);
-            if(checkWin(m, w)){
+            Index actualMoveIndex2 = correctIndex(match,tempMoveIndex2);
+            match.moveWorker(worker, actualMoveIndex2);
+            if(checkWin(match, worker)){
                 setWinner(true);
                 return;
             }
         }
-        resetPower(m, w);
-        ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
+        resetPower(match, worker);
+        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
             return;
         }
         //take index3 where to build
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
-        m.build(w, actualBuildIndex);
+        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
+        match.build(worker, actualBuildIndex);
     }
 
-    public void turn(Match m, Worker w,Index index1,Index index2,Index index3) {
-        setPrevIndex(w.getPosition());
+    public void turn(Match match, Worker worker,Index index1,Index index2,Index index3) {
+        setPrevIndex(worker.getPosition());
         //take index1 where to move the first time
-        m.moveWorker(w, index1);
-        checkWin(m, w);
+        match.moveWorker(worker, index1);
+        checkWin(match, worker);
         //ask to move another time
         if(moveAgain) {
-            Cell cell = m.selectCell(prevIndex);
+            Cell cell = match.selectCell(prevIndex);
             ArrayList<Invisible> invisibles = cell.getForbidden();
             for (Invisible inv : invisibles) {
-                if (inv instanceof ForbiddenMove && w.getOwner() == inv.getCreator())
-                    inv.addWorker(w);
+                if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
+                    inv.addWorker(worker);
             }
-            setPrevIndex(w.getPosition());
+            setPrevIndex(worker.getPosition());
             //take index2 where to move a second time
-            m.moveWorker(w, index2);
-            checkWin(m, w);
-            resetPower(m, w);
+            match.moveWorker(worker, index2);
+            checkWin(match, worker);
+            resetPower(match, worker);
         }
         //take index3 where to build
-        m.build(w, index3);
+        match.build(worker, index3);
     }
 
     @Override
-    public void setup(Match m, Player p) {
+    public void setup(Match match, Player player) {
         for(int x=0; x<5; x++){
             for(int y=0; y<5; y++){
                 for(int z=0; z<4; z++){
                     Index i=new Index(x,y,z);
-                    Invisible invisible = new ForbiddenMove(p);
-                    m.buildInvisible(invisible, i);
+                    Invisible invisible = new ForbiddenMove(player);
+                    match.buildInvisible(invisible, i);
                 }
             }
         }
     }
 
     @Override
-    public void resetPower(Match m, Worker w) {
+    public void resetPower(Match match, Worker worker) {
         setMoveAgain(false);
-        Cell cell = m.selectCell(prevMoveIndex);
+        Cell cell = match.selectCell(prevMoveIndex);
         ArrayList<Invisible> invisibles = cell.getForbidden();
         for(Invisible inv : invisibles){
-            if(inv instanceof ForbiddenMove && w.getOwner()==inv.getCreator())
+            if(inv instanceof ForbiddenMove && worker.getOwner()==inv.getCreator())
                 inv.removeWorkers();
         }
     }

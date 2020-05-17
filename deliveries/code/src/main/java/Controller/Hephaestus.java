@@ -41,32 +41,32 @@ public class Hephaestus extends God {
     }
 
     @Override
-    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
-        ArrayList<Index> possibleMove = whereToMove(m, w, w.getPosition());
+    public void turn(Match match, CommunicationProxy communicationProxy, Worker worker) {
+        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
         if(possibleMove.isEmpty()){
             setInGame(false);
             return;
         }
-        setPrevIndex(w.getPosition());
+        setPrevIndex(worker.getPosition());
         //take index1 where to move the first time from the view
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(m,tempMoveIndex);
-        m.moveWorker(w, actualMoveIndex);
-        if(checkWin(m, w)){
+        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
+        match.moveWorker(worker, actualMoveIndex);
+        if(checkWin(match, worker)){
             setWinner(true);
             return;
         }
-        ArrayList<Index> possibleBuild = whereToBuild(m, w, w.getPosition());
+        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
             return;
         }
         //take index2 where to build
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(m,tempBuildIndex);
+        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
         setPrevBuildIndex(actualBuildIndex);
-        m.build(w, actualBuildIndex);
-        possibleBuild = whereToBuild(m, w, w.getPosition());
+        match.build(worker, actualBuildIndex);
+        possibleBuild = whereToBuild(match, worker, worker.getPosition());
         Index checkedIndex = new Index(prevBuildIndex.getX(), prevBuildIndex.getY(), prevBuildIndex.getZ()+1);
         if(prevBuildIndex.getZ()<2 && possibleBuild.contains(checkedIndex)) {
             //ask to build another time
@@ -74,7 +74,7 @@ public class Hephaestus extends God {
             setBuildAgain(buildAgainAsked);
         }
         if(buildAgain) {
-            m.build(w, checkedIndex);
+            match.build(worker, checkedIndex);
             setBuildAgain(false);
         }
     }
