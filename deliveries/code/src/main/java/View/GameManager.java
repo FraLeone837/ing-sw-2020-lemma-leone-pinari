@@ -27,7 +27,7 @@ public interface GameManager {
      * Show the updated map to the player
      * @param island the updated map
      */
-    public abstract void updateMap(int[][][] island);
+    public abstract void updateMap(int[] island);
 
     /**
      * Invoked when someone wins
