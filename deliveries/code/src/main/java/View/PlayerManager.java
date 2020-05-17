@@ -7,6 +7,16 @@ import java.util.List;
 
 public interface PlayerManager {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
     final String LABEL_SERVER_IP = "Which server do you want to connect to?";
     final String LABEL_USERNAME = "Write your username";
     final String LABEL_NUMBER_PLAYERS = "How many players do you want in this match? (2 or 3)";
@@ -18,6 +28,9 @@ public interface PlayerManager {
     final String LABEL_CHOOSE_WHERE_TO_MOVE = "Where do you want to move the worker?";
     final String LABEL_CHOOSE_WHERE_TO_BUILD = "Where do you want to build?";
     final String LABEL_BUILD_DOME = "Do you want to build a dome or a building?";
+    final String LABEL_YOUR_GOD = "Your God is: " + ANSI_BLUE ;
+    final String LABEL_YOUR_GOD_DESC = ANSI_RESET +", ";
+
 
     /**
      * Ask the user the IP of the server it wants to connect to
@@ -72,4 +85,9 @@ public interface PlayerManager {
      * in the previosly selected cells
      */
     public abstract void buildDome();
+
+    /**
+     * show the god's description and name
+     */
+    public abstract void showGods(String[] god);
 }

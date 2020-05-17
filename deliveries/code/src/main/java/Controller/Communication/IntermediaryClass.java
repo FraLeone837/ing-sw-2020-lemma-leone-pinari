@@ -4,6 +4,9 @@ import Controller.MatchManager;
 
 import java.util.ArrayList;
 
+import static Controller.Communication.ClientHandler.ANSI_CYAN;
+import static Controller.Communication.ClientHandler.ANSI_RESET;
+
 /**
  * Class needed so we could always go back to the original matchManager
  */
@@ -33,6 +36,7 @@ public class IntermediaryClass {
      * method that finishes game and clears all threads after a 10 second period
      */
     public void terminateGame(){
+        counter = 0;
         threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
@@ -43,6 +47,7 @@ public class IntermediaryClass {
         }
         communicationProxies = new ArrayList<>();
         clientHandlerArrayList = new ArrayList<>();
+        System.out.println(ANSI_CYAN + "FINISHED terminateGAME" + ANSI_RESET);
     }
 
 

@@ -12,6 +12,8 @@ public class GuiPlayerManager implements PlayerManager{
     private JButton[] cells;
     private int[] validCells;
     private UserInterface ui;
+    private String godName;
+    private String godDescription;
 
     public GuiPlayerManager(UserInterface ui){
         panel = new JPanel();
@@ -66,6 +68,11 @@ public class GuiPlayerManager implements PlayerManager{
 
     @Override
     public void buildDome() {
+
+    }
+
+    @Override
+    public void showGods(String[] god) {
 
     }
 

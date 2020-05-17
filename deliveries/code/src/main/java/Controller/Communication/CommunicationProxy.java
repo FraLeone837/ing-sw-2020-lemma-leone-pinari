@@ -4,6 +4,7 @@ import Controller.God;
 import Model.Index;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static Controller.Communication.ClientHandler.*;
 
@@ -171,13 +172,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      */
     public Object sendMessage(Message.MessageType messageType, Object toSend){
         /**
-         * if it is the first message the match manager is sending
-         * he will have to wait until client sends Join_Game
-         */
-//        if(messageType == Message.MessageType.GET_NAME){
-//            sentJoinGame();
-//        }
-        /**
          * stops execution while
          * we have not yet received a message
          */
@@ -186,12 +180,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
          * prepare to send a message
          */
         synchronized (gameSideLock){
-//                System.out.println(ANSI_CYAN + "TRYING TO SEND THIS MESSAGE: " + messageType + ANSI_RESET );
-//                try{
-//                    gameSideLock.wait();
-//                } catch (InterruptedException e ){
-//                    e.printStackTrace();
-//                }
             //converts gameSideMessage a.k.a toSend into a certain message type
             convertToMessage(messageType,toSend);
             //releases lock and notifies that object has changed
@@ -210,7 +198,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         synchronized (this.receivedLock){
             while(received.getType() != messageType){
                 try{
-//                    System.out.println("Waiting for message to return - received lock wait");
                     receivedLock.wait();
                 } catch (InterruptedException e){
                     e.printStackTrace();
@@ -224,8 +211,8 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 received.setType(Message.MessageType.INFORMATION);
         }
 
-        return convertToSpecificObject(copy);
-
+        Object c = convertToSpecificObject(copy);
+        return c;
     }
 
     private void canSendMessage() {
@@ -275,10 +262,10 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             case MOVE_INDEX_REQ:
             case BUILD_INDEX_REQ:
                 int toReturnx = ((Double)copy.getObject()).intValue();
-                return (Object)convertFromIntToIndex(toReturnx);
+                return convertFromIntToIndex(toReturnx);
             case NUMBER_PLAYERS:
                 int toReturn = ((Double)copy.getObject()).intValue();
-                return (Object)toReturn;
+                return toReturn;
             default:
                 return copy.getObject();
 
@@ -298,7 +285,11 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             case CHOOSE_INDEX_FIRST_WORKER:
             case CHOOSE_INDEX_SEC_WORKER:
             case MOVE_INDEX_REQ:
-                this.toSend = new Message(messageType,convertFromIndexToInts((Index[])toSend));
+                Index[] toConvert = new Index[((ArrayList<Index>)toSend).size()];
+                for(int i=0; i<toConvert.length;i++){
+                    toConvert[i] = ((ArrayList<Index>)toSend).get(i);
+                }
+                this.toSend = new Message(messageType,convertFromIndexToInts(toConvert));
                 break;
 
             case GAME_START:
@@ -357,7 +348,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         int x = number % 5;
         int y = (number - x)/5;
         Index ix = new Index(x,y,-1);
-        return (Object)ix;
+        return ix;
     }
 
 

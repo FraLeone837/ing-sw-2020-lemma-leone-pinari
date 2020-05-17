@@ -122,9 +122,15 @@ public class Message {
          * after which the game ends and every data is lost
          */
         END_GAME,
-
+        /**
+         * Used for god powers, asks if you
+         * want to move/build again
+         */
         MOVE_AGAIN,
         BUILD_AGAIN,
+        /**
+         * Used for god powers,
+         */
         BUILD_DOME,
         /**
          * substitutes null value
