@@ -114,13 +114,13 @@ public class Match {
         return island.getCell(i);
     }
 
-    /** Creates a 2D copy of the cells as seen from above, with information laid in a certain protocol
+    /** Creates a 1D copy of the cells as seen from above, with information laid in a certain protocol
      *
      * @return a copy of the key information about the board
      */
-    public int[][][] getInformationArray(){
+    public int[] getInformationArray(){
         Cell cell ;
-        int[][][] informationArray = new int[5][5][2];
+        int[] informationArray = new int[25];
         for(int i = 0; i<5; i++){
             for(int j=0; j<5; j++){
                 for(int k = 3; k >= 0; k--){
@@ -129,21 +129,20 @@ public class Match {
                         if(cell.isBuilding()){
                             if(cell.isDome()){
                                 //if k = 3 then dome is built in level 4 else k = 2 dome is built in level 3 (val = 5) else k = 1 (val = 6) else val = 7
-                                informationArray[i][j][0] = 4 + k;
+                                informationArray[i+5*j] = 4 + k;
                             } else {
                                 //if there are no domes built then we give the lowest level of the building built
-                                informationArray[i][k][0] = k;
+                                informationArray[i+5*j] = k;
                             }
                         }
                         if(cell.getWorker() != null){
-                            //Based on the id we connect the players (1-2 player 1) (3-4 player 2) ecc
-                            informationArray[i][j][1] = cell.getWorker().getIdWorker();
+                            //Based on the id we connect the players (10-20 player 1) (30-40 player 2) ecc
+                            informationArray[i+5*j] += 10*cell.getWorker().getIdWorker();
                         }
                         break;
                     }
                     //else if cell is empty
-                    informationArray[i][j][0] = 0;
-                    informationArray[i][j][1] = 0;
+                    informationArray[i+5*j] = 0;
                 }
             }
         }

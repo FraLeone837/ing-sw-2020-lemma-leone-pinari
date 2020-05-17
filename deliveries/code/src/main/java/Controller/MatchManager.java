@@ -42,7 +42,7 @@ public class MatchManager implements Runnable{
     /**
      * @return all the information of the game according to a protocol
      */
-    public int[][][] getInformationArray() {
+    public int[] getInformationArray() {
         return match.getInformationArray();
     }
 
