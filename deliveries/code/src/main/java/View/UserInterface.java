@@ -3,6 +3,7 @@ package View;
 import Controller.Communication.Message;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class UserInterface implements Runnable {
 
@@ -104,7 +105,7 @@ public class UserInterface implements Runnable {
         else{
             inputUi = true;
             messageOut.setObject(input);
-            this.ip=(String)input;
+//            this.ip=(String)input;
             synchronized (this){
                 notify();
             }
@@ -119,27 +120,27 @@ public class UserInterface implements Runnable {
      */
     private void identificationMessage(Message msg){
         /*default message is ZZZ*/
-        messageOut = new Message(Message.MessageType.ZZZ, null);
+        messageOut = new Message(Message.MessageType.ZZZ, "Ok!");
         switch(msg.getType()){
             case ISLAND_INFO:
-                gameManager.updateMap((int[][][])msg.getObject());
+                gameManager.updateMap(convertToMap((Double[][][])msg.getObject()));
+                receivedUiInput(messageOut);
                 break;
             case GAME_START:
-                int idWorker1 = ((int)msg.getObject());
+                int idWorker1 = convertToInt((Double) msg.getObject());
                 if(mode == Mode.CLI) {
                     ((CliPlayerManager) playerManager).setIdFirstWorker(idWorker1);
                     ((CliGameManager) gameManager).printIdWorkers(idWorker1);
                 }
-                /*invia subito*/
-                //response = new Message(Message.MessageType.ZZZ, null);
+                receivedUiInput(messageOut);
                 break;
             case MOVE_INDEX_REQ:
                 messageOut = new Message(Message.MessageType.MOVE_INDEX_REQ);
-                playerManager.chooseMovement((int[])msg.getObject());
+                playerManager.chooseMovement(convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case BUILD_INDEX_REQ:
                 messageOut = new Message(Message.MessageType.BUILD_INDEX_REQ);
-                playerManager.chooseBuilding((int[])msg.getObject());
+                playerManager.chooseBuilding(convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case BUILD_DOME:
                 messageOut = new Message(Message.MessageType.BUILD_DOME);
@@ -147,17 +148,20 @@ public class UserInterface implements Runnable {
                 break;
             case CHOOSE_WORKER:
                 messageOut = new Message(Message.MessageType.CHOOSE_WORKER);
-                playerManager.chooseWorker((int)msg.getObject());
+                playerManager.chooseWorker(convertToInt((Double)msg.getObject()));
                 break;
             case CHOOSE_INDEX_FIRST_WORKER:
                 messageOut = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER);
-                playerManager.placeWorker(true, (int[])msg.getObject());
+
+                playerManager.placeWorker(true, convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case CHOOSE_INDEX_SEC_WORKER:
                 messageOut = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER);
-                playerManager.placeWorker(false, (int[])msg.getObject());
+                playerManager.placeWorker(false, convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case WAIT_START:
+                messageOut = new Message(Message.MessageType.ZZZ, "Ok waiting!");
+                receivedUiInput(messageOut);
                 gameManager.waitForPlayer();
                 break;
             case PING_IS_ALIVE:
@@ -175,7 +179,37 @@ public class UserInterface implements Runnable {
                 messageOut = new Message(Message.MessageType.NUMBER_PLAYERS);
                 playerManager.chooseNumberPlayers();
                 break;
+            case YOUR_GOD:
+                messageOut = new Message(Message.MessageType.ZZZ);
+                String[] god = new String[2];
+                god[0] = ((ArrayList<String>) msg.getObject()).get(0);
+                god[1] = ((ArrayList<String>) msg.getObject()).get(1);
+                playerManager.showGods(god);
+                break;
         }
     }
 
+    private int convertToInt(Double d){
+        return d.intValue();
+    }
+
+    private int[] convertToIntArray(ArrayList<Double> d){
+        int[] toReturn = new int[d.size()];
+        for(int i=0; i<d.size(); i++){
+            toReturn[i] = d.get(i).intValue();
+        }
+        return toReturn;
+    }
+
+    private int[][][] convertToMap(Double[][][] d){
+        int[][][] toReturn = new int[d.length][d[0].length][d[0][0].length];
+        for(int i =0; i<d.length;i++){
+            for(int j= 0; j<d[0].length; j++){
+                for(int k=0; k<d[0][0].length; k++){
+                    toReturn[i][j][k] = d[i][j][k].intValue();
+                }
+            }
+        }
+        return toReturn;
+    }
 }
