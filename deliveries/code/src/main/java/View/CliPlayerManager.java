@@ -60,6 +60,7 @@ public class CliPlayerManager implements PlayerManager{
         for(int j =0 ; j< possiblePositions.length; j++){
             System.out.print(possiblePositions[j]+ ", ");
         }
+        System.out.println();
         int chosenPosition;
         boolean invalidInput = true;
         do{

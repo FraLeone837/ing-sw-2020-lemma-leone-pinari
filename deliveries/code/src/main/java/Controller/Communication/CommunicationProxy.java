@@ -25,8 +25,8 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     //Message updated from matchManager
     private Message toSend;
     private final Object gameSideLock = new Object();
-    //isWaitingToSend is true iff there is a message being sent , and we have not received yet the response
-    private boolean isWaitingToSend;
+    //isWaitingToReceive is true iff there is a message being sent , and we have not received yet the response
+    private boolean isWaitingToReceive;
 
     //Message to be requested from matchManager
     private Message received = new Message(Message.MessageType.ZZZ,"have not received anything");
@@ -47,7 +47,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         this.clientHandler = cl;
         this.ic = ic;
         this.acceptInput = true;
-        this.isWaitingToSend = true;
+        this.isWaitingToReceive = true;
         clientHandler.addObserver(this);
     }
 
@@ -90,7 +90,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         //received = null;
         synchronized (receivedLock){
             try{
-//                    isWaitingToSend = false;
                 receivedLock.wait();
             } catch(InterruptedException e){
                 e.printStackTrace();
@@ -116,7 +115,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                     sendMessage(Message.MessageType.WAIT_START,"Wait Please");
 
                     break;
-//                    isWaitingToSend = false;
                 case INFORMATION:
                     ic.Broadcast(new Message(Message.MessageType.ISLAND_INFO, ic.getMatchManager().getInformationArray()));
                     break;
@@ -143,7 +141,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             //received = null;
             synchronized (receivedLock){
                 try{
-//                    isWaitingToSend = false;
                     receivedLock.wait();
                 } catch(InterruptedException e){
                     e.printStackTrace();
@@ -189,8 +186,13 @@ public class CommunicationProxy implements Runnable, MessageObservers{
 
         Message copy;
 
-        if(!isWaitingForResponse(messageType))
+        if(!isWaitingForResponse(messageType)){
+//            synchronized (this.receivedLock){
+//                isWaitingToReceive =false;
+//                receivedLock.notifyAll();
+//            }
             return new Object();
+        }
 
         /**
          * prepare to receive message
@@ -203,12 +205,19 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                     e.printStackTrace();
                 }
             }
-            copy = received;
-            isWaitingToSend = false;
+            copy = new Message(received);
+            isWaitingToReceive = false;
             receivedLock.notifyAll();
             //MatchManager gets the object they want so we send a map of the current status
-            if(isNotBeforeGameInput(copy.getType()))
-                received.setType(Message.MessageType.INFORMATION);
+            if(isNotBeforeGameInput(copy.getType())){
+                try{
+                    receivedLock.wait(500);
+                } catch (InterruptedException e){
+
+                }
+                sendMessage(Message.MessageType.ISLAND_INFO,ic.getMatchManager().getInformationArray());
+            }
+//                received.setType(Message.MessageType.INFORMATION);
         }
 
         Object c = convertToSpecificObject(copy);
@@ -216,7 +225,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     }
 
     private void canSendMessage() {
-        while(isWaitingToSend == true){
+        while(isWaitingToReceive == true){
             synchronized (receivedLock){
                 try{
                     receivedLock.wait();
@@ -226,8 +235,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             }
         }
 
-
-        this.isWaitingToSend = true;
+        this.isWaitingToReceive = true;
     }
 
     /**
@@ -255,15 +263,17 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * @return specifiedObject
      */
     private Object convertToSpecificObject(Message copy) {
+        System.out.println("Convert to sepcific object: " + copy.getType());
         switch (copy.getType()){
             case CHOOSE_INDEX_FIRST_WORKER:
             case CHOOSE_INDEX_SEC_WORKER:
-            case MOVEMENT:
             case MOVE_INDEX_REQ:
             case BUILD_INDEX_REQ:
+            case INFORMATION:
                 int toReturnx = ((Double)copy.getObject()).intValue();
                 return convertFromIntToIndex(toReturnx);
             case NUMBER_PLAYERS:
+            case MOVEMENT:
                 int toReturn = ((Double)copy.getObject()).intValue();
                 return toReturn;
             default:
@@ -387,20 +397,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         return x;
     }
 
-    private boolean sentJoinGame(){
-        synchronized (receivedLock){
-            while(received.getType() != Message.MessageType.JOIN_GAME){
-                try{
-                    receivedLock.wait();
-                } catch(InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-        }
-        return true;
-    }
-
-
 
 
     /**
@@ -418,11 +414,11 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 MsT == Message.MessageType.FINISHED_TURN||
                 MsT == Message.MessageType.END_GAME)
         {
-            isWaitingToSend = true;
+            isWaitingToReceive = true;
             return;
         }
         synchronized (receivedLock){
-            isWaitingToSend = false;
+            isWaitingToReceive = false;
             receivedLock.notifyAll();
         }
 

@@ -57,14 +57,6 @@ public class Client implements Runnable, ServerObserver
         }
         ui.receivedServerInput(messageIn);
 
-        synchronized (this){
-            try{
-                wait();
-            } catch(InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-        ui.receivedServerInput(messageIn);
 
         //serverAdapter.requestSending(messageOut);
 

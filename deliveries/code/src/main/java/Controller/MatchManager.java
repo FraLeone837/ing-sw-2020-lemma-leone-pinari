@@ -103,11 +103,15 @@ public class MatchManager implements Runnable{
         for(PlayerManager playerManager : playerManagers){
             playerManager.setup(match);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
+
             Index position1 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, possiblePosition);
             Index correctPosition1 = playerManager.getGod().correctIndex(match, position1);
+            match.initWorker(playerManager.getPlayer().getWorker1(),correctPosition1);
             possiblePosition.remove(correctPosition1);
+
             Index position2 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_SEC_WORKER, possiblePosition);
             Index correctPosition2 = playerManager.getGod().correctIndex(match, position2);
+            match.initWorker(playerManager.getPlayer().getWorker2(),correctPosition2);
             possiblePosition.remove(correctPosition2);
         }
     }

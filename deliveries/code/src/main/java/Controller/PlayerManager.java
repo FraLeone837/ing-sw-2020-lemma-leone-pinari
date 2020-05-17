@@ -42,7 +42,11 @@ public class PlayerManager {
     public void turn(Match match){
         if(god.canMove(match, player.getWorker1()) || god.canMove(match, player.getWorker2())) {
             //ask what worker to move
-            Worker worker = (Worker)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, 3);
+            int IDWorker = (int)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, 3);
+            Worker worker;
+            if(IDWorker == 1){
+                worker = player.getWorker1();
+            } else worker = player.getWorker2();
             god.turn(match, communicationProxy, worker);
         }
         else{

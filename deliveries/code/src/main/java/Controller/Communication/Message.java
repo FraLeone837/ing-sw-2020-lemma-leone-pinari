@@ -13,6 +13,15 @@ import java.util.ArrayList;
 
 
 public class Message {
+    /**
+     * creates copy
+     * @param received
+     */
+    public Message(Message received) {
+        this.object = received.getObject();
+        this.type = received.getType();
+    }
+
     public enum MessageType{
         /**
          * gets the information about all the island

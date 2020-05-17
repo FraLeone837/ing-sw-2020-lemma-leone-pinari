@@ -123,7 +123,7 @@ public class UserInterface implements Runnable {
         messageOut = new Message(Message.MessageType.ZZZ, "Ok!");
         switch(msg.getType()){
             case ISLAND_INFO:
-                gameManager.updateMap(convertToMap((Double[][][])msg.getObject()));
+                gameManager.updateMap(convertToIntArray((ArrayList<Double>)msg.getObject()));
                 receivedUiInput(messageOut);
                 break;
             case GAME_START:
@@ -156,7 +156,7 @@ public class UserInterface implements Runnable {
                 playerManager.placeWorker(true, convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case CHOOSE_INDEX_SEC_WORKER:
-                messageOut = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER);
+                messageOut = new Message(Message.MessageType.CHOOSE_INDEX_SEC_WORKER);
                 playerManager.placeWorker(false, convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case WAIT_START:
@@ -186,6 +186,10 @@ public class UserInterface implements Runnable {
                 god[1] = ((ArrayList<String>) msg.getObject()).get(1);
                 playerManager.showGods(god);
                 break;
+            case MOVEMENT:
+                messageOut = new Message(Message.MessageType.MOVEMENT);
+                playerManager.chooseWorker(convertToInt((Double)msg.getObject()));
+                break;
         }
     }
 
@@ -201,15 +205,5 @@ public class UserInterface implements Runnable {
         return toReturn;
     }
 
-    private int[][][] convertToMap(Double[][][] d){
-        int[][][] toReturn = new int[d.length][d[0].length][d[0][0].length];
-        for(int i =0; i<d.length;i++){
-            for(int j= 0; j<d[0].length; j++){
-                for(int k=0; k<d[0][0].length; k++){
-                    toReturn[i][j][k] = d[i][j][k].intValue();
-                }
-            }
-        }
-        return toReturn;
-    }
+
 }
