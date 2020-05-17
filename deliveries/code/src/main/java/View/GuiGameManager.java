@@ -28,7 +28,7 @@ public class GuiGameManager implements GameManager{
     }
 
     @Override
-    public void updateMap(int[] island) {
+    public void updateMap(int[][][] island) {
 
     }
 

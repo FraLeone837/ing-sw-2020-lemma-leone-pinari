@@ -122,7 +122,7 @@ public class UserInterface implements Runnable {
         messageOut = new Message(Message.MessageType.ZZZ, null);
         switch(msg.getType()){
             case ISLAND_INFO:
-                gameManager.updateMap((int[])msg.getObject());
+                gameManager.updateMap((int[][][])msg.getObject());
                 break;
             case GAME_START:
                 int idWorker1 = ((int)msg.getObject());

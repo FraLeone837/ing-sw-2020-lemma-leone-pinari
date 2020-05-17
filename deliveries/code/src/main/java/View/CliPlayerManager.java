@@ -6,6 +6,8 @@ public class CliPlayerManager implements PlayerManager{
     private Scanner scanner;
     private UserInterface ui;
     private int idFirstWorker;
+    private String godName;
+    private String godDescription;
 
     public CliPlayerManager(UserInterface ui){
         scanner = new Scanner(System.in);
@@ -54,7 +56,10 @@ public class CliPlayerManager implements PlayerManager{
             System.out.println(LABEL_FIRST_WORKER);
         else
             System.out.println(LABEL_SECOND_WORKER);
-        System.out.println("Possible positions are: " + possiblePositions);
+        System.out.println("Possible positions are: ");
+        for(int j =0 ; j< possiblePositions.length; j++){
+            System.out.print(possiblePositions[j]+ ", ");
+        }
         int chosenPosition;
         boolean invalidInput = true;
         do{
@@ -109,6 +114,14 @@ public class CliPlayerManager implements PlayerManager{
             answer = scanner.nextLine();
         }while(answer!="dome" && answer!="building");
         ui.receivedUiInput(answer.equals("dome"));
+    }
+
+    @Override
+    public void showGods(String[] god) {
+        this.godName = god[0];
+        this.godDescription = god[1];
+        System.out.println(LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription);
+        ui.receivedUiInput("Ok!");
     }
 
     /**
