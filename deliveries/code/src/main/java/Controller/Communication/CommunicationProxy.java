@@ -121,8 +121,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 case END_GAME:
                     return;
                 case ZZZ:
-                    //cansendmessage
-//                    System.out.println("rec zzz");
                     synchronized (receivedLock){
                         receivedLock.notifyAll();
                     }
@@ -297,6 +295,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             case MOVE_INDEX_REQ:
                 Index[] toConvert = new Index[((ArrayList<Index>)toSend).size()];
                 for(int i=0; i<toConvert.length;i++){
+//                    System.out.println(ANSI_PURPLE + "INDEX IS:" +((ArrayList<Index>)toSend).get(i) + ANSI_RESET);
                     toConvert[i] = ((ArrayList<Index>)toSend).get(i);
                 }
                 this.toSend = new Message(messageType,convertFromIndexToInts(toConvert));
@@ -382,6 +381,8 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             zzz[x] = ix.getX() + ix.getY()*5;
             x++;
         }
+        for(x = 0; x<toSend.length;x++)
+        System.out.println("Numbers are:" + ANSI_PURPLE + zzz[x] + ANSI_RESET);
         return zzz;
     }
 

@@ -5,6 +5,10 @@ import Controller.Communication.Message;
 import javax.swing.*;
 import java.util.ArrayList;
 
+import static View.CliGameManager.ANSI_BLUE;
+import static View.CliGameManager.ANSI_RESET;
+import static java.lang.System.exit;
+
 public class UserInterface implements Runnable {
 
     private Mode mode;
@@ -136,15 +140,12 @@ public class UserInterface implements Runnable {
                 break;
             case MOVE_INDEX_REQ:
                 messageOut = new Message(Message.MessageType.MOVE_INDEX_REQ);
+
                 playerManager.chooseMovement(convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case BUILD_INDEX_REQ:
                 messageOut = new Message(Message.MessageType.BUILD_INDEX_REQ);
                 playerManager.chooseBuilding(convertToIntArray((ArrayList<Double>)msg.getObject()));
-                break;
-            case BUILD_DOME:
-                messageOut = new Message(Message.MessageType.BUILD_DOME);
-                playerManager.buildDome();
                 break;
             case CHOOSE_WORKER:
                 messageOut = new Message(Message.MessageType.CHOOSE_WORKER);
@@ -152,7 +153,6 @@ public class UserInterface implements Runnable {
                 break;
             case CHOOSE_INDEX_FIRST_WORKER:
                 messageOut = new Message(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER);
-
                 playerManager.placeWorker(true, convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case CHOOSE_INDEX_SEC_WORKER:
@@ -185,6 +185,28 @@ public class UserInterface implements Runnable {
                 god[0] = ((ArrayList<String>) msg.getObject()).get(0);
                 god[1] = ((ArrayList<String>) msg.getObject()).get(1);
                 playerManager.showGods(god);
+                break;
+            case END_GAME:
+                /**
+                 * method that quits the game with a warning
+                 */
+                exit(-1);
+                break;
+            case BUILD_AGAIN:
+                messageOut = new Message(Message.MessageType.BUILD_AGAIN);
+                playerManager.doItAgain(Message.MessageType.BUILD_AGAIN);
+                break;
+            case MOVE_AGAIN:
+                messageOut = new Message(Message.MessageType.MOVE_AGAIN);
+                playerManager.doItAgain(Message.MessageType.MOVE_AGAIN);
+                break;
+            case BUILD_BEFORE:
+                messageOut = new Message(Message.MessageType.BUILD_BEFORE);
+                playerManager.buildBefore();
+                break;
+            case BUILD_DOME:
+                messageOut = new Message(Message.MessageType.BUILD_DOME);
+                playerManager.buildDome();
                 break;
             case MOVEMENT:
                 messageOut = new Message(Message.MessageType.MOVEMENT);

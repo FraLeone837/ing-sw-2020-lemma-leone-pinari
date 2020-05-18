@@ -8,6 +8,16 @@ public class CliGameManager implements GameManager {
 
     private int idFirstWorker;
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
     @Override
     public void startMatch() {
         //System.out.println("Sei connesso");
@@ -65,10 +75,11 @@ public class CliGameManager implements GameManager {
              * il livello determina il colore della cella
              * la presenza di una cupola o di un lavoratore ne determina il contenuto
              * */
-            System.out.print("\u001B[4"+(level+1)+"m\u001B[37m"+content+" ");
+            System.out.print("\u001B[4"+(level+1)+"m\u001B[37m"+workerId+" ");
+//            System.out.println(ANSI_RED+ (level+1) + ANSI_GREEN + content+ " ");
             // se x==4 siamo alla fine della riga, quindi vado a capo dopo aver resettato il colore
             if(x==4)
-                System.out.println("\u001B[0m");
+                System.out.println(ANSI_RESET);
         }
     }
     /*@Override

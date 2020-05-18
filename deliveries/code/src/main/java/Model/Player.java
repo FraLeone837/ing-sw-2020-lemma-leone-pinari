@@ -10,8 +10,8 @@ public class Player {
     public Player(String name, int idPlayer) {
         this.name = name;
         this.idPlayer = idPlayer;
-        this.worker1= new Worker();
-        this.worker2= new Worker();
+        this.worker1= new Worker(2*idPlayer);
+        this.worker2= new Worker(2*idPlayer-1);
         worker1.setOwner(this);
         worker2.setOwner(this);
     }

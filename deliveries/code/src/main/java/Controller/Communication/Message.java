@@ -139,8 +139,13 @@ public class Message {
         BUILD_AGAIN,
         /**
          * Used for god powers,
+         * asks if you want to build a dome or a normal building
          */
         BUILD_DOME,
+        /**
+         * used for god powers,
+         * asks if you want to build before the movement
+         */
         BUILD_BEFORE,
         /**
          * substitutes null value
