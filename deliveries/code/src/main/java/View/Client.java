@@ -57,6 +57,7 @@ public class Client implements Runnable, ServerObserver
         }
         ui.receivedServerInput(messageIn);
 
+
         //serverAdapter.requestSending(messageOut);
 
         while (true) {

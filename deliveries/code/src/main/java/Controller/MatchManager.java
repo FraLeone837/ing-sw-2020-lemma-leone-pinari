@@ -103,11 +103,15 @@ public class MatchManager implements Runnable{
         for(PlayerManager playerManager : playerManagers){
             playerManager.setup(match);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
+
             Index position1 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, possiblePosition);
             Index correctPosition1 = playerManager.getGod().correctIndex(match, position1);
+            match.initWorker(playerManager.getPlayer().getWorker1(),correctPosition1);
             possiblePosition.remove(correctPosition1);
+
             Index position2 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_SEC_WORKER, possiblePosition);
             Index correctPosition2 = playerManager.getGod().correctIndex(match, position2);
+            match.initWorker(playerManager.getPlayer().getWorker2(),correctPosition2);
             possiblePosition.remove(correctPosition2);
         }
     }
@@ -143,7 +147,7 @@ public class MatchManager implements Runnable{
      * give randomly a god to each player
      */
     public void giveGods(){
-        int numberOfGods = 8;
+        int numberOfGods = 9;
         ArrayList<Integer> given = new ArrayList<Integer>();
         Random godGen = new Random();
         God god = new Apollo();
@@ -173,9 +177,12 @@ public class MatchManager implements Runnable{
                     god = new Hephaestus();
                     break;
                 case 6:
-                    god = new Pan();
+                    god = new Minotaur();
                     break;
                 case 7:
+                    god = new Pan();
+                    break;
+                case 8:
                     god = new Prometheus();
                     break;
             }

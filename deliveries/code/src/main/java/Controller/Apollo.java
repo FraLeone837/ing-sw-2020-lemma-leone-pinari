@@ -34,8 +34,8 @@ public class Apollo extends God {
         //take index1 where to move from view
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
         Index actuaMovelIndex = correctIndex(match,tempMoveIndex);
-        Worker o = match.selectCell(actuaMovelIndex).getWorker();
-        match.moveWorker(o, worker.getPosition());
+        Worker opponent = match.selectCell(actuaMovelIndex).getWorker();
+        match.moveWorker(opponent, worker.getPosition());
         match.moveWorker(worker,actuaMovelIndex);
         if(checkWin(match, worker)){
             setWinner(true);
@@ -55,8 +55,8 @@ public class Apollo extends God {
     public void turn(Match match, Worker worker, Index index1, Index index2) {
         setPrevIndex(worker.getPosition());
         //take index1 where to move from view
-        Worker o = match.selectCell(index1).getWorker();
-        match.moveWorker(o, worker.getPosition());
+        Worker opponent = match.selectCell(index1).getWorker();
+        match.moveWorker(opponent, worker.getPosition());
         match.moveWorker(worker,index1);
         checkWin(match, worker);
         //take index2 where to build from view
@@ -82,6 +82,9 @@ public class Apollo extends God {
                                     break;
                                 }
                                 if(!checkedCell.isBuilding()){
+                                    if(checkedCell.getWorker()!=null && checkedCell.getWorker().getOwner()==worker.getOwner() && checkedCell.getWorker()!=worker){
+                                        break;
+                                    }
                                     ArrayList<Invisible> invisibles = checkedCell.getForbidden();
                                     Boolean forbiddenCell = false;
                                     for(Invisible inv : invisibles){

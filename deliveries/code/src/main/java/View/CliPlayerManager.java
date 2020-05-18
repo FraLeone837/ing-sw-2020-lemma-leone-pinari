@@ -1,11 +1,17 @@
 package View;
 
+import Controller.Communication.Message;
+
 import java.util.Scanner;
+
+import static java.lang.Character.toUpperCase;
 
 public class CliPlayerManager implements PlayerManager{
     private Scanner scanner;
     private UserInterface ui;
     private int idFirstWorker;
+    private String godName;
+    private String godDescription;
 
     public CliPlayerManager(UserInterface ui){
         scanner = new Scanner(System.in);
@@ -49,25 +55,6 @@ public class CliPlayerManager implements PlayerManager{
     }
 
     @Override
-    public void placeWorker(boolean firstWorker, int[] possiblePositions) {
-        if(firstWorker)
-            System.out.println(LABEL_FIRST_WORKER);
-        else
-            System.out.println(LABEL_SECOND_WORKER);
-        System.out.println("Possible positions are: " + possiblePositions);
-        int chosenPosition;
-        boolean invalidInput = true;
-        do{
-            chosenPosition = scanner.nextInt();
-            for(int i=0; i<possiblePositions.length; i++){
-                if(chosenPosition == possiblePositions[i])
-                    invalidInput = false;
-            }
-        } while(invalidInput);
-        ui.receivedUiInput(chosenPosition);
-    }
-
-    @Override
     public void chooseWorker(int workers) {
         int chosenWorker = workers + idFirstWorker - 1;
         switch(workers){
@@ -88,27 +75,76 @@ public class CliPlayerManager implements PlayerManager{
     }
 
     @Override
+    public void placeWorker(boolean firstWorker, int[] possiblePositions) {
+        if(firstWorker)
+            System.out.println(LABEL_FIRST_WORKER);
+        else
+            System.out.println(LABEL_SECOND_WORKER);
+        convertToCellNumeration(possiblePositions);
+        ui.receivedUiInput(validCoordinatesInput(possiblePositions));
+    }
+
+    @Override
     public void chooseMovement(int[] movements) {
         System.out.println(LABEL_CHOOSE_WHERE_TO_MOVE);
-        System.out.println("Possible movements are: " + movements);
+        System.out.println("Possible movements are: ");
+        convertToCellNumeration(movements);
         ui.receivedUiInput(validCoordinatesInput(movements));
     }
 
     @Override
     public void chooseBuilding(int[] buildings) {
         System.out.println(LABEL_CHOOSE_WHERE_TO_BUILD);
-        System.out.println("Possible buildings are: " + buildings);
+        System.out.println("Possible places where to build are: ");
+        convertToCellNumeration(buildings);
         ui.receivedUiInput(validCoordinatesInput(buildings));
     }
 
     @Override
     public void buildDome() {
         System.out.println(LABEL_BUILD_DOME);
-        String answer;
+        String answer = "";
         do{
+            System.out.println("Please write dome or building, to select your choice.");
             answer = scanner.nextLine();
-        }while(answer!="dome" && answer!="building");
-        ui.receivedUiInput(answer.equals("dome"));
+        }while(answer.toUpperCase() !="DOME" && answer !="BUILDING");
+        ui.receivedUiInput(answer.toUpperCase().equals("DOME"));
+    }
+
+    @Override
+    public void doItAgain(Message.MessageType moveAgain) {
+        System.out.print(LABEL_MOVE_AGAIN);
+        if(moveAgain == Message.MessageType.MOVE_AGAIN){
+            System.out.print("Move again?");
+        } else if(moveAgain == Message.MessageType.BUILD_AGAIN){
+            System.out.println("Build again?");
+        }
+        String x = "";
+        do{
+            System.out.println("Write yes/no, please.");
+            x = scanner.nextLine();
+        }while(x.toUpperCase() != "YES" || x.toUpperCase() != "NO");
+        ui.receivedUiInput(x.toUpperCase().equals("YES"));
+
+    }
+
+    @Override
+    public void buildBefore(){
+        System.out.println(LABEL_BUILD_BEFORE);
+        String x = "";
+        do{
+            System.out.println("Write yes/no, please.");
+            x = scanner.nextLine();
+        } while(x.toUpperCase() != "YES" || x.toUpperCase() != "NO");
+        ui.receivedUiInput(x.toUpperCase().equals("YES"));
+    }
+
+    @Override
+    public void showGods(String[] god) {
+        this.godName = god[0];
+        this.godDescription = god[1];
+        System.out.println(LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription);
+        ui.receivedUiInput("Ok!");
     }
 
     /**
@@ -130,6 +166,7 @@ public class CliPlayerManager implements PlayerManager{
         int chosenCell;
         boolean invalidInput = true;
         do{
+            System.out.println("Choose one of the coordinates given above.");
             chosenCell = correspondingCellNumeration(scanner.nextLine());
             for(int i=0; i<possibleCell.length; i++){
                 if(chosenCell == possibleCell[i])
@@ -138,6 +175,7 @@ public class CliPlayerManager implements PlayerManager{
         } while(invalidInput);
         return chosenCell;
     }
+
     /**
      * Given the coordinates from console, this method validates them
      * and give back a corresponding int according to the numeration
@@ -154,5 +192,18 @@ public class CliPlayerManager implements PlayerManager{
         int x = coor.charAt(0)-97;
         int y = coor.charAt(1)-48;
         return y * 5 + x;
+    }
+
+    private void convertToCellNumeration(int[] buildings) {
+        char xPos;
+        char yPos;
+
+        for(int building : buildings){
+            xPos =(char)(97 + building%5);
+            yPos =(char)(48 + building/5);
+            System.out.print(toUpperCase(xPos));
+            System.out.print(yPos + ", ");
+        }
+        System.out.println();
     }
 }

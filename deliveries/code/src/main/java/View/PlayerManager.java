@@ -1,5 +1,6 @@
 package View;
 
+import Controller.Communication.Message;
 import Model.Index;
 import Model.Worker;
 
@@ -30,6 +31,9 @@ public interface PlayerManager {
     final String LABEL_BUILD_DOME = "Do you want to build a dome or a building?";
     final String LABEL_YOUR_GOD = "Your God is: " + ANSI_BLUE ;
     final String LABEL_YOUR_GOD_DESC = ANSI_RESET +", ";
+    final String LABEL_MOVE_AGAIN = "Do you want to ";
+    final String LABEL_BUILD_BEFORE = "Do you want to build before moving?";
+
 
 
     /**
@@ -90,4 +94,16 @@ public interface PlayerManager {
      * show the god's description and name
      */
     public abstract void showGods(String[] god);
+
+    /**
+     * used if god power allows to move/build again
+     * @param moveAgain only equals to MOVE_AGAIN or BUILD_AGAIN
+     */
+    public abstract void doItAgain(Message.MessageType moveAgain);
+
+    /**
+     * used by god powers if you want to build
+     * before moving
+     */
+    public abstract void buildBefore();
 }
