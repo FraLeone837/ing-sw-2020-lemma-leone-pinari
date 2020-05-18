@@ -35,7 +35,6 @@ public interface PlayerManager {
     final String LABEL_BUILD_BEFORE = "Do you want to build before moving?";
 
 
-
     /**
      * Ask the user the IP of the server it wants to connect to
      */

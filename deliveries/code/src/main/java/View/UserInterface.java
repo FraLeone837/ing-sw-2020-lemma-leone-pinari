@@ -41,6 +41,8 @@ public class UserInterface implements Runnable {
         if(mode== Mode.CLI){
             gameManager = new CliGameManager();
             playerManager = new CliPlayerManager(this);
+            Thread player = new Thread((CliPlayerManager)playerManager);
+            player.start();
         }
         else{
             gameManager = new GuiGameManager();
@@ -108,8 +110,21 @@ public class UserInterface implements Runnable {
         }
         else{
             inputUi = true;
+            switch(messageOut.getType()){
+                case MOVE_INDEX_REQ:
+                case BUILD_INDEX_REQ:
+                case CHOOSE_INDEX_FIRST_WORKER:
+                case CHOOSE_INDEX_SEC_WORKER:
+                    input = correspondingCellNumeration((String) input);
+                    break;
+                case NUMBER_PLAYERS:
+                    input = Integer.parseInt((String)input);
+                    break;
+                case BUILD_DOME:
+                    input = ((String)input).equals("DOME");
+                    break;
+            }
             messageOut.setObject(input);
-//            this.ip=(String)input;
             synchronized (this){
                 notify();
             }
@@ -227,5 +242,22 @@ public class UserInterface implements Runnable {
         return toReturn;
     }
 
+    /**
+     * Given the coordinates from console, this method validates them
+     * and give back a corresponding int according to the numeration
+     * @param coor a two char String corrersponding to a Cell (A-E)(1-5)
+     * @return an int corresponding to the numeration of the cell
+     */
+    private int correspondingCellNumeration(String coor){
+        if(coor.length()!=2)
+            return -1;
+        if(coor.charAt(0)<'a'&& coor.charAt(0)>'e')
+            return -1;
+        if(coor.charAt(1)<'1'&& coor.charAt(1)>'5')
+            return -1;
+        int x = coor.charAt(0)-97;
+        int y = coor.charAt(1)-48;
+        return y * 5 + x;
+    }
 
 }
