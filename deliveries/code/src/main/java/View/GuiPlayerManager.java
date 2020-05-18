@@ -1,5 +1,7 @@
 package View;
 
+import Controller.Communication.Message;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -73,6 +75,16 @@ public class GuiPlayerManager implements PlayerManager{
 
     @Override
     public void showGods(String[] god) {
+
+    }
+
+    @Override
+    public void doItAgain(Message.MessageType moveAgain) {
+        
+    }
+
+    @Override
+    public void buildBefore() {
 
     }
 
