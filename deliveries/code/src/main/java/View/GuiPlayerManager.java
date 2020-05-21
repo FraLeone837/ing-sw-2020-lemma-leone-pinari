@@ -41,10 +41,31 @@ public class GuiPlayerManager implements PlayerManager{
         cells = new JButton[25];
         panel.setLayout(new GridLayout(5, 5));
         for(int i=0; i<25; i++){
-            JButton b = new JButton("Button "+ i);
-            b.addActionListener(new CellListener(i));
-            cells[i] = b;
-            panel.add(b);
+            JButton l = new JButton();
+            //l.setBackground(null);
+            l.setBorder(null);
+            //JPanel p = new JPanel();
+            l.setLayout(null);
+            //JButton b = new JButton("Button "+ i);
+            JLabel b = new JLabel("Button");
+            b.setBounds(0, 0, 100, 100);
+            //JButton b2 = new JButton("Janson "+ i);
+            JLabel b2 = new JLabel("Janson");
+            b2.setBounds(20, 20, 80, 80);
+            //b.addActionListener(new CellListener(i));
+            //cells[i] = p;
+            l.add(b);
+            l.add(b2);
+            l.setComponentZOrder(b, 1);
+            l.setComponentZOrder(b2, 0);
+            l.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("lol");
+                }
+            });
+            cells[i] = l;
+            panel.add(cells[i]);
         }
     }
 
@@ -102,19 +123,14 @@ public class GuiPlayerManager implements PlayerManager{
         submit.addActionListener(new TextInputListener(tf));
         panel.add(submit);
         SwingUtilities.updateComponentTreeUI(panel);
-        JButton stampo = new JButton("STAMPO");
-        SwingUtilities.invokeLater(new Runnable() {
+        /*JButton stampo = new JButton("STAMPO");
+        stampo.addActionListener(new ActionListener() {
             @Override
-            public void run() {
-                stampo.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        System.out.println("EEEEEEE MACARENA");
-                    }
-                });
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("EEEEEEE MACARENA");
             }
         });
-        panel.add(stampo);
+        panel.add(stampo);*/
     }
 
 

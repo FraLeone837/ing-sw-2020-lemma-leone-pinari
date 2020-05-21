@@ -29,6 +29,8 @@ public interface GameManager {
      */
     public abstract void updateMap(int[] island);
 
+    public abstract void showGod(String[] god);
+
     /**
      * Invoked when someone wins
      * @param win true if it's the player on this client to have won

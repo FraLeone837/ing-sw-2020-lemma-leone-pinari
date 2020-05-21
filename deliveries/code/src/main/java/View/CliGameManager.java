@@ -82,6 +82,11 @@ public class CliGameManager implements GameManager {
                 System.out.println(ANSI_RESET);
         }
     }
+
+    @Override
+    public void showGod(String[] god) {
+
+    }
     /*@Override
     public void updateMap(Island island, Player player) {
         /*System.out.println("  a b c d e ");
