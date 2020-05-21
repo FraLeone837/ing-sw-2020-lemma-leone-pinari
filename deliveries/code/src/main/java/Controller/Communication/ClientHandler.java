@@ -94,7 +94,7 @@ public class ClientHandler implements Runnable
          */
         while(true){
             try{
-                System.out.println(ANSI_RED + "About to read" + ANSI_RESET);
+//                System.out.println(ANSI_RED + "About to read" + ANSI_RESET);
 
                 Object in = input.readObject();
                 String inText = (String)in;
@@ -109,12 +109,12 @@ public class ClientHandler implements Runnable
                         toSendMsg = null;
 
                         try{
-                           System.out.println("WAITING ON A SEND MESSAGE - clientHandler");
+                           System.out.println("WAITING ON A SEND MESSAGE " + this);
                             sendLock.wait();
                         } catch (InterruptedException e){
                             e.printStackTrace();
                         }
-                        System.out.println(ANSI_BLUE+ "We have a new toSendMsg which is: " + toSendMsg + ANSI_RESET);
+                        System.out.println(ANSI_BLUE+ "We have a new toSendMsg which is: " + toSendMsg + ANSI_RESET + " " + this);
                         if(toSendMsg == null) continue;
 
                         output.writeObject(gson.toJson(toSendMsg));

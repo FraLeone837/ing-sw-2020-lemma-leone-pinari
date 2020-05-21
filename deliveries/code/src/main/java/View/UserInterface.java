@@ -227,6 +227,11 @@ public class UserInterface implements Runnable {
                 messageOut = new Message(Message.MessageType.MOVEMENT);
                 playerManager.chooseWorker(convertToInt((Double)msg.getObject()));
                 break;
+            //ignore
+            case YYY:
+                messageOut = new Message(Message.MessageType.YYY);
+                receivedUiInput(messageOut);
+                break;
         }
     }
 

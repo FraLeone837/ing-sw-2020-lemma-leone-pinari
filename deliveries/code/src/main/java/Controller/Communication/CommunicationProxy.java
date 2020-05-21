@@ -34,7 +34,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
 
     private boolean acceptInput;
 
-
     public void setAcceptInput(boolean acceptInput) {
         this.acceptInput = acceptInput;
     }
@@ -59,6 +58,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         synchronized (receivedLock){
             received = clientHandler.getCurrentMessage();
             receivedLock.notifyAll();
+            isWaitingToReceive = false;
         }
     }
 
@@ -110,28 +110,26 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             switch(typeCopy){
                 case NUMBER_PLAYERS:
                 case GET_NAME:
-                    System.out.println(ANSI_BLACK + "Sending wait to start" + ANSI_RESET);
-//                    toSend = new Message(Message.MessageType.WAIT_START, "Wait please");
                     sendMessage(Message.MessageType.WAIT_START,"Wait Please");
-
                     break;
                 case INFORMATION:
-                    ic.Broadcast(new Message(Message.MessageType.ISLAND_INFO, ic.getMatchManager().getInformationArray()));
+                    ic.Broadcast(new Message(Message.MessageType.ISLAND_INFO, "Info Array"));
                     break;
                 case END_GAME:
                     return;
                 case ZZZ:
-                    synchronized (receivedLock){
-                        receivedLock.notifyAll();
-                    }
-                    System.out.println(ANSI_BLACK +"cont flag = true"+ANSI_RESET);
+//                    synchronized (receivedLock){
+//                        receivedLock.notifyAll();
+//                    }
                 default:
+//                    synchronized (receivedLock){
+//                        receivedLock.notifyAll();
+//                    }
             }
 
             waitForGameMessage(typeCopy);
 
             timer.setCurrentSecond(timeConstant);
-//            System.out.println("About to send message to client handler from com proxy");
             clientHandler.setToSendMsg(toSend);
 
 
@@ -142,7 +140,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                     receivedLock.wait();
                 } catch(InterruptedException e){
                     e.printStackTrace();
-//                    System.out.println("\nTheoretically we have a received message and based on that we see what to do.");
                 }
             }
 
@@ -169,8 +166,12 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         /**
          * stops execution while
          * we have not yet received a message
+         * sets waiting to receive to true and gets lock
          */
         canSendMessage();
+        if(messageType == Message.MessageType.ISLAND_INFO){
+            toSend = ic.getMatchManager().getInformationArray();
+        }
         /**
          * prepare to send a message
          */
@@ -179,7 +180,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             convertToMessage(messageType,toSend);
             //releases lock and notifies that object has changed
             gameSideLock.notifyAll();
-            System.out.println("GameSideLock notified --:-- What Comm proxy sent: "+ messageType + "  " + this);
+            System.out.println("GameSideLock notified --:-- What Comm proxy sent: "+ messageType + "  " + this.clientHandler);
         }
 
         Message copy;
@@ -204,17 +205,19 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 }
             }
             copy = new Message(received);
-            isWaitingToReceive = false;
-            receivedLock.notifyAll();
+
             //MatchManager gets the object they want so we send a map of the current status
             if(isNotBeforeGameInput(copy.getType())){
-                try{
-                    receivedLock.wait(500);
-                } catch (InterruptedException e){
+                ic.Broadcast(new Message(Message.MessageType.ISLAND_INFO, ic.getMatchManager().getInformationArray()));
 
-                }
-                sendMessage(Message.MessageType.ISLAND_INFO,ic.getMatchManager().getInformationArray());
+//                try{
+//                    receivedLock.wait(500);
+//                } catch (InterruptedException e){
+//
+//                }
             }
+//            isWaitingToReceive = false;
+            receivedLock.notifyAll();
 //                received.setType(Message.MessageType.INFORMATION);
         }
 
@@ -224,9 +227,9 @@ public class CommunicationProxy implements Runnable, MessageObservers{
 
     private void canSendMessage() {
         while(isWaitingToReceive == true){
-            synchronized (receivedLock){
+            synchronized (gameSideLock){
                 try{
-                    receivedLock.wait();
+                    gameSideLock.wait();
                 } catch (InterruptedException e){
                     e.printStackTrace();
                 }
@@ -381,8 +384,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             zzz[x] = ix.getX() + ix.getY()*5;
             x++;
         }
-        for(x = 0; x<toSend.length;x++)
-        System.out.println("Numbers are:" + ANSI_PURPLE + zzz[x] + ANSI_RESET);
         return zzz;
     }
 
@@ -418,20 +419,16 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             isWaitingToReceive = true;
             return;
         }
-        synchronized (receivedLock){
-            isWaitingToReceive = false;
-            receivedLock.notifyAll();
-        }
 
         synchronized (gameSideLock){
+            isWaitingToReceive = false;
             gameSideLock.notifyAll();
             try{
-                System.out.println("GameSideLock in waitForGameMessage");
                 gameSideLock.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("Notified");
+//            System.out.println("Notified");
 
         }
 

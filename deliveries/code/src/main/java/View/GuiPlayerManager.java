@@ -80,7 +80,7 @@ public class GuiPlayerManager implements PlayerManager{
 
     @Override
     public void doItAgain(Message.MessageType moveAgain) {
-        
+
     }
 
     @Override

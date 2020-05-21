@@ -190,6 +190,7 @@ public class MatchManager implements Runnable{
             CommunicationProxy CP = playerManager.getCommunicationProxy();
             CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+//            intermediaryClass.Broadcast(new Message(Message.MessageType.YYY, "Sending nothing"));
         }
     }
 
