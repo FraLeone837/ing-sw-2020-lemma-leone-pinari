@@ -23,6 +23,7 @@ public class UserInterface implements Runnable {
     Message messageOut;
 
     String ip;
+    int idFirstWorker;
 
     private String godDescription;
 
@@ -47,15 +48,15 @@ public class UserInterface implements Runnable {
         else{
             gameManager = new GuiGameManager();
             playerManager = new GuiPlayerManager(this);
-            /*SwingUtilities.invokeLater(new Runnable() {
+            SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    */mainFrame = new MainFrame();
+                    mainFrame = new MainFrame();
                     mainFrame.setPlayerManagerPanel(((GuiPlayerManager)playerManager).getPanel());
-                    mainFrame.setTopGameManagerPanel(((GuiGameManager)gameManager).getPanel());
+                    mainFrame.setBottomGameManagerPanel(((GuiGameManager)gameManager).getPanel());
                     mainFrame.show();
-               /* }
-            });*/
+                }
+            });
         }
         messageOut = new Message(Message.MessageType.JOIN_GAME);
         playerManager.getServerIp();
@@ -117,6 +118,9 @@ public class UserInterface implements Runnable {
                 case CHOOSE_INDEX_SEC_WORKER:
                     input = correspondingCellNumeration((String) input);
                     break;
+                case CHOOSE_WORKER:
+                    input = ((int) input) - idFirstWorker + 1;
+                    break;
                 case NUMBER_PLAYERS:
                     input = Integer.parseInt((String)input);
                     break;
@@ -146,10 +150,10 @@ public class UserInterface implements Runnable {
                 receivedUiInput(messageOut);
                 break;
             case GAME_START:
-                int idWorker1 = convertToInt((Double) msg.getObject());
+                idFirstWorker = convertToInt((Double) msg.getObject());
                 if(mode == Mode.CLI) {
-                    ((CliPlayerManager) playerManager).setIdFirstWorker(idWorker1);
-                    ((CliGameManager) gameManager).printIdWorkers(idWorker1);
+                    ((CliPlayerManager) playerManager).setIdFirstWorker(idFirstWorker);
+                    ((CliGameManager) gameManager).printIdWorkers(idFirstWorker);
                 }
                 receivedUiInput(messageOut);
                 break;
@@ -199,6 +203,7 @@ public class UserInterface implements Runnable {
                 String[] god = new String[2];
                 god[0] = ((ArrayList<String>) msg.getObject()).get(0);
                 god[1] = ((ArrayList<String>) msg.getObject()).get(1);
+                gameManager.showGod(god);
                 playerManager.showGods(god);
                 break;
             case END_GAME:
