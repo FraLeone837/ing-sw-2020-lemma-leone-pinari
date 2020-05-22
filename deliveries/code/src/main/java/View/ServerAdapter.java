@@ -120,7 +120,6 @@ public class ServerAdapter implements Runnable
 
         /* send the string to the server and get the new string back */
         outputStm.writeObject(converted);
-        System.out.println("");
 
 
         String newStr = (String)inputStm.readObject();
@@ -132,7 +131,7 @@ public class ServerAdapter implements Runnable
         }
 
         Message msg = gson.fromJson(newStr, Message.class);
-        System.out.println("Received message is " + msg);
+        System.out.println("Received message is " + msg);//+" and it contains: "+msg.getObject());
         /* notify the observers that we got the string */
         for (ServerObserver observer: observersCpy) {
             observer.didReceiveMessage(msg);

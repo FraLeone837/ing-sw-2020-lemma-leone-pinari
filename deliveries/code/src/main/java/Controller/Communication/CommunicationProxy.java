@@ -38,6 +38,10 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         this.acceptInput = acceptInput;
     }
 
+    public Message getToSend(){
+        return new Message(toSend);
+    }
+
     /**
      * @param cl not null
      * @param ic not null
@@ -47,6 +51,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         this.ic = ic;
         this.acceptInput = true;
         this.isWaitingToReceive = true;
+        this.toSend = new Message(Message.MessageType.ZZZ,"waiting for input");
         clientHandler.addObserver(this);
     }
 
@@ -99,57 +104,51 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         }
 
         timer.setCurrentSecond(timeConstant);
-
+        boolean send = false;
+        boolean rec = true;
         while(true){
+            rec = true;
+            send = false;
             /**
              * messages to be sent automatically without any need of input from client/controller
              */
             Message.MessageType typeCopy = received.getType();
             System.out.println("What Comm proxy received: " + received + " " + this.clientHandler);
 
+            rec=false;
 
-            switch(typeCopy){
-                case NUMBER_PLAYERS:
-                case GET_NAME:
-                    sendMessage(Message.MessageType.WAIT_START,"Wait Please");
-                    break;
-                case INFORMATION:
-                    ic.Broadcast(new Message(Message.MessageType.ISLAND_INFO, "Info Array"));
-                    break;
-                case GAME_START:
-                    sendMessage(Message.MessageType.ISLAND_INFO,ic.getMatchManager().getInformationArray());
-                case END_GAME:
-                    return;
+            if(typeCopy == Message.MessageType.END_GAME)
+                return;
 
-                case ZZZ:
-                default:
-            }
-
+//            toSend = new Message(Message.MessageType.ZZZ,"Waiting");
+            //changes message toSend to ZZZ and waits until gamesidelock.notifyAll() updates toSend
             waitForGameMessage(typeCopy);
-
+            send = true;
+            //sets msg toSend and notifies client handler
             clientHandler.setToSendMsg(toSend);
 
             //in place of received = null,serves for control
             received.setType(Message.MessageType.YYY);
 
-            while(received.getType() == Message.MessageType.YYY){
-                synchronized (receivedLock){
-                    try{
-                        receivedLock.wait();
-                    } catch(InterruptedException e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            if(received.getType() == Message.MessageType.YYY) continue;
+            waitForReceiveMessage();
 
             timer.setCurrentSecond(timeConstant);
-
 
         }
 
 
+    }
+
+    private void waitForReceiveMessage(){
+        while(received.getType() == Message.MessageType.YYY){
+            synchronized (receivedLock){
+                try{
+                    receivedLock.wait();
+                } catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -160,16 +159,15 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      */
     private void waitForGameMessage(Message.MessageType MsT) {
 
-        if(MsT == Message.MessageType.PING_IS_ALIVE ||
-                MsT == Message.MessageType.NUMBER_PLAYERS||
-                MsT == Message.MessageType.GET_NAME||
-                MsT == Message.MessageType.INFORMATION||
-                MsT == Message.MessageType.FINISHED_TURN||
-                MsT == Message.MessageType.END_GAME)
-        {
-            isWaitingToReceive = true;
-            return;
-        }
+//        if(     MsT == Message.MessageType.PING_IS_ALIVE ||
+//                MsT == Message.MessageType.NUMBER_PLAYERS||
+//                MsT == Message.MessageType.INFORMATION||
+//                MsT == Message.MessageType.TURN_START||
+//                MsT == Message.MessageType.END_GAME)
+//        {
+//            isWaitingToReceive = true;
+//            return;
+//        }
 
         synchronized (gameSideLock){
             isWaitingToReceive = false;
@@ -182,7 +180,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                     e.printStackTrace();
                 }
             }
-//            System.out.println("Notified");
 
         }
 
@@ -199,14 +196,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * @return right value of the answer (index/int for the worker/string for the name)
      */
     public Object sendMessage(Message.MessageType messageType, Object toSend){
-
-//        if(messageType == Message.MessageType.ISLAND_INFO){
-//            toSend = ic.getMatchManager().getInformationArray();
-//        }
-//        if(isNotBeforeGameInput(messageType)) {
-//            int[] infoToSend = ic.getMatchManager().getInformationArray();
-//            ic.Broadcast(new Message(Message.MessageType.ISLAND_INFO, infoToSend));
-//        }
         /**
          * stops execution while
          * we have not yet received a message
@@ -219,18 +208,16 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         synchronized (gameSideLock){
             //converts gameSideMessage a.k.a toSend into a certain message type
             convertToMessage(messageType,toSend);
+
             //releases lock and notifies that object has changed
             gameSideLock.notifyAll();
-            System.out.println("GameSideLock notified --:-- What Comm proxy sent: "+ messageType + "  " + this.clientHandler);
-        }
 
+            System.out.println("GameSideLock notified --:-- What Comm proxy sent: "+ messageType + "  " + this.clientHandler);
+
+        }
         Message copy;
 
         if(!isWaitingForResponse(messageType)){
-//            synchronized (this.receivedLock){
-//                isWaitingToReceive =false;
-//                receivedLock.notifyAll();
-//            }
             return new Object();
         }
 
@@ -246,16 +233,11 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 }
             }
             copy = new Message(received);
-
-            //MatchManager gets the object they want so we send a map of the current status
-//            isWaitingToReceive = false;
-//            receivedLock.notifyAll();
-//                received.setType(Message.MessageType.INFORMATION);
+            Object c = convertToSpecificObject(copy);
+            return c;
         }
 
 
-        Object c = convertToSpecificObject(copy);
-        return c;
     }
 
     private void canSendMessage() {
@@ -272,23 +254,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         this.isWaitingToReceive = true;
     }
 
-    /**
-     * if we get input that changes the board, returns true
-     * @param messageType
-     * @return
-     */
-    private boolean isNotBeforeGameInput(Message.MessageType messageType) {
-        switch (messageType){
-            case MOVEMENT:
-            case CHOOSE_INDEX_FIRST_WORKER:
-            case CHOOSE_INDEX_SEC_WORKER:
-            case MOVE_INDEX_REQ:
-            case BUILD_INDEX_REQ:
-                return true;
-            default:
-                return false;
-        }
-    }
 
     /**
      * converts whatever is received into an object from message
@@ -428,9 +393,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         return clientHandler;
     }
 
-    public void resendLastMessage(){
-
-    }
 
     /**
      * method called when timeconstant seconds have
@@ -444,7 +406,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 receivedLock.notifyAll();
             }
         }
-
         //The method below will not wait for output from client, after isWaitingInput method will return new Object
         ic.Broadcast(messageType, cause);
 

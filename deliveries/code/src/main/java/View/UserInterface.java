@@ -123,7 +123,7 @@ public class UserInterface implements Runnable {
                     input = correspondingCellNumeration((String) input);
                     break;
                 case CHOOSE_WORKER:
-                    input = ((int) input) - idFirstWorker + 1;
+                    input = (Integer.parseInt((String)input)) - idFirstWorker + 1;
                     break;
                 case NUMBER_PLAYERS:
                     input = Integer.parseInt((String)input);
@@ -189,10 +189,6 @@ public class UserInterface implements Runnable {
                 receivedUiInput(messageOut);
                 gameManager.waitForPlayer();
                 break;
-            case PING_IS_ALIVE:
-                /*invia subito*/
-                //response = new Message(Message.MessageType.PING_IS_ALIVE, null);
-                break;
             case PLAYER_LOST:
                 gameManager.printWin(false);
                 break;
@@ -238,12 +234,38 @@ public class UserInterface implements Runnable {
                 messageOut = new Message(Message.MessageType.MOVEMENT);
                 playerManager.chooseWorker(convertToInt((Double)msg.getObject()));
                 break;
-            //ignore
-            case YYY:
-                messageOut = new Message(Message.MessageType.YYY);
+            //NEWLY ADDED! as of 23-05
+            case TURN_START:
+                String[] x = convertLinkedTreeMapToString(msg);
+                playerManager.showTurn(x[0]);
                 receivedUiInput(messageOut);
                 break;
+            default:
+                receivedUiInput(messageOut);
         }
+    }
+
+    private String[] convertLinkedTreeMapToString(Message message) {
+        com.google.gson.internal.LinkedTreeMap x = (com.google.gson.internal.LinkedTreeMap)message.getObject();
+        Object[] z = x.values().toArray();
+        String[] toRet = null;
+        for(Object d : z){
+            if(d.getClass() == java.util.ArrayList.class){
+                java.util.ArrayList copy = ((java.util.ArrayList)d);
+                toRet = new String[copy.size()];
+                for(int i =0; i< copy.size(); i++){
+                    toRet[i] = (String) copy.get(i);
+                }
+            }
+        }
+        if(toRet!=null)
+            return toRet;
+        else
+            for(int i = 0;i<100; i++){
+                System.out.println("Error");
+            }
+        exit(-1);
+        return new String[2];
     }
 
     private int convertToInt(Double d){

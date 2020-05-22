@@ -76,13 +76,6 @@ public class Message {
         BUILD_INDEX_REQ,
 
         /**
-         * sent from client to server anytime there are no games running
-         * client sends name and requires new game.
-         * creates a game and sends an ack message,
-         * otherwise connects the person to a game that is already created
-         */
-        CREATE_GAME,
-        /**
          * called directly after create game to indicate the number of
          * players that will play in the game
          */
@@ -94,7 +87,7 @@ public class Message {
         /**
          * a message sent so the other person can afterwards wait
          */
-        FINISHED_TURN,
+        TURN_START,
         /**
          * Game has started
          */

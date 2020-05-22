@@ -10,6 +10,8 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static Controller.Communication.ClientHandler.*;
+
 public class MatchManager implements Runnable{
 
     private ArrayList<PlayerManager> playerManagers = new ArrayList<>();
@@ -73,8 +75,12 @@ public class MatchManager implements Runnable{
         names.add(playerName);
         PlayerManager firstPlayer = new PlayerManager(new Player(playerName, 1), firstCP);
         playerManagers.add(firstPlayer);
+
         //ask how many players does he want to play with
         int playersNumber = (int)firstCP.sendMessage(Message.MessageType.NUMBER_PLAYERS, "How many players do you want to play with?");
+
+        firstCP.sendMessage(Message.MessageType.WAIT_START, "Please wait for the game to start");
+
         for (int x=2; x<=playersNumber; x++){
             CommunicationProxy newCP = intermediaryClass.getNewCommunicationProxy();
             this.communicationProxies.add(newCP);
@@ -85,7 +91,9 @@ public class MatchManager implements Runnable{
             names.add(playerName);
             PlayerManager newPlayer = new PlayerManager(new Player(playerName, x), newCP);
             playerManagers.add(newPlayer);
+            newCP.sendMessage(Message.MessageType.WAIT_START, "Please wait for the game to start");
         }
+
         //give gods to the players
         giveGods();
     }
@@ -94,6 +102,7 @@ public class MatchManager implements Runnable{
      * each player puts his own invisible blocks on the game board if his god foresees it, and sets his workers
      */
     public void setupGame(){
+        intermediaryClass.Broadcast(new Message(Message.MessageType.ISLAND_INFO, match.getInformationArray()));
         ArrayList<Index> possiblePosition = new ArrayList<Index>();
         for (int x=0; x<5; x++){
             for (int y=0; y<5; y++){
@@ -123,11 +132,15 @@ public class MatchManager implements Runnable{
      */
     public void turn(){
         for(PlayerManager playerManager : playerManagers){
+            CommunicationProxy thisPlayer = playerManager.getCommunicationProxy();
             if(playerManagers.size()==1){
                 giveVictory(playerManager);
                 matchInProgress = false;
                 return;
             }
+            String[] playerName = new String[1];
+            playerName[0] = playerManager.getPlayer().getName();
+            intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerName));
             playerManager.turn(match);
             if(playerManager.getGod().getWinner()==true){
                 giveVictory(playerManager);
@@ -135,7 +148,7 @@ public class MatchManager implements Runnable{
                 return;
             }
             if(playerManager.getGod().getInGame()==false){
-                playerManager.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
+                thisPlayer.sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
                 match.removeWorker(playerManager.getPlayer().getWorker1());
                 match.removeWorker(playerManager.getPlayer().getWorker2());
                 match.removePlayer(playerManager.getPlayer());
@@ -191,7 +204,6 @@ public class MatchManager implements Runnable{
             CommunicationProxy CP = playerManager.getCommunicationProxy();
             CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
-//            intermediaryClass.Broadcast(new Message(Message.MessageType.YYY, "Sending nothing"));
         }
     }
 
