@@ -119,7 +119,7 @@ public class UserInterface implements Runnable {
                     input = correspondingCellNumeration((String) input);
                     break;
                 case CHOOSE_WORKER:
-                    input = ((int) input) - idFirstWorker + 1;
+                    input = ((Integer.parseInt((String)input)) - idFirstWorker + 1);
                     break;
                 case NUMBER_PLAYERS:
                     input = Integer.parseInt((String)input);

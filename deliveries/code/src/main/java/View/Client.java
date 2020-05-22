@@ -13,6 +13,9 @@ public class Client implements Runnable, ServerObserver
     private UserInterface ui;
     private String ip;
     public final static int SOCKET_PORT = 7777;
+    boolean messageReceived;
+    boolean messageToSend;
+
 
     public Client(UserInterface ui, String ip){
         this.ui = ui;
@@ -49,12 +52,15 @@ public class Client implements Runnable, ServerObserver
         Message msg = new Message(Message.MessageType.JOIN_GAME, null);
         serverAdapter.requestSending(msg);
         synchronized (this) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while(!messageReceived) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
+        messageReceived = false;
         ui.receivedServerInput(messageIn);
 
 
@@ -65,21 +71,25 @@ public class Client implements Runnable, ServerObserver
             messageOut = null;
 
             synchronized (this) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                messageIn = null;
-
-                serverAdapter.requestSending(messageOut);
-                while (messageIn == null) {
+                while(!messageToSend){
                     try {
                         wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                messageToSend = false;
+                messageIn = null;
+
+                serverAdapter.requestSending(messageOut);
+                while (!messageReceived) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                messageReceived = false;
 
             }
 
@@ -93,11 +103,13 @@ public class Client implements Runnable, ServerObserver
     @Override
     public synchronized void didReceiveMessage(Message msg)
     {
+        messageReceived = true;
         messageIn = msg;
         notifyAll();
     }
 
     public synchronized void sendThis(Message msg){
+        messageToSend = true;
         messageOut = msg;
         notifyAll();
     }
