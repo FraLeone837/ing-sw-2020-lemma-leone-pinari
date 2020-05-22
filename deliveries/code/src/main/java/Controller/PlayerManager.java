@@ -41,6 +41,7 @@ public class PlayerManager {
      */
     public void turn(Match match){
         if(god.canMove(match, player.getWorker1()) || god.canMove(match, player.getWorker2())) {
+
             //ask what worker to move
             int IDWorker = (int)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, 3);
             Worker worker;

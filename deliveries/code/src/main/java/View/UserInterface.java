@@ -1,8 +1,11 @@
 package View;
 
 import Controller.Communication.Message;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 
 import javax.swing.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import static View.CliGameManager.ANSI_BLUE;
@@ -24,6 +27,7 @@ public class UserInterface implements Runnable {
 
     String ip;
     int idFirstWorker;
+
 
     private String godDescription;
 
@@ -144,9 +148,11 @@ public class UserInterface implements Runnable {
     private void identificationMessage(Message msg){
         /*default message is ZZZ*/
         messageOut = new Message(Message.MessageType.ZZZ, "Ok!");
+
+
         switch(msg.getType()){
             case ISLAND_INFO:
-                gameManager.updateMap(convertToIntArray((ArrayList<Double>)msg.getObject()));
+                gameManager.updateMap(convertLinkedTreeMap(msg));
                 receivedUiInput(messageOut);
                 break;
             case GAME_START:
@@ -155,7 +161,7 @@ public class UserInterface implements Runnable {
                     ((CliPlayerManager) playerManager).setIdFirstWorker(idFirstWorker);
                     ((CliGameManager) gameManager).printIdWorkers(idFirstWorker);
                 }
-                receivedUiInput(messageOut);
+                receivedUiInput(new Message(Message.MessageType.GAME_START, "Ok!"));
                 break;
             case MOVE_INDEX_REQ:
                 messageOut = new Message(Message.MessageType.MOVE_INDEX_REQ);
@@ -232,6 +238,11 @@ public class UserInterface implements Runnable {
                 messageOut = new Message(Message.MessageType.MOVEMENT);
                 playerManager.chooseWorker(convertToInt((Double)msg.getObject()));
                 break;
+            //ignore
+            case YYY:
+                messageOut = new Message(Message.MessageType.YYY);
+                receivedUiInput(messageOut);
+                break;
         }
     }
 
@@ -243,6 +254,14 @@ public class UserInterface implements Runnable {
         int[] toReturn = new int[d.size()];
         for(int i=0; i<d.size(); i++){
             toReturn[i] = d.get(i).intValue();
+        }
+        return toReturn;
+    }
+
+    private int[] convertToIntArray(Double[] d){
+        int[] toReturn = new int[d.length];
+        for(int i=0; i<d.length; i++){
+            toReturn[i] = d[i].intValue();
         }
         return toReturn;
     }
@@ -263,6 +282,34 @@ public class UserInterface implements Runnable {
         int x = coor.charAt(0)-97;
         int y = coor.charAt(1)-48;
         return y * 5 + x;
+    }
+
+    /**
+     * converts a google.gson.linkedtreemap into an array of int
+     * @param message not null
+     * @return int[] according to protocol
+     */
+    private int[] convertLinkedTreeMap(Message message){
+        com.google.gson.internal.LinkedTreeMap x = (com.google.gson.internal.LinkedTreeMap)message.getObject();
+        Object[] z = x.values().toArray();
+        Double[] toRet = null;
+        for(Object d : z){
+            if(d.getClass() == java.util.ArrayList.class){
+                java.util.ArrayList copy = ((java.util.ArrayList)d);
+                toRet = new Double[copy.size()];
+                for(int i =0; i< copy.size(); i++){
+                    toRet[i] = (Double)copy.get(i);
+                }
+            }
+        }
+        if(toRet!=null)
+        return convertToIntArray(toRet);
+        else
+            for(int i = 0;i<100; i++){
+                System.out.println("Error");
+            }
+        exit(-1);
+            return new int[2];
     }
 
 }

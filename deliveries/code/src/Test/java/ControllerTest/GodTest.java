@@ -56,7 +56,7 @@ public class GodTest {
             if(!god.equals(new Apollo()))
             assertFalse(ix.equals(myWorker.getPosition()));
             assertTrue((match.selectCell(ix).getWorker() == null));
-            assertTrue(ix.getZ() <= myWorker.getPosition().getZ());
+            assertTrue(ix.getZ() <= 1+myWorker.getPosition().getZ());
             assertTrue(((ix.getX()-1 == myWorker.getPosition().getX() || ix.getX()+1 == myWorker.getPosition().getX())
                     || (ix.getX() == myWorker.getPosition().getX() && (ix.getY()+1 == myWorker.getPosition().getY() || ix.getY()-1 == myWorker.getPosition().getY() ))));
             assertTrue(
@@ -73,17 +73,16 @@ public class GodTest {
             toMove = utils.getPseudoAdjacent(myWorker);
 
         } while(toMove.getZ() != myWorker.getPosition().getZ());
-        ArrayList<Index> listWhereToMove = god.whereToBuild(match,myWorker,toMove);
-        for(Index ix : listWhereToMove){
+        ArrayList<Index> listWhereToBuild = god.whereToBuild(match,myWorker,toMove);
+        for(Index ix : listWhereToBuild){
             assertTrue(ix.getZ()>=0 && ix.getZ()<4
                     && ix.getX()>=0 && ix.getX()<5
                     && ix.getY()>=0 && ix.getY()<5);
         }
 
-        for(Index ix : listWhereToMove){
+        for(Index ix : listWhereToBuild){
 
             assertFalse(toMove.equals(ix));
-            assertTrue(ix.getZ() <= myWorker.getPosition().getZ());
             assertTrue(((ix.getX()-1 == toMove.getX() || ix.getX()+1 == toMove.getX())
                             || (ix.getX() == toMove.getX() && (ix.getY()+1 == toMove.getY() || ix.getY()-1 == toMove.getY() ))));
             assertTrue(

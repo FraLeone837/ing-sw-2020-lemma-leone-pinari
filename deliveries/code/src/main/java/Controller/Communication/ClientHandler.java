@@ -34,8 +34,19 @@ public class ClientHandler implements Runnable
     private CommunicationProxy personalProxy;
     //useless
     private final Object currentLock = new Object();
+
+    private String name;
+
     private final Object sendLock = new Object();
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Player " + name;
+    }
 
     public void addObserver(MessageObservers obs){
         observers.add(obs);
@@ -47,9 +58,8 @@ public class ClientHandler implements Runnable
      * @param message
      */
     public void setToSendMsg(Message message){
-        this.toSendMsg = message;
         synchronized (sendLock){
-            System.out.println("Notifying all in clientHandler for sendlock");
+            this.toSendMsg = message;
             sendLock.notifyAll();
         }
     }
@@ -73,7 +83,10 @@ public class ClientHandler implements Runnable
             handleClientConnection();
         } catch (IOException e) {
             System.out.println("client " + client.getInetAddress() + " connection dropped");
+            //calls every client and this.personalProxy to close their connections
             terminateGame();
+            //closes thread
+            return;
         }
     }
 
@@ -94,7 +107,7 @@ public class ClientHandler implements Runnable
          */
         while(true){
             try{
-                System.out.println(ANSI_RED + "About to read" + ANSI_RESET);
+//                System.out.println(ANSI_RED + "About to read" + ANSI_RESET);
 
                 Object in = input.readObject();
                 String inText = (String)in;
@@ -109,12 +122,12 @@ public class ClientHandler implements Runnable
                         toSendMsg = null;
 
                         try{
-                           System.out.println("WAITING ON A SEND MESSAGE - clientHandler");
+                           System.out.println("WAITING ON A SEND MESSAGE " + this);
                             sendLock.wait();
                         } catch (InterruptedException e){
                             e.printStackTrace();
                         }
-                        System.out.println(ANSI_BLUE+ "We have a new toSendMsg which is: " + toSendMsg + ANSI_RESET);
+                        System.out.println(ANSI_BLUE+ "We have a new toSendMsg which is: " + toSendMsg + ANSI_RESET + " " + this);
                         if(toSendMsg == null) continue;
 
                         output.writeObject(gson.toJson(toSendMsg));
@@ -151,6 +164,14 @@ public class ClientHandler implements Runnable
         this.personalProxy.sendMessage(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
         this.currentMessage = new Message(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
         notifyObservers();
+    }
+
+    /**
+     * terminates game in case there has been a disconnection
+     * of one of the players
+     */
+    public void terminateGame(String cause){
+        this.personalProxy.interruptGame(Message.MessageType.END_GAME,"Player has been disconnected");
     }
 
 }

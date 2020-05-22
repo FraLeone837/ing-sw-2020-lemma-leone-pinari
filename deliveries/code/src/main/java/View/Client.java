@@ -51,6 +51,7 @@ public class Client implements Runnable, ServerObserver
         messageIn = null;
         Message msg = new Message(Message.MessageType.JOIN_GAME, null);
         serverAdapter.requestSending(msg);
+
         synchronized (this) {
             while(!messageReceived) {
                 try {

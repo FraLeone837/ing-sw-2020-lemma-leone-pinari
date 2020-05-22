@@ -27,6 +27,7 @@ public class MatchManager implements Runnable{
     public MatchManager(int id, IntermediaryClass intermediaryClass){
         this.intermediaryClass = intermediaryClass;
         this.match = new Match(id);
+        this.match.setIntermediaryClass(this.intermediaryClass);
         this.matchInProgress = true;
     }
 
@@ -190,6 +191,7 @@ public class MatchManager implements Runnable{
             CommunicationProxy CP = playerManager.getCommunicationProxy();
             CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+//            intermediaryClass.Broadcast(new Message(Message.MessageType.YYY, "Sending nothing"));
         }
     }
 
