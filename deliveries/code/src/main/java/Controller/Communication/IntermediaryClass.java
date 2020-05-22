@@ -33,7 +33,7 @@ public class IntermediaryClass {
     }
 
     /**
-     * method that finishes game and clears all threads after a 10 second period
+     * method that finishes game and clears all threads after a 10 second period?
      */
     public void terminateGame(){
         counter = 0;
@@ -68,8 +68,10 @@ public class IntermediaryClass {
     public void setCommunicationProxy(CommunicationProxy communicationProxy) {
         synchronized (lock){
             this.communicationProxies.add(communicationProxy);
+            setClientHandlers(communicationProxy.getClientHandler());
             notified = true;
             lock.notifyAll();
+
         }
     }
 
@@ -99,12 +101,18 @@ public class IntermediaryClass {
                     e.printStackTrace();
                 }
             }
-            //if there are no more clients to get we need to wait
-            if(communicationProxies.size() == 0)
+
             notified = false;
+            this.counter = this.counter+1;
+            communicationProxies.get(counter-1).getClientHandler().setName(Integer.toString(counter));
         }
-        notified = false;
-        this.counter = this.counter+1;
+        int i = 0;
+        for(CommunicationProxy c : communicationProxies)
+            System.out.println(i++);
         return communicationProxies.get(counter-1);
+    }
+
+    public void Broadcast(Message.MessageType messageType, String cause) {
+        Broadcast(new Message(messageType,cause));
     }
 }

@@ -126,21 +126,35 @@ public class Utils {
 
     public God generateRandomGod() {
         Random random = new Random();
-        int choice = random.nextInt(5);
+        int choice = random.nextInt(9);
         switch (choice){
             case 0:
-                return new Demeter();
+                return new Apollo();
 
             case 1:
-                return new Athena();
-
-            case 2:
-                return new Atlas();
-
-            case 3:
                 return new Artemis();
 
+            case 2:
+                return new Athena();
+
+            case 3:
+                return new Atlas();
+
             case 4:
+                return new Demeter();
+
+            case 5:
+                return new Hephaestus();
+
+            case 6:
+                return new Minotaur();
+
+            case 7:
+                return new Pan();
+
+            case 8:
+                return new Prometheus();
+
             default:
                 return new Apollo();
 

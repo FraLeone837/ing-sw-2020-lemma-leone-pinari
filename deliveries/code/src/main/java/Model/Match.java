@@ -1,5 +1,8 @@
 package Model;
 
+import Controller.Communication.IntermediaryClass;
+import Controller.Communication.Message;
+
 import java.lang.management.PlatformLoggingMXBean;
 import java.util.ArrayList;
 
@@ -12,12 +15,16 @@ public class Match {
     private int idMatch;
     private Island island;
 
+    private IntermediaryClass intermediaryClass;
 
     //decide list or normal array
     public Match(int id){
         players = new ArrayList<Player>();
         idMatch =  id;
         island = new Island();
+    }
+    public void setIntermediaryClass(IntermediaryClass ic){
+        this.intermediaryClass = ic;
     }
 
     /**
@@ -55,6 +62,7 @@ public class Match {
             w.delete(selectCell(w.getPosition()));
             w.move(selectCell(i));
         }
+        notifyView();
     }
 
     /**
@@ -67,6 +75,7 @@ public class Match {
             w.buildDome(selectCell(i));
         else
             w.build(selectCell(i));
+        notifyView();
     }
 
     /**
@@ -76,6 +85,7 @@ public class Match {
      */
     public void buildDome(Worker w, Index i){
         w.buildDome(selectCell(i));
+
     }
 
     /**
@@ -94,6 +104,7 @@ public class Match {
      */
     public void initWorker(Worker w, Index i){
         w.move(selectCell(i));
+        notifyView();
     }
 
     /**
@@ -102,6 +113,7 @@ public class Match {
      */
     public void removeWorker(Worker w){
         w.delete(selectCell(w.getPosition()));
+        notifyView();
     }
 
     /**
@@ -153,7 +165,10 @@ public class Match {
      * give to the view all the information it need to draw the game board of the screen
      */
     public void notifyView(){
-
+        if(intermediaryClass == null){
+            return;
+        }
+        intermediaryClass.Broadcast(new Message(Message.MessageType.ISLAND_INFO,getInformationArray()));
     }
 
 }

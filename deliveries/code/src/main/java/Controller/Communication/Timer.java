@@ -5,10 +5,13 @@ import java.util.concurrent.TimeUnit;
 public class Timer implements Runnable {
     private int currentSecond;
     private IntermediaryClass intermediaryClass;
+    private static final int resendTime = 7;
+    private CommunicationProxy communicationProxy;
 
-    public Timer(int currentSecond, IntermediaryClass intermediaryClass){
+    public Timer(int currentSecond, IntermediaryClass intermediaryClass, CommunicationProxy communicationProxy){
         this.currentSecond = currentSecond;
         this.intermediaryClass = intermediaryClass;
+        this.communicationProxy = communicationProxy;
     }
 
     public void setCurrentSecond(int currentSecond) {
@@ -27,16 +30,24 @@ public class Timer implements Runnable {
         while(currentSecond >= 0){
             //there have been currentSecond seconds until last message
             currentSecond--;
+            //resend message every 7 seconds
+            if(currentSecond % resendTime == 0){
+                resendLastMessage();
+            }
             try{
                 wait(1*1000);
             }catch (InterruptedException e){
 
             }
         }
-        intermediaryClass.terminateGame();
+        terminateGame();
     }
 
-    public void updateCurrentSecond(int currentSecond){
-        this.currentSecond = currentSecond;
+    public void resendLastMessage(){
+        this.communicationProxy.resendLastMessage();
+    }
+
+    public void terminateGame(){
+        this.communicationProxy.interruptGame(Message.MessageType.END_GAME,"Connection timed-out");
     }
 }
