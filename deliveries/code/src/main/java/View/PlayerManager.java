@@ -19,6 +19,9 @@ public interface PlayerManager {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     final String LABEL_SERVER_IP = "Which server do you want to connect to?";
+    final String LABEL_TURN = "It is ";
+    final String LABEL_TURN_2 = "'s turn";
+    final String LABEL_HELP = "To see who are your gods type /gods, to see your name type /name, to see your worker's id type /id, else type /...";
     final String LABEL_USERNAME = "Write your username";
     final String LABEL_NUMBER_PLAYERS = "How many players do you want in this match? (2 or 3)";
     final String LABEL_FIRST_WORKER = "Choose where to locate the first worker";
@@ -105,4 +108,10 @@ public interface PlayerManager {
      * before moving
      */
     public abstract void buildBefore();
+
+    /**
+     * shows whose turn it is
+     * @param object
+     */
+    public void showTurn(String object);
 }

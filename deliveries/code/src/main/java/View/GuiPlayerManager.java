@@ -109,6 +109,11 @@ public class GuiPlayerManager implements PlayerManager{
 
     }
 
+    @Override
+    public void showTurn(String object) {
+
+    }
+
     public JPanel getPanel() {
         return panel;
     }

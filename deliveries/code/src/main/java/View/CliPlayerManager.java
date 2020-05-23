@@ -36,7 +36,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
             String input = scanner.nextLine();
             if(alwaysAvailableInput.contains(input)){
                 //le risposte a help
-                System.out.println("che non so quali siano in realtà");
+                System.out.println(LABEL_HELP);
             }
             else if(circumstantialInput.contains(input) || isEveryInputValid){
                 circumstantialInput.clear();
@@ -169,6 +169,12 @@ public class CliPlayerManager implements PlayerManager, Runnable{
             x = scanner.nextLine();
         } while(x.toUpperCase() != "YES" || x.toUpperCase() != "NO");
         ui.receivedUiInput(x.toUpperCase().equals("YES"));
+    }
+
+    @Override
+    public void showTurn(String object) {
+        System.out.println(LABEL_TURN + object + LABEL_TURN_2);
+
     }
 
     @Override

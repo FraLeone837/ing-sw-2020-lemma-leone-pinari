@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 public class Timer implements Runnable {
     private int currentSecond;
     private IntermediaryClass intermediaryClass;
-    private static final int resendTime = 7;
+    private Object lock = new Object();
     private CommunicationProxy communicationProxy;
 
     public Timer(int currentSecond, IntermediaryClass intermediaryClass, CommunicationProxy communicationProxy){
@@ -29,11 +29,9 @@ public class Timer implements Runnable {
     private synchronized void waitForSeconds() {
         while(currentSecond >= 0){
             //there have been currentSecond seconds until last message
+            myTurnCommunicating(communicationProxy.getToSend());
             currentSecond--;
-            //resend message every 7 seconds
-            if(currentSecond % resendTime == 0){
-                resendLastMessage();
-            }
+
             try{
                 wait(1*1000);
             }catch (InterruptedException e){
@@ -43,11 +41,22 @@ public class Timer implements Runnable {
         terminateGame();
     }
 
-    public void resendLastMessage(){
-        this.communicationProxy.resendLastMessage();
+    //shows if
+    private void myTurnCommunicating(Message toSend) {
+        while(toSend.getType() == Message.MessageType.ZZZ){
+            synchronized (lock){
+                try{
+                    lock.wait();
+                } catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
+
     public void terminateGame(){
+        if(communicationProxy != null)
         this.communicationProxy.interruptGame(Message.MessageType.END_GAME,"Connection timed-out");
     }
 }
