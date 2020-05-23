@@ -116,6 +116,7 @@ public class UserInterface implements Runnable {
         else{
             inputUi = true;
             switch(messageOut.getType()){
+                /* THESE RETURN A NUMBER */
                 case MOVE_INDEX_REQ:
                 case BUILD_INDEX_REQ:
                 case CHOOSE_INDEX_FIRST_WORKER:
@@ -126,11 +127,19 @@ public class UserInterface implements Runnable {
                     input = (Integer.parseInt((String)input)) - idFirstWorker + 1;
                     break;
                 case NUMBER_PLAYERS:
+                case MOVEMENT:
                     input = Integer.parseInt((String)input);
                     break;
+                /* THESE RETURN A BOOLEAN */
                 case BUILD_DOME:
                     input = ((String)input).equals("DOME");
                     break;
+                case BUILD_AGAIN:
+                case BUILD_BEFORE:
+                case MOVE_AGAIN:
+                    input = ((String)input).equals("YES");
+                default:
+                    //do nothing
             }
             messageOut.setObject(input);
             synchronized (this){
@@ -301,7 +310,7 @@ public class UserInterface implements Runnable {
             return -1;
         if(coor.charAt(1)<'1'&& coor.charAt(1)>'5')
             return -1;
-        int x = coor.charAt(0)-97;
+        int x = coor.charAt(0)-65;
         int y = coor.charAt(1)-48;
         return y * 5 + x;
     }

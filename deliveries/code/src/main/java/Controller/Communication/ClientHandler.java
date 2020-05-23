@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import static Controller.Communication.Message.MessageType.ZZZ;
+
 
 public class ClientHandler implements Runnable
 {
@@ -65,12 +67,14 @@ public class ClientHandler implements Runnable
     }
 
 
-    ClientHandler(Socket client, IntermediaryClass ic)
+    ClientHandler(Socket client, IntermediaryClass ic, int counter)
     {
         this.client = client;
+        toSendMsg = new Message(ZZZ, "Waiting");
         this.writes = true;
         currentMessage = null;
         personalProxy = new CommunicationProxy(this,ic);
+        name = (Integer.toString(counter));
         Thread t = new Thread(personalProxy);
         t.start();
     }
@@ -118,17 +122,16 @@ public class ClientHandler implements Runnable
                 notifyObservers();
 
                 synchronized (sendLock){
-                    while(toSendMsg == null){
-                        toSendMsg = null;
+                    while(toSendMsg.getType() == ZZZ){
 
                         try{
-                           System.out.println("WAITING ON A SEND MESSAGE " + this);
+                           System.out.println("WAITING ON A SEND MESSAGE cl.handler " + this);
                             sendLock.wait();
                         } catch (InterruptedException e){
                             e.printStackTrace();
                         }
                         System.out.println(ANSI_BLUE+ "We have a new toSendMsg which is: " + toSendMsg + ANSI_RESET + " " + this);
-                        if(toSendMsg == null) continue;
+
 
                         output.writeObject(gson.toJson(toSendMsg));
 
@@ -137,9 +140,9 @@ public class ClientHandler implements Runnable
                     }
                 }
             } catch (ClassNotFoundException e ){
-                //resendMessage()
+
             }
-            toSendMsg = null;
+            toSendMsg = new Message(ZZZ,"Waiting");
         }
 
     }
@@ -174,5 +177,12 @@ public class ClientHandler implements Runnable
         this.personalProxy.interruptGame(Message.MessageType.END_GAME,"Player has been disconnected");
     }
 
+    public String getName() {
+        return "Player" + name;
+    }
+
+    public CommunicationProxy getCommProxy(){
+        return personalProxy;
+    }
 }
 

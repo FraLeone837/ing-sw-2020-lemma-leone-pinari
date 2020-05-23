@@ -34,6 +34,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     public void run() {
         while(true){
             String input = scanner.nextLine();
+            input = input.toUpperCase();
             if(alwaysAvailableInput.contains(input)){
                 //le risposte a help
                 System.out.println(LABEL_HELP);
@@ -98,7 +99,8 @@ public class CliPlayerManager implements PlayerManager, Runnable{
             case 3:
                 System.out.println(LABEL_CHOOSE_WORKER_TO_MOVE);
                 circumstantialInput.add(Integer.toString(idFirstWorker));
-                circumstantialInput.add(Integer.toString(idFirstWorker+1));
+                int temp = idFirstWorker+1;
+                circumstantialInput.add(Integer.toString(temp));
                 break;
         }
     }
@@ -110,7 +112,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         else
             System.out.println(LABEL_SECOND_WORKER);
         for(int position : possiblePositions){
-            circumstantialInput.add(correspondingCoords(position));
+            circumstantialInput.add((correspondingCoords(position).toUpperCase()));
         }
         convertToCellNumeration(possiblePositions);
     }
@@ -120,7 +122,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         System.out.println(LABEL_CHOOSE_WHERE_TO_MOVE);
         System.out.println("Possible movements are: ");
         for (int movement : movements){
-            circumstantialInput.add(correspondingCoords(movement));
+            circumstantialInput.add((correspondingCoords(movement)));
         }
         convertToCellNumeration(movements);
     }
@@ -130,7 +132,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         System.out.println(LABEL_CHOOSE_WHERE_TO_BUILD);
         System.out.println("Possible places where to build are: ");
         for(int building : buildings){
-            circumstantialInput.add(correspondingCoords(building));
+            circumstantialInput.add((correspondingCoords(building)));
         }
         convertToCellNumeration(buildings);
     }
@@ -151,24 +153,16 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         } else if(moveAgain == Message.MessageType.BUILD_AGAIN){
             System.out.println("Build again?");
         }
-        String x = "";
-        do{
-            System.out.println("Write yes/no, please.");
-            x = scanner.nextLine();
-        }while(x.toUpperCase() != "YES" || x.toUpperCase() != "NO");
-        ui.receivedUiInput(x.toUpperCase().equals("YES"));
+        circumstantialInput.add("YES");
+        circumstantialInput.add("NO");
 
     }
 
     @Override
     public void buildBefore(){
         System.out.println(LABEL_BUILD_BEFORE);
-        String x = "";
-        do{
-            System.out.println("Write yes/no, please.");
-            x = scanner.nextLine();
-        } while(x.toUpperCase() != "YES" || x.toUpperCase() != "NO");
-        ui.receivedUiInput(x.toUpperCase().equals("YES"));
+        circumstantialInput.add("YES");
+        circumstantialInput.add("NO");
     }
 
     @Override
@@ -233,7 +227,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         int x = numeration%5;
         int y = numeration/5;
         String coords = "";
-        coords += (char)(x+97);
+        coords += (char)(x+65);
         coords += y;
         return coords;
     }
@@ -243,7 +237,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         char yPos;
 
         for(int building : buildings){
-            xPos =(char)(97 + building%5);
+            xPos =(char)(65 + building%5);
             yPos =(char)(48 + building/5);
             System.out.print(toUpperCase(xPos));
             System.out.print(yPos + ", ");

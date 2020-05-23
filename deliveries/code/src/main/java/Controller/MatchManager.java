@@ -78,9 +78,7 @@ public class MatchManager implements Runnable{
 
         //ask how many players does he want to play with
         int playersNumber = (int)firstCP.sendMessage(Message.MessageType.NUMBER_PLAYERS, "How many players do you want to play with?");
-
         firstCP.sendMessage(Message.MessageType.WAIT_START, "Please wait for the game to start");
-
         for (int x=2; x<=playersNumber; x++){
             CommunicationProxy newCP = intermediaryClass.getNewCommunicationProxy();
             this.communicationProxies.add(newCP);
@@ -141,6 +139,7 @@ public class MatchManager implements Runnable{
             String[] playerName = new String[1];
             playerName[0] = playerManager.getPlayer().getName();
             intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerName));
+            System.out.println(ANSI_GREEN + "Calling playerMng.turn(match)");
             playerManager.turn(match);
             if(playerManager.getGod().getWinner()==true){
                 giveVictory(playerManager);

@@ -54,7 +54,7 @@ public class CliGameManager implements GameManager {
             int y = i/5;
             //se x=0 siamo su una nuova riga, perciò prima di tutto stampo l'indice della riga
             if(x==0)
-                System.out.print(y+1+" ");
+                System.out.print(y+" ");
         /*imposto le tre variabili
             content è il contenuto della casella, di default vuota
             level è il livello su cui ci troviamo (le unità dell'integer)

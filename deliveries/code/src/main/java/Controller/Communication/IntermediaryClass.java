@@ -4,8 +4,7 @@ import Controller.MatchManager;
 
 import java.util.ArrayList;
 
-import static Controller.Communication.ClientHandler.ANSI_CYAN;
-import static Controller.Communication.ClientHandler.ANSI_RESET;
+import static Controller.Communication.ClientHandler.*;
 
 /**
  * Class needed so we could always go back to the original matchManager
@@ -56,8 +55,13 @@ public class IntermediaryClass {
      * @param msg
      */
     public void Broadcast(Message msg){
-        for(CommunicationProxy cl : communicationProxies) {
-            cl.sendMessage(msg.getType(), msg);
+        System.out.println(ANSI_PURPLE);
+        for(CommunicationProxy cp : communicationProxies) {
+            for(ClientHandler cl : clientHandlerArrayList){
+                if(cl.getCommProxy() == cp)
+                System.out.println(ANSI_PURPLE + "Sending broadcast message to " + cl.getName());
+            }
+            cp.sendMessage(msg.getType(), msg);
         }
     }
 
@@ -71,7 +75,6 @@ public class IntermediaryClass {
             setClientHandlers(communicationProxy.getClientHandler());
             notified = true;
             lock.notifyAll();
-
         }
     }
 
@@ -106,9 +109,6 @@ public class IntermediaryClass {
             this.counter = this.counter+1;
             communicationProxies.get(counter-1).getClientHandler().setName(Integer.toString(counter));
         }
-        int i = 0;
-        for(CommunicationProxy c : communicationProxies)
-            System.out.println(i++);
         return communicationProxies.get(counter-1);
     }
 

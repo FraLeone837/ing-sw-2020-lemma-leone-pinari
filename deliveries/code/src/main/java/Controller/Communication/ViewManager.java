@@ -27,14 +27,16 @@ public class ViewManager
         IntermediaryClass iC = new IntermediaryClass();
 
 
+        int counter = 1;
         while (true) {
             try {
                 /* accepts connections; for every connection we accept,
                  * create a new Thread executing a ClientHandler */
                 Socket client = socket.accept();
-                ClientHandler clientHandler = new ClientHandler(client, iC);
+                ClientHandler clientHandler = new ClientHandler(client, iC,counter);
                 Thread thread = new Thread(clientHandler, "server_" + client.getInetAddress());
                 thread.start();
+                counter = counter + 1;
             } catch (IOException e) {
                 System.out.println("connection dropped");
                 if(iC.isAnyPlayerConnected()){
