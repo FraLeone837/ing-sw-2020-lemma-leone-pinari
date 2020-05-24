@@ -3,6 +3,7 @@ package Model;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
 
+import java.io.IOException;
 import java.lang.management.PlatformLoggingMXBean;
 import java.util.ArrayList;
 
@@ -16,6 +17,7 @@ public class Match {
     private Island island;
 
     private IntermediaryClass intermediaryClass;
+    private WriterClass wc;
 
     //decide list or normal array
     public Match(int id){
@@ -133,6 +135,14 @@ public class Match {
     public int[] getInformationArray(){
         Cell cell ;
         int[] informationArray = new int[25];
+        if (this.wc == null)
+        try{
+            this.wc = new WriterClass(true);
+
+        }catch (IOException e){
+            e.printStackTrace();
+            return new int[1];
+        }
         for(int i = 0; i<5; i++){
             for(int j=0; j<5; j++){
                 for(int k = 3; k >= 0; k--){
@@ -144,19 +154,25 @@ public class Match {
                                 informationArray[i+5*j] = 4 + k;
                             } else {
                                 //if there are no domes built then we give the lowest level of the building built
-                                informationArray[i+5*j] = k;
+                                informationArray[i+5*j] = k + 1;
                             }
-                        }
-                        if(cell.getWorker() != null){
-                            //Based on the id we connect the players (10-20 player 1) (30-40 player 2) ecc
-                            informationArray[i+5*j] += 10*cell.getWorker().getIdWorker();
+                            if(cell.getWorker() != null){
+                                //Based on the id we connect the players (10-20 player 1) (30-40 player 2) ecc
+                                informationArray[i+5*j] = informationArray[i+5*j] + 10*cell.getWorker().getIdWorker();
+                            }
                         }
                         break;
                     }
+                    else
                     //else if cell is empty
                     informationArray[i+5*j] = 0;
                 }
             }
+        }
+        try{
+            wc.writeOnFile(informationArray);
+        } catch (IOException e){
+            e.printStackTrace();
         }
         return informationArray;
     }

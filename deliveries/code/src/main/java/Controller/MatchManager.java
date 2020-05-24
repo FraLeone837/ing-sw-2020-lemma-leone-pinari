@@ -141,6 +141,8 @@ public class MatchManager implements Runnable{
             intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerName));
             System.out.println(ANSI_GREEN + "Calling playerMng.turn(match)");
             playerManager.turn(match);
+            //sends in broadcast the last version of the map
+            match.notifyView();
             if(playerManager.getGod().getWinner()==true){
                 giveVictory(playerManager);
                 matchInProgress = false;
@@ -211,7 +213,7 @@ public class MatchManager implements Runnable{
         playerManagers.remove(playerManager);
         for (PlayerManager playerManager1 : playerManagers){
             playerManager1.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
-            playerManagers.remove(playerManager1);
         }
+        playerManagers.clear();
     }
 }

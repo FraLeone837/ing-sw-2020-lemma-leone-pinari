@@ -284,9 +284,11 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 int toReturnx = ((Double)copy.getObject()).intValue();
                 return convertFromIntToIndex(toReturnx);
             case NUMBER_PLAYERS:
-            case MOVEMENT:
                 int toReturn = ((Double)copy.getObject()).intValue();
                 return toReturn;
+            case MOVEMENT:
+                int toReturny = ((Double)copy.getObject()).intValue() % 2;
+                return toReturny;
             default:
                 return copy.getObject();
 

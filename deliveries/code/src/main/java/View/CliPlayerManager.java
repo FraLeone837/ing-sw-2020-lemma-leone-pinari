@@ -5,6 +5,7 @@ import Controller.Communication.Message;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static View.CliGameManager.*;
 import static java.lang.Character.toUpperCase;
 
 public class CliPlayerManager implements PlayerManager, Runnable{
@@ -13,8 +14,12 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     private UserInterface ui;
 
     private int idFirstWorker;
-    private String godName;
-    private String godDescription;
+    private String godName = LABEL_NO_INPUT;
+    private String godDescription = LABEL_NO_INPUT;
+    private String id = LABEL_NO_INPUT;
+    private String name = LABEL_NO_INPUT;
+    private String validInput = LABEL_WAIT_YOUR_TURN;
+    private String turn = LABEL_NO_INPUT;
 
     private ArrayList circumstantialInput;
     private ArrayList alwaysAvailableInput;
@@ -26,7 +31,13 @@ public class CliPlayerManager implements PlayerManager, Runnable{
 
         circumstantialInput = new ArrayList();
         alwaysAvailableInput = new ArrayList();
-        alwaysAvailableInput.add("/help");
+        alwaysAvailableInput.add("/HELP");
+        alwaysAvailableInput.add("/GOD");
+        alwaysAvailableInput.add("/ID");
+        alwaysAvailableInput.add("/NAME");
+        alwaysAvailableInput.add("/TURN");
+        alwaysAvailableInput.add("/MAP");
+        alwaysAvailableInput.add("/INPUT");
     }
 
 
@@ -36,17 +47,68 @@ public class CliPlayerManager implements PlayerManager, Runnable{
             String input = scanner.nextLine();
             input = input.toUpperCase();
             if(alwaysAvailableInput.contains(input)){
-                //le risposte a help
-                System.out.println(LABEL_HELP);
+                System.out.println(checkInput(input));
             }
             else if(circumstantialInput.contains(input) || isEveryInputValid){
                 circumstantialInput.clear();
                 ui.receivedUiInput(input);
                 isEveryInputValid = false;
             }
-            else
-                System.out.println("INVALID INPUT");
+            else{
+                System.out.println("Invalid Input. Please read below:");
+                System.out.println(LABEL_HELP);
+            }
         }
+    }
+
+    private String checkInput(String input) {
+        switch (input){
+            case "/HELP":
+                return LABEL_HELP;
+            case "/GOD":
+                return godName +", " + godDescription;
+
+            case "/GODDESCRIPTION":
+                return godDescription;
+            case "/ID":
+                return this.id;
+            case "/TURN":
+                return this.turn;
+            case "/INPUT":
+                return showAvailableInput();
+            case "/MAP":
+                return mapLegend();
+            case "/NAME":
+                return this.name;
+            default:
+                return "Error!! Contact admin to fix.";
+        }
+    }
+
+    private String showAvailableInput() {
+        if(isEveryInputValid){
+            return "Every input is available";
+        }
+        String array = "The available input is:"+ System.lineSeparator() + ANSI_CYAN;
+        for(Object s : circumstantialInput){
+            array = array + (String)s + " ";
+        }
+        array = array + ANSI_RESET;
+        return array;
+    }
+
+    /**
+     * gives the legend of the maps with colors
+     * and the meaning of the characters found
+     * @return
+     */
+    private String mapLegend() {
+        String toReturn = "The buildings are denoted each one with a certain color: " + ANSI_BLACK +
+                colorGroundLevel + "Ground level " + ANSI_RESET  + ANSI_BLACK + colorFirstLevel + "First level " + ANSI_RESET + ANSI_BLACK +
+                colorSecondLevel + "Second level " + ANSI_RESET + ANSI_BLACK  + colorThirdLevel + "Third level" + ANSI_RESET
+                + "." + System.lineSeparator()+ "If there is a dome it is denoted by the character 'c'."+  System.lineSeparator()+ "Meanwhile if there is a player it is denoted" +
+                " by one of the numbers 1-6.";
+        return toReturn;
     }
 
     public void getServerIp(){
@@ -149,7 +211,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     public void doItAgain(Message.MessageType moveAgain) {
         System.out.print(LABEL_MOVE_AGAIN);
         if(moveAgain == Message.MessageType.MOVE_AGAIN){
-            System.out.print("Move again?");
+            System.out.println("Move again?");
         } else if(moveAgain == Message.MessageType.BUILD_AGAIN){
             System.out.println("Build again?");
         }
@@ -167,18 +229,15 @@ public class CliPlayerManager implements PlayerManager, Runnable{
 
     @Override
     public void showTurn(String object) {
+        this.turn = LABEL_TURN + object + LABEL_TURN_2;
         System.out.println(LABEL_TURN + object + LABEL_TURN_2);
-
     }
 
     @Override
     public void showGods(String[] god) {
-        //immagino che in questo metodo andrebbe fatto qualcosa tipo
-        //alwaysAvailableInput.add("/godName");
-        //alwaysAvailableInput.add("/godDescription");
-        this.godName = god[0];
+        this.godName = "Your god is " + ANSI_BLUE + god[0] + ANSI_RESET;
         this.godDescription = god[1];
-        System.out.println(LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription);
+        System.out.println(godName + ", " + godDescription);
         ui.receivedUiInput("Ok!");
     }
 
@@ -188,6 +247,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
      */
     public void setIdFirstWorker(int id){
         idFirstWorker = id;
+        this.id = LABEL_ID_BEGIN + id + LABEL_ID_FINAL + id + " " + (id+1);
     }
 
     /* POSSIBLY USELESS NOW

@@ -155,8 +155,7 @@ public class UserInterface implements Runnable {
      * @param msg
      */
     private void identificationMessage(Message msg){
-        /*default message is ZZZ*/
-        messageOut = new Message(Message.MessageType.ZZZ, "Ok!");
+        messageOut = new Message(msg.getType(), "Ok!");
 
 
         switch(msg.getType()){
@@ -194,12 +193,12 @@ public class UserInterface implements Runnable {
                 playerManager.placeWorker(false, convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case WAIT_START:
-                messageOut = new Message(Message.MessageType.ZZZ, "Ok waiting!");
                 receivedUiInput(messageOut);
                 gameManager.waitForPlayer();
                 break;
             case PLAYER_LOST:
                 gameManager.printWin(false);
+                receivedUiInput(messageOut);
                 break;
             case GET_NAME:
                 messageOut = new Message(Message.MessageType.GET_NAME);
@@ -210,7 +209,6 @@ public class UserInterface implements Runnable {
                 playerManager.chooseNumberPlayers();
                 break;
             case YOUR_GOD:
-                messageOut = new Message(Message.MessageType.ZZZ);
                 String[] god = new String[2];
                 god[0] = ((ArrayList<String>) msg.getObject()).get(0);
                 god[1] = ((ArrayList<String>) msg.getObject()).get(1);
