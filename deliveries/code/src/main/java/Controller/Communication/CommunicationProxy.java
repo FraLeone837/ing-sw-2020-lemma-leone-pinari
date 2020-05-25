@@ -224,7 +224,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
          */
         synchronized (this.receivedLock){
             System.out.println("Comm proxy waiting for response for " + messageType);
-            while(received.getType() != messageType && !acceptsZZZ(messageType)){
+            while(received.getType() != messageType){
                 try{
                     receivedLock.wait();
                 } catch (InterruptedException e){

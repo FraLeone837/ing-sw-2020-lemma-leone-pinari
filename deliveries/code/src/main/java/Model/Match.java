@@ -151,15 +151,17 @@ public class Match {
                         if(cell.isBuilding()){
                             if(cell.isDome()){
                                 //if k = 3 then dome is built in level 4 else k = 2 dome is built in level 3 (val = 5) else k = 1 (val = 6) else val = 7
-                                informationArray[i+5*j] = 4 + k;
+                                informationArray[i+5*j] += 4 + k;
                             } else {
                                 //if there are no domes built then we give the lowest level of the building built
-                                informationArray[i+5*j] = k + 1;
+                                informationArray[i+5*j] += k + 1;
                             }
-                            if(cell.getWorker() != null){
-                                //Based on the id we connect the players (10-20 player 1) (30-40 player 2) ecc
-                                informationArray[i+5*j] = informationArray[i+5*j] + 10*cell.getWorker().getIdWorker();
-                            }
+                        }
+                        if(cell.getWorker() != null){
+                            //Based on the id we connect the players (10-20 player 1) (30-40 player 2) ecc
+                            informationArray[i+5*j] = informationArray[i+5*j] + 10*cell.getWorker().getIdWorker();
+                            //next cell might be a building else ground floor
+                            continue;
                         }
                         break;
                     }
