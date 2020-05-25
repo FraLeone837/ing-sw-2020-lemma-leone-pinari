@@ -226,7 +226,10 @@ public class MatchManager implements Runnable{
         Scanner scanner = new Scanner(System.in);
         God god = new Apollo();
         String godCode = "apollo";
+        int i = 0;
         for(PlayerManager playerManager : playerManagers){
+            i++;
+            System.out.println("Dio per il " + i + "-o giocatore");
             godCode = scanner.nextLine();
             switch (godCode){
                 case "apollo":
