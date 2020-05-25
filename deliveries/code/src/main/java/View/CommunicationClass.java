@@ -17,7 +17,7 @@ public class CommunicationClass implements Runnable {
     private boolean isWaitingToReceive;
     private Object receivedLock = new Object();
 
-    private CommunicationClass cc;
+    private Message.MessageType lastMessageType;
 
     private Socket server;
     private ObjectOutputStream outputStm;
@@ -68,7 +68,7 @@ public class CommunicationClass implements Runnable {
         reset();
         while(true){
             //for as long as our message is "null" (a.k.a we have no message to send/have already sent a message, we wait
-            while(this.messageToSend.getType() == Message.MessageType.YYY){
+            while(this.messageToSend.getType() != lastMessageType && messageToSend.getType() != Message.MessageType.JOIN_GAME){
                 synchronized (toSendLock) {
                     try {
                         toSendLock.wait();
@@ -99,6 +99,7 @@ public class CommunicationClass implements Runnable {
 
             Message msg = gson.fromJson(response, Message.class);
             System.out.println("Received message is " + msg);//+" and it contains: "+msg.getObject());
+            lastMessageType = msg.getType();
             /* notify the observers that we got the string */
             for (ServerObserver observer: observersCpy) {
                 observer.didReceiveMessage(msg);

@@ -196,9 +196,15 @@ public class UserInterface implements Runnable {
                 receivedUiInput(messageOut);
                 gameManager.waitForPlayer();
                 break;
+            case PLAYER_WON:
+                gameManager.printWin(true);
+                receivedUiInput(messageOut);
+                exit(1);
+                break;
             case PLAYER_LOST:
                 gameManager.printWin(false);
                 receivedUiInput(messageOut);
+                exit (1);
                 break;
             case GET_NAME:
                 messageOut = new Message(Message.MessageType.GET_NAME);
@@ -309,7 +315,7 @@ public class UserInterface implements Runnable {
         if(coor.charAt(1)<'1'&& coor.charAt(1)>'5')
             return -1;
         int x = coor.charAt(0)-65;
-        int y = coor.charAt(1)-48;
+        int y = coor.charAt(1)-48-1;
         return y * 5 + x;
     }
 

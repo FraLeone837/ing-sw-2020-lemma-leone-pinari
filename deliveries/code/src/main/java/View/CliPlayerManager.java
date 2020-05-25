@@ -281,14 +281,14 @@ public class CliPlayerManager implements PlayerManager, Runnable{
      * Given the numeration of the cell, this method returns back the input
      * the user should write to refer to that cell
      * @param numeration the cell numeration (0-24)
-     * @return the corresponding coordinates (a-e 0-4)
+     * @return the corresponding coordinates (a-e 1-5)
      */
     private String correspondingCoords(int numeration){
         int x = numeration%5;
         int y = numeration/5;
         String coords = "";
         coords += (char)(x+65);
-        coords += y;
+        coords += y + 1;
         return coords;
     }
 
@@ -298,7 +298,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
 
         for(int building : buildings){
             xPos =(char)(65 + building%5);
-            yPos =(char)(48 + building/5);
+            yPos =(char)(49 + building/5);
             System.out.print(toUpperCase(xPos));
             System.out.print(yPos + ", ");
         }

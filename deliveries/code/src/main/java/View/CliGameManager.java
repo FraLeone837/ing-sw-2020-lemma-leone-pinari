@@ -73,7 +73,7 @@ public class CliGameManager implements GameManager {
         for(int i=0; i<25; i++){
             //ottengo le coordinate come x e y
             int x = i%5;
-            int y = i/5;
+            int y = i/5 + 1;
             //se x=0 siamo su una nuova riga, perciò prima di tutto stampo l'indice della riga
             if(x==0)
                 System.out.print(y+"||");
