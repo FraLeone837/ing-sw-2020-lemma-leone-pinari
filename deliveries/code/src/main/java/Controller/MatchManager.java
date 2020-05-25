@@ -9,6 +9,7 @@ import Model.*;
 import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 import static Controller.Communication.ClientHandler.*;
 
@@ -93,7 +94,7 @@ public class MatchManager implements Runnable{
         }
 
         //give gods to the players
-        giveGods();
+        giveGodsTest();
     }
 
     /**
@@ -215,5 +216,51 @@ public class MatchManager implements Runnable{
             playerManager1.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
         }
         playerManagers.clear();
+    }
+
+    /**
+     * give a god to each player, asking to the server with cli
+     * useful for testing gods
+     */
+    public void giveGodsTest(){
+        Scanner scanner = new Scanner(System.in);
+        God god = new Apollo();
+        String godCode = "apollo";
+        for(PlayerManager playerManager : playerManagers){
+            godCode = scanner.nextLine();
+            switch (godCode){
+                case "apollo":
+                    god = new Apollo();
+                    break;
+                case "artemis":
+                    god = new Artemis();
+                    break;
+                case "athena":
+                    god = new Athena();
+                    break;
+                case "atlas":
+                    god = new Atlas();
+                    break;
+                case "demeter":
+                    god = new Demeter();
+                    break;
+                case "hephaestus":
+                    god = new Hephaestus();
+                    break;
+                case "minotaur":
+                    god = new Minotaur();
+                    break;
+                case "pan":
+                    god = new Pan();
+                    break;
+                case "prometheus":
+                    god = new Prometheus();
+                    break;
+            }
+            playerManager.setGod(god);
+            CommunicationProxy CP = playerManager.getCommunicationProxy();
+            CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
+            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+        }
     }
 }
