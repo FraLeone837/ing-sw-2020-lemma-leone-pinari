@@ -21,9 +21,13 @@ public interface PlayerManager {
     final String LABEL_SERVER_IP = "Which server do you want to connect to?";
     final String LABEL_TURN = "It is ";
     final String LABEL_TURN_2 = "'s turn";
-    final String LABEL_HELP = "To see which is your god type /god, and it's description /godDescription" +
-                                " to see your name type /name, to see your worker's id type /id, " +
-                                " to see whose turn it is type /turn, to see what is the valid input to reply with type /input";
+    final String LABEL_HELP = "To see which is your god type /god" + System.lineSeparator() +
+                                "To see god's description type /godDescription" + System.lineSeparator() +
+                                "To see map's legend type /map" + System.lineSeparator() +
+                                "To see your name type /name" + System.lineSeparator() +
+                                "To see your worker's id type /id" + System.lineSeparator() +
+                                "To see whose turn it is type /turn" + System.lineSeparator() +
+                                "To see what is the valid input to reply with type /input";
     final String LABEL_NO_INPUT = "Please wait for the game to start";
     final String LABEL_WAIT_YOUR_TURN = "It is not your turn yet, ask that question after the beginning of your turn";
     final String LABEL_USERNAME = "Write your username";

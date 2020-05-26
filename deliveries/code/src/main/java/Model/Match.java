@@ -57,14 +57,29 @@ public class Match {
     /**
      * move a worker from a cell to another
      * @param w the worker to move
-      * @param i the position where to move the worker
+     * @param i the position where to move the worker
      */
     public void moveWorker(Worker w, Index i){
         if(w != null){
             w.delete(selectCell(w.getPosition()));
             w.move(selectCell(i));
+            notifyView();
         }
-        notifyView();
+    }
+
+    /**
+     * move a worker from a cell to another
+     * @param w the worker to move
+     * @param i the position where to move the worker
+     * @param print is true if the view has to print the game board on the screen after this movement
+     */
+    public void moveWorker(Worker w, Index i, Boolean print){
+        if(w != null){
+            w.delete(selectCell(w.getPosition()));
+            w.move(selectCell(i));
+            if(print == true)
+                notifyView();
+        }
     }
 
     /**
@@ -105,8 +120,10 @@ public class Match {
      * @param i the position where to put the worker at the beginning of the game
      */
     public void initWorker(Worker w, Index i){
-        w.move(selectCell(i));
-        notifyView();
+        if(w!=null) {
+            w.move(selectCell(i));
+            notifyView();
+        }
     }
 
     /**

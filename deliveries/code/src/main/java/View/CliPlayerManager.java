@@ -295,12 +295,16 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     private void convertToCellNumeration(int[] buildings) {
         char xPos;
         char yPos;
-
+        int comma=0;
         for(int building : buildings){
             xPos =(char)(65 + building%5);
             yPos =(char)(49 + building/5);
+            if(comma>0) {
+                System.out.print(", ");
+            }
+            comma++;
             System.out.print(toUpperCase(xPos));
-            System.out.print(yPos + ", ");
+            System.out.print(yPos);
         }
         System.out.println();
     }

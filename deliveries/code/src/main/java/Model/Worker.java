@@ -68,8 +68,10 @@ public class Worker {
      * @param c the current cell of the worker
      */
     public void delete(Cell c){
-        c.setWorker(null);
-        setPosition(null);
+        if(c!=null) {
+            c.setWorker(null);
+            setPosition(null);
+        }
     }
 
     public Index getPosition() {

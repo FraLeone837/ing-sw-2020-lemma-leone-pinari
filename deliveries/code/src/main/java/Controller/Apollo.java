@@ -35,8 +35,12 @@ public class Apollo extends God {
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
         Index actuaMovelIndex = correctIndex(match,tempMoveIndex);
         Worker opponent = match.selectCell(actuaMovelIndex).getWorker();
-        match.moveWorker(opponent, worker.getPosition());
-        match.moveWorker(worker,actuaMovelIndex);
+        if(opponent != null) {
+            match.moveWorker(opponent, worker.getPosition(), false);
+            match.initWorker(worker, actuaMovelIndex);
+        }
+        else
+            match.moveWorker(worker, actuaMovelIndex);
         if(checkWin(match, worker)){
             setWinner(true);
             return;
@@ -56,8 +60,8 @@ public class Apollo extends God {
         setPrevIndex(worker.getPosition());
         //take index1 where to move from view
         Worker opponent = match.selectCell(index1).getWorker();
-        match.moveWorker(opponent, worker.getPosition());
-        match.moveWorker(worker,index1);
+        match.moveWorker(opponent, worker.getPosition(), false);
+        match.initWorker(worker,index1);
         checkWin(match, worker);
         //take index2 where to build from view
         match.build(worker, index2);
