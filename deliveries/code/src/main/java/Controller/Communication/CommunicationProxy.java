@@ -6,8 +6,7 @@ import Model.Index;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static Controller.Communication.Message.MessageType.END_GAME;
-import static Controller.Communication.Message.MessageType.JOIN_GAME;
+import static Controller.Communication.Message.MessageType.*;
 
 /**
  * to be called from every matchManager as a way to send and successively receive messages
@@ -19,7 +18,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     private static Timer timer;
     private static int timeConstant = 180;
 
-    private boolean debugging = false;
+    private boolean debugging = true;
 
     private ClientHandler clientHandler;
     //serves for methods referring to matchManager
@@ -55,7 +54,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         received = clientHandler.getCurrentMessage();
         notifyAll();
         if(!acceptInput)
-            received.setType(Message.MessageType.ZZZ);
+            received.setType(Message.MessageType.YYY);
     }
 
     /**
@@ -101,7 +100,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         Thread t = new Thread(timer);
         t.start();
         ic.setCommunicationProxy(this);
-
         received.setType(Message.MessageType.YYY);
         waitForReceiveMessage(JOIN_GAME);
 
@@ -117,6 +115,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             if(typeCopy == Message.MessageType.END_GAME)
                 return;
 
+            toSend = new Message(Message.MessageType.ZZZ, "Waiting");
             //changes message toSend to ZZZ and waits until gamesidelock.notifyAll() updates toSend
             waitForGameMessage();
 
@@ -125,10 +124,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             clientHandler.setToSendMsg(toSend);
             timer.notifyWait();
 
-            toSend = new Message(Message.MessageType.ZZZ, "Waiting");
-
-            //in place of received = null,serves for control
-            received.setType(Message.MessageType.YYY);
 
             waitForReceiveMessage();
             timer.notifyReceived(timeConstant);
@@ -187,7 +182,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             notifyAll();
             if(debugging)
                 System.out.println("What Comm proxy sent: "+ messageType + "  " + this.clientHandler);
-        }
+//        }
 
         Message copy;
         if(messageType == END_GAME)
@@ -196,7 +191,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         /**
          * prepare to receive message
          */
-        synchronized (this){
+//        synchronized (this){
             if(debugging)
                 System.out.println("Comm proxy waiting for response for " + messageType);
             while(received.getType() != messageType){
@@ -210,6 +205,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
                 System.out.println("What Comm proxy received: " + received + " " + this.clientHandler);
             copy = new Message(received);
             Object c = convertToSpecificObject(copy);
+            received = new Message(ZZZ,"waiting");
             return c;
         }
     }
@@ -359,11 +355,13 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         ic.Broadcast(messageType, cause, this);
 
         ic.terminateGame();
-        try{
-            wait(20*1000);
+        synchronized (this) {
+            try {
+                wait(20 * 1000);
 
-        } catch (InterruptedException e){
-            e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         sendMessage(END_GAME,cause);
         this.clientHandler.terminateGame();

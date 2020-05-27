@@ -47,6 +47,8 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     public void run() {
         while(true){
             String input = scanner.nextLine();
+            if(input.length() == 0)
+                continue;
             input = input.toUpperCase();
             if(alwaysAvailableInput.contains(input)){
                 System.out.println(checkInput(input));
@@ -216,6 +218,12 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     public void showTurn(String object) {
         this.turn = LABEL_TURN + object + LABEL_TURN_2;
         System.out.println(LABEL_TURN + object + LABEL_TURN_2);
+    }
+
+    @Override
+    public void getName(String object) {
+        System.out.println(object);
+        isEveryInputValid = true;
     }
 
     @Override

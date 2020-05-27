@@ -197,7 +197,7 @@ public class UserInterface implements Runnable {
                 break;
             case GET_NAME:
                 messageOut = new Message(Message.MessageType.GET_NAME);
-                playerManager.getName();
+                playerManager.getName((String)msg.getObject());
                 break;
             case NUMBER_PLAYERS:
                 messageOut = new Message(Message.MessageType.NUMBER_PLAYERS);

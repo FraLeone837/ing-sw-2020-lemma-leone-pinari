@@ -4,7 +4,7 @@ package Controller.Communication;
 public class Timer implements Runnable {
     private int currentSecond;
     boolean myTurn ;
-    boolean debugging = true;
+    boolean debugging = false;
     private IntermediaryClass intermediaryClass;
     private CommunicationProxy communicationProxy;
     public Timer(int currentSecond, IntermediaryClass intermediaryClass, CommunicationProxy communicationProxy){
@@ -53,6 +53,7 @@ public class Timer implements Runnable {
             }catch (InterruptedException e){
 
             }
+            if(debugging)
             System.out.println("Time left: " + currentSecond);
         }
         terminateGame();

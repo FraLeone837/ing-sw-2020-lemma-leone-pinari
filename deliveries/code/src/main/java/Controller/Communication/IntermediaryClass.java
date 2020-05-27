@@ -105,8 +105,8 @@ public class IntermediaryClass {
             notified = false;
             this.counter = this.counter+1;
             communicationProxies.get(counter-1).getClientHandler().setName(Integer.toString(counter));
+            return communicationProxies.get(counter-1);
         }
-        return communicationProxies.get(counter-1);
     }
 
     public synchronized void Broadcast(Message.MessageType messageType, String cause, CommunicationProxy communicationProxy) {

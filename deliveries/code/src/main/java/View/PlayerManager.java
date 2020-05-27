@@ -124,4 +124,10 @@ public interface PlayerManager {
      * @param object
      */
     public void showTurn(String object);
+
+    /**
+     * shows request of get name
+     * @param object
+     */
+    public void getName(String object);
 }
