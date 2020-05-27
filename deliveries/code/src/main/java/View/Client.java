@@ -62,22 +62,22 @@ public class Client implements Runnable, ServerObserver
         }
         ui.receivedServerInput(messageIn);
 
-
-        //serverAdapter.requestSending(messageOut);
-
         while (true) {
 
-            messageOut = null;
 
             synchronized (this) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                messageOut = null;
+                while(messageOut == null){
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                messageIn = null;
 
                 serverAdapter.requestSending(messageOut);
+
+                messageIn = null;
                 while (messageIn == null) {
                     try {
                         wait();
@@ -86,9 +86,9 @@ public class Client implements Runnable, ServerObserver
                     }
                 }
 
+                ui.receivedServerInput(messageIn);
             }
 
-            ui.receivedServerInput(messageIn);
         }
 
         //serverAdapter.stop();

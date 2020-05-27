@@ -123,28 +123,16 @@ public class ServerAdapter implements Runnable
     /**
      * takes lock of if we can send message and sends message, afterwards stands in wait
      */
-    private void canSendMessage()  throws IOException, ClassNotFoundException{
-        while(isWaitingToReceive == true){
-            synchronized (toSendLock) {
-                try {
-                    toSendLock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    private synchronized void canSendMessage()  throws IOException, ClassNotFoundException{
         cc.notifyToSendMessage(messageToSend);
     }
 
-    private void doSendMessage(){
-
-    }
 
     /**
      * notifies that client received a message
      * so we can send an ack
      */
-    public void receivedMessage() {
+    public synchronized void receivedMessage() {
         cc.receivedMessage();
     }
 

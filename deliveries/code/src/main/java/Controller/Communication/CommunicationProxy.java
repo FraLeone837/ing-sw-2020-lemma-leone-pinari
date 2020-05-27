@@ -6,7 +6,7 @@ import Model.Index;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static Controller.Communication.ClientHandler.*;
+import static Controller.Communication.Message.MessageType.JOIN_GAME;
 
 /**
  * to be called from every matchManager as a way to send and successively receive messages
@@ -18,20 +18,19 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     private static Timer timer;
     private static int timeConstant = 40;
 
+    private boolean debugging = true;
+
     private ClientHandler clientHandler;
     //serves for methods referring to matchManager
     private IntermediaryClass ic;
 
     //Message updated from matchManager
     private Message toSend;
-    private final Object gameSideLock = new Object();
     //isWaitingToReceive is true iff there is a message being sent , and we have not received yet the response
     private boolean isWaitingToReceive;
 
     //Message to be requested from matchManager
     private Message received = new Message(Message.MessageType.ZZZ,"have not received anything");
-    private final Object receivedLock = new Object();
-
     private boolean acceptInput;
 
     public void setAcceptInput(boolean acceptInput) {
@@ -59,26 +58,37 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * message observers abstract method
      */
     @Override
-    public void receivedMessage() {
-        synchronized (receivedLock){
-            received = clientHandler.getCurrentMessage();
-            receivedLock.notifyAll();
-            if(!acceptInput)
-                received.setType(Message.MessageType.ZZZ);
-        }
+    public synchronized void receivedMessage() {
+        received = clientHandler.getCurrentMessage();
+        notifyAll();
+        if(!acceptInput)
+            received.setType(Message.MessageType.ZZZ);
     }
 
     //woken up from receivedMessage
-    private void waitForReceiveMessage(){
-        while(received.getType() == Message.MessageType.YYY){
-            synchronized (receivedLock){
-                try{
-                    receivedLock.wait();
-                } catch(InterruptedException e){
-                    e.printStackTrace();
-                }
+    private synchronized void waitForReceiveMessage(){
+        while(this.received.getType() == Message.MessageType.YYY){
+            try{
+                wait();
+            } catch(InterruptedException e){
+                e.printStackTrace();
             }
         }
+        isWaitingToReceive = false;
+        notifyAll();
+    }
+
+    //wait for specific message
+    private synchronized void waitForReceiveMessage(Message.MessageType mt){
+        while(this.received.getType() != mt){
+            try{
+                wait();
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+        isWaitingToReceive = false;
+        notifyAll();
     }
 
     @Override
@@ -99,38 +109,21 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * is always asleep, wakes up only when matchManager asks them to wake up
      * or when a message is received and forwards it to matchManager
      */
-    private void handleConnection() throws IOException {
+    private synchronized void handleConnection() throws IOException {
         Thread t = new Thread(timer);
         t.start();
         ic.setCommunicationProxy(this);
 
         received.setType(Message.MessageType.YYY);
-        while(received.getType() != Message.MessageType.JOIN_GAME){
-            synchronized (receivedLock){
-                try{
-                    receivedLock.wait();
-                } catch(InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        synchronized (gameSideLock){
-            isWaitingToReceive = false;
-            gameSideLock.notifyAll();
-        }
+        waitForReceiveMessage(JOIN_GAME);
         timer.setCurrentSecond(timeConstant);
-//        boolean send = false;
-//        boolean rec = true;
+
         while(true){
-//            rec = true;
-//            send = false;
+
             /**
              * messages to be sent automatically without any need of input from client/controller
              */
             Message.MessageType typeCopy = received.getType();
-
-//            rec=false;
 
             if(typeCopy == Message.MessageType.END_GAME)
                 return;
@@ -138,7 +131,6 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             //changes message toSend to ZZZ and waits until gamesidelock.notifyAll() updates toSend
             waitForGameMessage();
 
-//            send = true;
 
             //sets msg toSend and notifies client handler
             clientHandler.setToSendMsg(toSend);
@@ -148,10 +140,7 @@ public class CommunicationProxy implements Runnable, MessageObservers{
             received.setType(Message.MessageType.YYY);
 
             waitForReceiveMessage();
-            synchronized (gameSideLock){
-                isWaitingToReceive = false;
-                gameSideLock.notifyAll();
-            }
+
 
             timer.setCurrentSecond(timeConstant);
 
@@ -166,21 +155,18 @@ public class CommunicationProxy implements Runnable, MessageObservers{
      * It is the list of messages that do not need input from
      * GameManager to be sent
      */
-    private void waitForGameMessage() {
+    private synchronized void waitForGameMessage() {
 
-        synchronized (gameSideLock){
+            if(debugging)
             System.out.println("notified gamesidelock " + this.clientHandler.getName());
-            gameSideLock.notifyAll();
+            notifyAll();
             while(toSend.getType() == Message.MessageType.ZZZ){
                 try{
-                    gameSideLock.wait();
+                    wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-
-        }
-
     }
 
 
@@ -203,68 +189,57 @@ public class CommunicationProxy implements Runnable, MessageObservers{
         /**
          * prepare to send a message
          */
-        synchronized (gameSideLock){
+        synchronized (this){
+
             //converts gameSideMessage a.k.a toSend into a certain message type
             convertToMessage(messageType,toSend);
 
             //releases lock and notifies that object has changed
-            gameSideLock.notifyAll();
-
-            System.out.println("What Comm proxy sent: "+ messageType + "  " + this.clientHandler);
-
+            notifyAll();
+            if(debugging)
+                System.out.println("What Comm proxy sent: "+ messageType + "  " + this.clientHandler);
         }
+
         Message copy;
 
-        if(!isWaitingForResponse(messageType)){
-            return new Object();
-        }
+//        if(!isWaitingForResponse(messageType)){
+//            return new Object();
+//        }
 
         /**
          * prepare to receive message
          */
-        synchronized (this.receivedLock){
-            System.out.println("Comm proxy waiting for response for " + messageType);
+        synchronized (this){
+            if(debugging)
+                System.out.println("Comm proxy waiting for response for " + messageType);
             while(received.getType() != messageType){
                 try{
-                    receivedLock.wait();
+                    wait();
                 } catch (InterruptedException e){
                     e.printStackTrace();
                 }
             }
-
-            System.out.println("What Comm proxy received: " + received + " " + this.clientHandler);
+            if(debugging)
+                System.out.println("What Comm proxy received: " + received + " " + this.clientHandler);
             copy = new Message(received);
             Object c = convertToSpecificObject(copy);
             return c;
         }
-
-
-    }
-
-    private boolean acceptsZZZ(Message.MessageType messageType) {
-        if(messageType == Message.MessageType.YOUR_GOD||
-          messageType == Message.MessageType.WAIT_START||
-          messageType == Message.MessageType.PLAYER_LOST||
-          messageType == Message.MessageType.PLAYER_WON||
-          messageType == Message.MessageType.GAME_START||
-          messageType == Message.MessageType.ISLAND_INFO||
-         messageType == Message.MessageType.TURN_START) return true;
-        return false;
     }
 
     private void canSendMessage() {
-        while(isWaitingToReceive == true){
-            synchronized (gameSideLock){
+        synchronized (this){
+            while(isWaitingToReceive == true){
+                System.out.println("asking if i can send message");
                 try{
-                    gameSideLock.wait();
+                    wait();
                 } catch (InterruptedException e){
                     e.printStackTrace();
                 }
             }
+            System.out.println("Now I can!!");
+            this.isWaitingToReceive = true;
         }
-
-
-        this.isWaitingToReceive = true;
     }
 
 
@@ -415,9 +390,9 @@ public class CommunicationProxy implements Runnable, MessageObservers{
     public void interruptGame(Message.MessageType messageType, String cause){
         //if someone is waiting on an input or message in general, returns a fictitious message for sendMessage and blocks communication
         if(isWaitingToReceive){
-            synchronized (receivedLock){
+            synchronized (this){
                 received = new Message(this.toSend.getType(), "Match is getting interrupted, sorry!");
-                receivedLock.notifyAll();
+                notifyAll();
             }
         }
         //The method below will not wait for output from client, after isWaitingInput method will return new Object

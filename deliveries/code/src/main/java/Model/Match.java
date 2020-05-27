@@ -17,8 +17,6 @@ public class Match {
     private Island island;
 
     private IntermediaryClass intermediaryClass;
-    private WriterClass wc;
-
     //decide list or normal array
     public Match(int id){
         players = new ArrayList<Player>();
@@ -152,14 +150,6 @@ public class Match {
     public int[] getInformationArray(){
         Cell cell ;
         int[] informationArray = new int[25];
-        if (this.wc == null)
-        try{
-            this.wc = new WriterClass(true);
-
-        }catch (IOException e){
-            e.printStackTrace();
-            return new int[1];
-        }
         for(int i = 0; i<5; i++){
             for(int j=0; j<5; j++){
                 for(int k = 3; k >= 0; k--){
@@ -187,11 +177,6 @@ public class Match {
                     informationArray[i+5*j] = 0;
                 }
             }
-        }
-        try{
-            wc.writeOnFile(informationArray);
-        } catch (IOException e){
-            e.printStackTrace();
         }
         return informationArray;
     }

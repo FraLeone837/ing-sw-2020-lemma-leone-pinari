@@ -122,22 +122,6 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         isEveryInputValid = true;
     }
 
-    /* POSSIBLY USELESS NOW
-    * */
-
-/*
-    @Override
-    public int listMatch(List<Integer> ids) {
-        System.out.println("You can join these matches");
-        for(int i=0; i<ids.size(); i++){
-            System.out.println(ids.get(i));
-        }
-        int matchChoosen;
-        do{
-            matchChoosen = scanner.nextInt();
-        } while(ids.contains(matchChoosen));
-        return matchChoosen;
-    }*/
 
     @Override
     public void chooseNumberPlayers() {
@@ -238,7 +222,6 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         this.godName = "Your god is " + ANSI_BLUE + god[0] + ANSI_RESET;
         this.godDescription = god[1];
         System.out.println(godName + ", " + godDescription);
-        ui.receivedUiInput("Ok!");
     }
 
     /**
@@ -250,31 +233,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         this.id = LABEL_ID_BEGIN + id + LABEL_ID_FINAL + id + " " + (id+1);
     }
 
-    /* POSSIBLY USELESS NOW
-    * */
 
-    /**
-     * Check if the given input from the user actually correspond to a cell
-     * in which it can do that action
-     * @param possibleCell the list of the cells in which he can move/build
-     * @return the numeration index of the cell
-     */
-   /* private int validCoordinatesInput(int[] possibleCell){
-        int chosenCell;
-        boolean invalidInput = true;
-        do{
-            System.out.println("Choose one of the coordinates given above.");
-            chosenCell = correspondingCellNumeration(scanner.nextLine());
-            for(int i=0; i<possibleCell.length; i++){
-                if(chosenCell == possibleCell[i])
-                    invalidInput = false;
-            }
-        } while(invalidInput);
-        return chosenCell;
-    }*/
-
-    /* POSSIBLY USELESS NOW
-    * */
 
 
     /**
@@ -308,5 +267,49 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         }
         System.out.println();
     }
+
+
+    /* POSSIBLY USELESS NOW
+     * */
+
+/*
+    @Override
+    public int listMatch(List<Integer> ids) {
+        System.out.println("You can join these matches");
+        for(int i=0; i<ids.size(); i++){
+            System.out.println(ids.get(i));
+        }
+        int matchChoosen;
+        do{
+            matchChoosen = scanner.nextInt();
+        } while(ids.contains(matchChoosen));
+        return matchChoosen;
+    }*/
+
+    /* POSSIBLY USELESS NOW
+     * */
+
+    /**
+     * Check if the given input from the user actually correspond to a cell
+     * in which it can do that action
+     * @param possibleCell the list of the cells in which he can move/build
+     * @return the numeration index of the cell
+     */
+   /* private int validCoordinatesInput(int[] possibleCell){
+        int chosenCell;
+        boolean invalidInput = true;
+        do{
+            System.out.println("Choose one of the coordinates given above.");
+            chosenCell = correspondingCellNumeration(scanner.nextLine());
+            for(int i=0; i<possibleCell.length; i++){
+                if(chosenCell == possibleCell[i])
+                    invalidInput = false;
+            }
+        } while(invalidInput);
+        return chosenCell;
+    }*/
+
+    /* POSSIBLY USELESS NOW
+     * */
 
 }

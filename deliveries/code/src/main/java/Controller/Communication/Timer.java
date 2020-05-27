@@ -5,9 +5,8 @@ import java.util.concurrent.TimeUnit;
 public class Timer implements Runnable {
     private int currentSecond;
     private IntermediaryClass intermediaryClass;
-    private Object lock = new Object();
     private CommunicationProxy communicationProxy;
-
+    private Message.MessageType messageType;
     public Timer(int currentSecond, IntermediaryClass intermediaryClass, CommunicationProxy communicationProxy){
         this.currentSecond = currentSecond;
         this.intermediaryClass = intermediaryClass;
@@ -23,10 +22,14 @@ public class Timer implements Runnable {
         waitForSeconds();
     }
 
+    public synchronized void notifyWait(Message.MessageType messageType){
+        this.messageType = messageType;
+    }
+
     /**
      * if it ever goes to -1, it interrupts the game
      */
-    private synchronized void waitForSeconds() {
+    private void waitForSeconds() {
         while(currentSecond >= 0){
             //there have been currentSecond seconds until last message
             myTurnCommunicating(communicationProxy.getToSend());
@@ -42,16 +45,16 @@ public class Timer implements Runnable {
     }
 
     //shows if
-    private void myTurnCommunicating(Message toSend) {
-        while(toSend.getType() == Message.MessageType.ZZZ){
-            synchronized (lock){
+    // waits forever
+    private synchronized void myTurnCommunicating(Message toSend) {
+        this.messageType = toSend.getType();
+        while(messageType == Message.MessageType.ZZZ){
                 try{
-                    lock.wait();
+                    this.wait();
                 } catch (InterruptedException e){
                     e.printStackTrace();
                 }
             }
-        }
     }
 
 

@@ -1,12 +1,8 @@
 package Controller;
-
-import Controller.Communication.ClientHandler;
 import Controller.Communication.CommunicationProxy;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
 import Model.*;
-
-import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -79,9 +75,12 @@ public class MatchManager implements Runnable{
 
         //ask how many players does he want to play with
         int playersNumber = (int)firstCP.sendMessage(Message.MessageType.NUMBER_PLAYERS, "How many players do you want to play with?");
+        System.out.println(ANSI_PURPLE + "SENDING GAME START :) " + ANSI_RESET);
         firstCP.sendMessage(Message.MessageType.WAIT_START, "Please wait for the game to start");
+        System.out.println(ANSI_PURPLE + "ANY NEW PLAYERS?" + ANSI_RESET);
         for (int x=2; x<=playersNumber; x++){
             CommunicationProxy newCP = intermediaryClass.getNewCommunicationProxy();
+            System.out.println(ANSI_PURPLE + "AH OK! GOT ONE" + ANSI_RESET);
             this.communicationProxies.add(newCP);
             playerName = (String)newCP.sendMessage(Message.MessageType.GET_NAME, "Enter your username: ");
             while (names.contains(playerName)) {
@@ -101,7 +100,6 @@ public class MatchManager implements Runnable{
      * each player puts his own invisible blocks on the game board if his god foresees it, and sets his workers
      */
     public void setupGame(){
-        intermediaryClass.Broadcast(new Message(Message.MessageType.ISLAND_INFO, match.getInformationArray()));
         ArrayList<Index> possiblePosition = new ArrayList<Index>();
         for (int x=0; x<5; x++){
             for (int y=0; y<5; y++){
@@ -137,9 +135,7 @@ public class MatchManager implements Runnable{
                 matchInProgress = false;
                 return;
             }
-            String[] playerName = new String[1];
-            playerName[0] = playerManager.getPlayer().getName();
-            intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerName));
+            intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerManager.getPlayer().getName()));
             System.out.println(ANSI_GREEN + "Calling playerMng.turn(match)");
             playerManager.turn(match);
             //sends in broadcast the last version of the map

@@ -12,10 +12,7 @@ import java.util.List;
 
 public class CommunicationClass implements Runnable {
     private Message messageToSend;
-    //lock
-    private Object toSendLock = new Object();
     private boolean isWaitingToReceive;
-    private Object receivedLock = new Object();
 
     private Message.MessageType lastMessageType;
 
@@ -28,32 +25,12 @@ public class CommunicationClass implements Runnable {
         this.server=server;
     }
 
-    //while isWaitingToReceive no one can send a message
-    public void notifyToSendMessage(Message msg){
-        while(isWaitingToReceive == true){
-            synchronized (receivedLock){
-                try{
-                    receivedLock.wait();
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            }
-        }
-        synchronized (toSendLock){
-            messageToSend = msg;
-            toSendLock.notifyAll();
-        }
-
-    }
-
     @Override
     public void run() {
-
         try{
             outputStm = new ObjectOutputStream(server.getOutputStream());
             inputStm = new ObjectInputStream(server.getInputStream());
             openConnection();
-
         } catch (IOException e) {
             System.out.println("server has died");
         } catch (ClassCastException | ClassNotFoundException e) {
@@ -61,30 +38,26 @@ public class CommunicationClass implements Runnable {
         }
     }
 
-    private void openConnection() throws IOException,ClassNotFoundException{
-        //We have problem if you send message with GsonBuilder ecc ecc
-        //Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+    private synchronized void openConnection() throws IOException,ClassNotFoundException{
         Gson gson = new Gson();
-        reset();
         while(true){
+
             //for as long as our message is "null" (a.k.a we have no message to send/have already sent a message, we wait
+            reset();
             while(this.messageToSend.getType() != lastMessageType && messageToSend.getType() != Message.MessageType.JOIN_GAME){
-                synchronized (toSendLock) {
-                    try {
-                        toSendLock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
             Message copyOut = new Message(messageToSend.getType(),messageToSend.getObject());
             System.out.println("Message to send is: " + messageToSend );
             String converted = gson.toJson(copyOut);
-            reset();
-            isWaitingToReceive = true;
 
-                /* send the string to the server and get the new string back */
-                outputStm.writeObject(converted);
+
+            /* send the string to the server and get the new string back */
+            outputStm.writeObject(converted);
 
             String response = (String)inputStm.readObject();
 
@@ -98,23 +71,22 @@ public class CommunicationClass implements Runnable {
             }
 
             Message msg = gson.fromJson(response, Message.class);
-            System.out.println("Received message is " + msg);//+" and it contains: "+msg.getObject());
             lastMessageType = msg.getType();
             /* notify the observers that we got the string */
             for (ServerObserver observer: observersCpy) {
                 observer.didReceiveMessage(msg);
             }
+            System.out.println();
             //gets broken only when Client.class calls didReceiveMessage
             //didReceiveMessage calls receivedMessage()
-            while(isWaitingToReceive){
-                synchronized (receivedLock) {
+
+                while(isWaitingToReceive){
                     try {
-                        receivedLock.wait();
+                        wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-            }
 
         }
     }
@@ -124,14 +96,27 @@ public class CommunicationClass implements Runnable {
      * notifies that client received a message
      * so we can send an ack
      */
-    public void receivedMessage() {
-        synchronized (receivedLock){
-            receivedLock.notifyAll();
-        }
+    public synchronized void receivedMessage() {
         isWaitingToReceive = false;
+        notifyAll();
     }
 
-    private void reset() {
+    //while isWaitingToReceive no one can send a message
+    public synchronized void notifyToSendMessage(Message msg){
+        while(isWaitingToReceive == true){
+            try{
+                wait();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+
+        }
+        isWaitingToReceive = true;
+        messageToSend = msg;
+        notifyAll();
+    }
+
+    private synchronized void reset() {
         this.messageToSend = new Message(Message.MessageType.YYY, "Waiting to send a message");
     }
 

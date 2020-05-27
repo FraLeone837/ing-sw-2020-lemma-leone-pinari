@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-
+    boolean debugging = true;
 
     private Socket client;
     private Message currentMessage;
@@ -60,9 +60,9 @@ public class ClientHandler implements Runnable
      * @param message
      */
     public void setToSendMsg(Message message){
-        synchronized (sendLock){
+        synchronized (this){
             this.toSendMsg = message;
-            sendLock.notifyAll();
+            notifyAll();
         }
     }
 
@@ -111,32 +111,32 @@ public class ClientHandler implements Runnable
          */
         while(true){
             try{
-//                System.out.println(ANSI_RED + "About to read" + ANSI_RESET);
-
                 Object in = input.readObject();
                 String inText = (String)in;
                 Gson gson = new Gson();
                 this.currentMessage = gson.fromJson(inText,Message.class);
-
+                if(debugging)
                 System.out.println("Message received cl.handler: " + currentMessage +" " + this);
                 notifyObservers();
 
-                synchronized (sendLock){
+                synchronized (this){
                     while(toSendMsg.getType() == ZZZ){
-
                         try{
+                            if(debugging)
                            System.out.println("WAITING ON A SEND MESSAGE cl.handler " + this);
-                            sendLock.wait();
+                            wait();
                         } catch (InterruptedException e){
                             e.printStackTrace();
                         }
-                        System.out.println(ANSI_BLUE+ "We have a new toSendMsg which is: " + toSendMsg + ANSI_RESET + " " + this);
+                    }
+                    if(debugging)
+                    System.out.println(ANSI_BLUE+ "We have a new toSendMsg which is: " + toSendMsg + ANSI_RESET + " " + this);
 
 
-                        output.writeObject(gson.toJson(toSendMsg));
+                    output.writeObject(gson.toJson(toSendMsg));
 
-                        if(toSendMsg.getType() == Message.MessageType.END_GAME)
-                            client.close();
+                    if(toSendMsg.getType() == Message.MessageType.END_GAME) {
+                        client.close();
                     }
                 }
             } catch (ClassNotFoundException e ){

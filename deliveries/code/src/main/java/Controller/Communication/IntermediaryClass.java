@@ -26,7 +26,7 @@ public class IntermediaryClass {
         this.threadOfMm.start();
     }
 
-    public void setClientHandlers(ClientHandler clientHandler) {
+    public synchronized void setClientHandlers(ClientHandler clientHandler) {
             this.clientHandlerArrayList.add(clientHandler);
 
     }
@@ -54,14 +54,14 @@ public class IntermediaryClass {
      * used to communicate with all 2/3 players of a game
      * @param msg
      */
-    public void Broadcast(Message msg){
+    public synchronized void Broadcast(Message msg){
         System.out.println(ANSI_PURPLE);
         for(CommunicationProxy cp : communicationProxies) {
             for(ClientHandler cl : clientHandlerArrayList){
                 if(cl.getCommProxy() == cp)
                 System.out.println(ANSI_PURPLE + "Sending broadcast message to " + cl.getName());
             }
-            cp.sendMessage(msg.getType(), msg);
+            cp.sendMessage(msg.getType(), msg.getObject());
         }
     }
 
@@ -70,11 +70,11 @@ public class IntermediaryClass {
      * @param communicationProxy
      */
     public void setCommunicationProxy(CommunicationProxy communicationProxy) {
-        synchronized (lock){
+        synchronized (this){
             this.communicationProxies.add(communicationProxy);
             setClientHandlers(communicationProxy.getClientHandler());
             notified = true;
-            lock.notifyAll();
+            notifyAll();
         }
     }
 
@@ -96,10 +96,10 @@ public class IntermediaryClass {
      * and send messages to the client
      */
     public CommunicationProxy getNewCommunicationProxy(){
-        synchronized (lock){
+        synchronized (this){
             while(!notified){
                 try{
-                    lock.wait();
+                    wait();
                 } catch (InterruptedException e){
                     e.printStackTrace();
                 }
@@ -112,7 +112,7 @@ public class IntermediaryClass {
         return communicationProxies.get(counter-1);
     }
 
-    public void Broadcast(Message.MessageType messageType, String cause) {
+    public synchronized void Broadcast(Message.MessageType messageType, String cause) {
         Broadcast(new Message(messageType,cause));
     }
 }
