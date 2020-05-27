@@ -24,7 +24,8 @@ public class Athena extends God {
 
     @Override
     public void turn(Match match, CommunicationProxy communicationProxy, Worker worker){
-        resetPower(match, worker);
+        if(prevIndex.getZ() < worker.getPosition().getZ())
+            resetPower(match, worker);
         ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
         if(possibleMove.isEmpty()){
             setInGame(false);
@@ -48,7 +49,8 @@ public class Athena extends God {
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
         Index actualBuildIndex = correctIndex(match,tempBuildIndex);
         match.build(worker, actualBuildIndex);
-        usePower(match, worker);
+        if(prevIndex.getZ() < worker.getPosition().getZ())
+            usePower(match, worker);
     }
 
     public void turn(Match match, Worker worker, Index index1, Index index2) {
@@ -64,37 +66,38 @@ public class Athena extends God {
 
     @Override
     public void usePower(Match match, Worker worker){
-        if(prevIndex.getZ()+1 == worker.getPosition().getZ()){
-            for (Player p : match.getPlayers()){
-                if(p.getIdPlayer() != worker.getOwner().getIdPlayer()) {
-                    Worker w1 = p.getWorker1();
-                    if(w1 != null){
-                        Index i1 = w1.getPosition();
-                        if (i1.getZ() < 3) {
-                            for (int x = 0; x < 5; x++) {
-                                for (int y = 0; y < 5; y++) {
-                                    Cell c1 = match.selectCell(new Index(x, y, i1.getZ() + 1));
-                                    ArrayList<Invisible> invisibles = c1.getForbidden();
-                                    for (Invisible inv : invisibles) {
-                                        if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
-                                            inv.addWorker(w1);
-                                    }
+        ArrayList<Player> players = match.getPlayers();
+        for (Player player : players){
+            if(player != worker.getOwner()) {
+                Worker w1 = player.getWorker1();
+                if(w1 != null){
+                    Index i1 = w1.getPosition();
+                    int upperZ1 = i1.getZ() + 1;
+                    if (upperZ1 < 4) {
+                        for (int x = 0; x < 5; x++) {
+                            for (int y = 0; y < 5; y++) {
+                                Cell c1 = match.selectCell(new Index(x, y, upperZ1));
+                                ArrayList<Invisible> invisibles = c1.getForbidden();
+                                for (Invisible inv : invisibles) {
+                                    if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
+                                        inv.addWorker(w1);
                                 }
                             }
                         }
                     }
-                    Worker w2 = p.getWorker2();
-                    if (w2 != null) {
-                        Index i2 = w2.getPosition();
-                        if (i2.getZ() < 3) {
-                            for (int x = 0; x < 5; x++) {
-                                for (int y = 0; y < 5; y++) {
-                                    Cell c2 = match.selectCell(new Index(x, y, i2.getZ() + 1));
-                                    ArrayList<Invisible> invisibles = c2.getForbidden();
-                                    for (Invisible inv : invisibles) {
-                                        if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
-                                            inv.addWorker(w2);
-                                    }
+                }
+                Worker w2 = player.getWorker2();
+                if (w2 != null) {
+                    Index i2 = w2.getPosition();
+                    int upperZ2 = i2.getZ() + 1;
+                    if (upperZ2 < 4) {
+                        for (int x = 0; x < 5; x++) {
+                            for (int y = 0; y < 5; y++) {
+                                Cell c2 = match.selectCell(new Index(x, y, upperZ2));
+                                ArrayList<Invisible> invisibles = c2.getForbidden();
+                                for (Invisible inv : invisibles) {
+                                    if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
+                                        inv.addWorker(w2);
                                 }
                             }
                         }
@@ -109,9 +112,9 @@ public class Athena extends God {
         for(int x=0; x<5; x++){
             for(int y=0; y<5; y++){
                 for(int z=1; z<4; z++){
-                    Index i=new Index(x,y,z);
+                    Index index = new Index(x,y,z);
                     Invisible invisible = new ForbiddenMove(player);
-                    match.buildInvisible(invisible, i);
+                    match.buildInvisible(invisible, index);
                 }
             }
         }
@@ -123,8 +126,8 @@ public class Athena extends God {
         for(int x=0; x<5; x++){
             for(int y=0; y<5; y++){
                 for(int z=0; z<4; z++){
-                    Index i=new Index(x,y,z);
-                    ArrayList<Invisible> invisibles = match.selectCell(i).getForbidden();
+                    Index index = new Index(x,y,z);
+                    ArrayList<Invisible> invisibles = match.selectCell(index).getForbidden();
                     for(Invisible inv : invisibles){
                         if(inv instanceof ForbiddenMove && worker.getOwner()==inv.getCreator())
                             inv.removeWorkers();

@@ -69,9 +69,6 @@ public class CliPlayerManager implements PlayerManager, Runnable{
                 return LABEL_HELP;
             case "/GOD":
                 return godName +", " + godDescription;
-
-            case "/GODDESCRIPTION":
-                return godDescription;
             case "/ID":
                 return this.id;
             case "/TURN":
