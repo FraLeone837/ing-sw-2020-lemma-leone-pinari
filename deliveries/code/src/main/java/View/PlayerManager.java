@@ -22,7 +22,6 @@ public interface PlayerManager {
     final String LABEL_TURN = "It is ";
     final String LABEL_TURN_2 = "'s turn";
     final String LABEL_HELP = "To see which is your god type /god" + System.lineSeparator() +
-                                "To see god's description type /godDescription" + System.lineSeparator() +
                                 "To see map's legend type /map" + System.lineSeparator() +
                                 "To see your name type /name" + System.lineSeparator() +
                                 "To see your worker's id type /id" + System.lineSeparator() +

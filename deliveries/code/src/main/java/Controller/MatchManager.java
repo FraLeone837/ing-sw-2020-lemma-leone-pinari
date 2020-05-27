@@ -76,6 +76,7 @@ public class MatchManager implements Runnable{
         names.add(playerName);
         PlayerManager firstPlayer = new PlayerManager(new Player(playerName, 1), firstCP);
         playerManagers.add(firstPlayer);
+        match.initPlayers(firstPlayer.getPlayer());
 
         //ask how many players does he want to play with
         int playersNumber = (int)firstCP.sendMessage(Message.MessageType.NUMBER_PLAYERS, "How many players do you want to play with?");
@@ -90,6 +91,7 @@ public class MatchManager implements Runnable{
             names.add(playerName);
             PlayerManager newPlayer = new PlayerManager(new Player(playerName, x), newCP);
             playerManagers.add(newPlayer);
+            match.initPlayers(newPlayer.getPlayer());
             newCP.sendMessage(Message.MessageType.WAIT_START, "Please wait for the game to start");
         }
 
@@ -116,11 +118,13 @@ public class MatchManager implements Runnable{
             Index position1 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, possiblePosition);
             Index correctPosition1 = playerManager.getGod().correctIndex(match, position1);
             match.initWorker(playerManager.getPlayer().getWorker1(),correctPosition1);
+            playerManager.getGod().setPrevIndex(correctPosition1);
             possiblePosition.remove(correctPosition1);
 
             Index position2 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_SEC_WORKER, possiblePosition);
             Index correctPosition2 = playerManager.getGod().correctIndex(match, position2);
             match.initWorker(playerManager.getPlayer().getWorker2(),correctPosition2);
+            playerManager.getGod().setPrevIndex(correctPosition2);
             possiblePosition.remove(correctPosition2);
         }
     }
@@ -142,8 +146,6 @@ public class MatchManager implements Runnable{
             intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerName));
             System.out.println(ANSI_GREEN + "Calling playerMng.turn(match)");
             playerManager.turn(match);
-            //sends in broadcast the last version of the map
-            match.notifyView();
             if(playerManager.getGod().getWinner()==true){
                 giveVictory(playerManager);
                 matchInProgress = false;

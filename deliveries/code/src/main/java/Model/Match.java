@@ -102,6 +102,7 @@ public class Match {
      */
     public void buildDome(Worker w, Index i){
         w.buildDome(selectCell(i));
+        notifyView();
 
     }
 
