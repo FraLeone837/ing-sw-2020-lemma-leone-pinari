@@ -39,12 +39,6 @@ public class MatchManager implements Runnable{
         }
     }
 
-    /**
-     * @return all the information of the game according to a protocol
-     */
-    public int[] getInformationArray() {
-        return match.getInformationArray();
-    }
 
 
     public boolean isAnyPlayerConnected(){
@@ -75,12 +69,9 @@ public class MatchManager implements Runnable{
 
         //ask how many players does he want to play with
         int playersNumber = (int)firstCP.sendMessage(Message.MessageType.NUMBER_PLAYERS, "How many players do you want to play with?");
-        System.out.println(ANSI_PURPLE + "SENDING GAME START :) " + ANSI_RESET);
         firstCP.sendMessage(Message.MessageType.WAIT_START, "Please wait for the game to start");
-        System.out.println(ANSI_PURPLE + "ANY NEW PLAYERS?" + ANSI_RESET);
         for (int x=2; x<=playersNumber; x++){
             CommunicationProxy newCP = intermediaryClass.getNewCommunicationProxy();
-            System.out.println(ANSI_PURPLE + "AH OK! GOT ONE" + ANSI_RESET);
             this.communicationProxies.add(newCP);
             playerName = (String)newCP.sendMessage(Message.MessageType.GET_NAME, "Enter your username: ");
             while (names.contains(playerName)) {
@@ -107,9 +98,11 @@ public class MatchManager implements Runnable{
                 possiblePosition.add(index);
             }
         }
+        match.notifyView();
         for(PlayerManager playerManager : playerManagers){
             playerManager.setup(match);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
+            intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START,playerManager.getPlayer().getName()));
 
             Index position1 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, possiblePosition);
             Index correctPosition1 = playerManager.getGod().correctIndex(match, position1);
@@ -136,7 +129,6 @@ public class MatchManager implements Runnable{
                 return;
             }
             intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerManager.getPlayer().getName()));
-            System.out.println(ANSI_GREEN + "Calling playerMng.turn(match)");
             playerManager.turn(match);
             //sends in broadcast the last version of the map
             match.notifyView();

@@ -18,6 +18,7 @@ public class IntermediaryClass {
     // Mm means MatchManager
     private Thread threadOfMm;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
+    private ClientHandler clCause = null;
 
     public IntermediaryClass(){
         this.notified = false;
@@ -42,11 +43,12 @@ public class IntermediaryClass {
         threadOfMm.start();
         this.notified = false;
         for(ClientHandler cl : clientHandlerArrayList){
+            if(cl != clCause)
             cl.terminateGame();
         }
         communicationProxies = new ArrayList<>();
         clientHandlerArrayList = new ArrayList<>();
-        System.out.println(ANSI_CYAN + "FINISHED terminateGAME" + ANSI_RESET);
+        System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
     }
 
 
@@ -55,12 +57,7 @@ public class IntermediaryClass {
      * @param msg
      */
     public synchronized void Broadcast(Message msg){
-        System.out.println(ANSI_PURPLE);
         for(CommunicationProxy cp : communicationProxies) {
-            for(ClientHandler cl : clientHandlerArrayList){
-                if(cl.getCommProxy() == cp)
-                System.out.println(ANSI_PURPLE + "Sending broadcast message to " + cl.getName());
-            }
             cp.sendMessage(msg.getType(), msg.getObject());
         }
     }
@@ -112,7 +109,12 @@ public class IntermediaryClass {
         return communicationProxies.get(counter-1);
     }
 
-    public synchronized void Broadcast(Message.MessageType messageType, String cause) {
-        Broadcast(new Message(messageType,cause));
+    public synchronized void Broadcast(Message.MessageType messageType, String cause, CommunicationProxy communicationProxy) {
+        this.clCause = communicationProxy.getClientHandler();
+        for(CommunicationProxy cp : communicationProxies) {
+            //notify every other player except for the one that caused the error
+            if(cp != communicationProxy)
+            cp.sendMessage(messageType,cause);
+        }
     }
 }

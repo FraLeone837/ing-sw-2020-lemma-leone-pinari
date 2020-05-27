@@ -13,6 +13,7 @@ import java.util.List;
 public class CommunicationClass implements Runnable {
     private Message messageToSend;
     private boolean isWaitingToReceive;
+    boolean debugging = false;
 
     private Message.MessageType lastMessageType;
 
@@ -52,6 +53,7 @@ public class CommunicationClass implements Runnable {
                 }
             }
             Message copyOut = new Message(messageToSend.getType(),messageToSend.getObject());
+            if(debugging)
             System.out.println("Message to send is: " + messageToSend );
             String converted = gson.toJson(copyOut);
 
@@ -76,7 +78,6 @@ public class CommunicationClass implements Runnable {
             for (ServerObserver observer: observersCpy) {
                 observer.didReceiveMessage(msg);
             }
-            System.out.println();
             //gets broken only when Client.class calls didReceiveMessage
             //didReceiveMessage calls receivedMessage()
 

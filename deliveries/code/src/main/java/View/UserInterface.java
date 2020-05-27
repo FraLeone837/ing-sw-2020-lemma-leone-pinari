@@ -1,15 +1,9 @@
 package View;
 
 import Controller.Communication.Message;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 
 import javax.swing.*;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-
-import static View.CliGameManager.ANSI_BLUE;
-import static View.CliGameManager.ANSI_RESET;
 import static java.lang.System.exit;
 
 public class UserInterface implements Runnable {
@@ -27,9 +21,6 @@ public class UserInterface implements Runnable {
 
     String ip;
     int idFirstWorker;
-
-
-    private String godDescription;
 
     public enum Mode{
         CLI,
@@ -108,7 +99,6 @@ public class UserInterface implements Runnable {
      * It notifies the thread of UserInterface to wake it up from the previous wait
      */
     public synchronized void receivedUiInput(Object input){
-        System.out.println("User Interface msg : " + messageOut);
         if(messageOut.getType().equals(Message.MessageType.JOIN_GAME)){
             client = new Client(this, ip);
             Thread t = new Thread(client);
@@ -270,13 +260,6 @@ public class UserInterface implements Runnable {
         return toReturn;
     }
 
-    private int[] convertToIntArray(Double[] d){
-        int[] toReturn = new int[d.length];
-        for(int i=0; i<d.length; i++){
-            toReturn[i] = d[i].intValue();
-        }
-        return toReturn;
-    }
 
     /**
      * Given the coordinates from console, this method validates them

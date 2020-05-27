@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import static View.CliGameManager.*;
 import static java.lang.Character.toUpperCase;
+import static java.lang.System.exit;
 
 public class CliPlayerManager implements PlayerManager, Runnable{
 
@@ -38,6 +39,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         alwaysAvailableInput.add("/TURN");
         alwaysAvailableInput.add("/MAP");
         alwaysAvailableInput.add("/INPUT");
+        alwaysAvailableInput.add("/EXIT");
     }
 
 
@@ -80,6 +82,8 @@ public class CliPlayerManager implements PlayerManager, Runnable{
                 return mapLegend();
             case "/NAME":
                 return this.name;
+            case "/EXIT":
+                exit (-1);
             default:
                 return "Error!! Contact admin to fix.";
         }

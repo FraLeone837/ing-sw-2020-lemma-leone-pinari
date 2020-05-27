@@ -1,16 +1,17 @@
 package Controller.Communication;
 
-import java.util.concurrent.TimeUnit;
 
 public class Timer implements Runnable {
     private int currentSecond;
+    boolean myTurn ;
+    boolean debugging = true;
     private IntermediaryClass intermediaryClass;
     private CommunicationProxy communicationProxy;
-    private Message.MessageType messageType;
     public Timer(int currentSecond, IntermediaryClass intermediaryClass, CommunicationProxy communicationProxy){
         this.currentSecond = currentSecond;
         this.intermediaryClass = intermediaryClass;
         this.communicationProxy = communicationProxy;
+        myTurn = false;
     }
 
     public void setCurrentSecond(int currentSecond) {
@@ -22,17 +23,29 @@ public class Timer implements Runnable {
         waitForSeconds();
     }
 
-    public synchronized void notifyWait(Message.MessageType messageType){
-        this.messageType = messageType;
+    /**
+     * notify that we are waiting for a message to be received
+     */
+    public synchronized void notifyWait(){
+        myTurn = true;
+        notifyAll();
     }
 
     /**
+     * notify that we received the message for which we were waiting
+     */
+    public synchronized void notifyReceived(int currentSecond){
+        myTurn = false;
+        setCurrentSecond(currentSecond);
+        notifyAll();
+    }
+    /**
      * if it ever goes to -1, it interrupts the game
      */
-    private void waitForSeconds() {
+    private synchronized void waitForSeconds() {
         while(currentSecond >= 0){
             //there have been currentSecond seconds until last message
-            myTurnCommunicating(communicationProxy.getToSend());
+            myTurnCommunicating();
             currentSecond--;
 
             try{
@@ -40,15 +53,15 @@ public class Timer implements Runnable {
             }catch (InterruptedException e){
 
             }
+            System.out.println("Time left: " + currentSecond);
         }
         terminateGame();
     }
 
     //shows if
     // waits forever
-    private synchronized void myTurnCommunicating(Message toSend) {
-        this.messageType = toSend.getType();
-        while(messageType == Message.MessageType.ZZZ){
+    private synchronized void myTurnCommunicating() {
+        while(!myTurn){
                 try{
                     this.wait();
                 } catch (InterruptedException e){

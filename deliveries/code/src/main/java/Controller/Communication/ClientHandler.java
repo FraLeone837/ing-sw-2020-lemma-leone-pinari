@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    boolean debugging = true;
+    boolean debugging = false;
 
     private Socket client;
     private Message currentMessage;
@@ -32,6 +32,9 @@ public class ClientHandler implements Runnable
     //Parameter that shows if we can get the input from the other client
     private boolean writes;
     private ArrayList<MessageObservers> observers = new ArrayList<>();
+
+
+    boolean inGame = true;
 
     private CommunicationProxy personalProxy;
     //useless
@@ -109,7 +112,7 @@ public class ClientHandler implements Runnable
          * Read first object afterwards reply.
          * After that go into a while loop in which the client responds only to my requests
          */
-        while(true){
+        while(inGame){
             try{
                 Object in = input.readObject();
                 String inText = (String)in;
