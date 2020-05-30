@@ -1,6 +1,10 @@
 package Controller.Communication;
 
 
+import Controller.Communication.CommunicationProxy;
+import Controller.Communication.IntermediaryClass;
+import Controller.Communication.Message;
+
 public class Timer implements Runnable {
     private int currentSecond;
     boolean myTurn ;

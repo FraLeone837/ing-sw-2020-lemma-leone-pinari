@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-import static Controller.Communication.ClientHandler.*;
-
 public class MatchManager implements Runnable{
 
     private ArrayList<PlayerManager> playerManagers = new ArrayList<>();
@@ -153,7 +151,7 @@ public class MatchManager implements Runnable{
      * give randomly a god to each player
      */
     public void giveGods(){
-        int numberOfGods = 9;
+        int numberOfGods = 10;
         ArrayList<Integer> given = new ArrayList<Integer>();
         Random godGen = new Random();
         God god = new Apollo();
@@ -190,6 +188,9 @@ public class MatchManager implements Runnable{
                     break;
                 case 8:
                     god = new Prometheus();
+                    break;
+                case 9:
+                    god = new Zeus();
                     break;
             }
             playerManager.setGod(god);
@@ -248,6 +249,9 @@ public class MatchManager implements Runnable{
                     break;
                 case "prometheus":
                     god = new Prometheus();
+                    break;
+                case "zeus":
+                    god = new Zeus();
                     break;
             }
             playerManager.setGod(god);

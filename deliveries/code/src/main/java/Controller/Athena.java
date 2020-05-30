@@ -125,7 +125,7 @@ public class Athena extends God {
     public void resetPower(Match match, Worker worker){
         for(int x=0; x<5; x++){
             for(int y=0; y<5; y++){
-                for(int z=0; z<4; z++){
+                for(int z=1; z<4; z++){
                     Index index = new Index(x,y,z);
                     ArrayList<Invisible> invisibles = match.selectCell(index).getForbidden();
                     for(Invisible inv : invisibles){

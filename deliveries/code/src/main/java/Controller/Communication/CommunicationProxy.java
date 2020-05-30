@@ -3,7 +3,6 @@ package Controller.Communication;
 import Controller.God;
 import Model.Index;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static Controller.Communication.Message.MessageType.*;
@@ -13,7 +12,7 @@ import static Controller.Communication.Message.MessageType.*;
  * from client-side
  * uses observer & observable design pattern
  */
-public class CommunicationProxy implements Runnable, MessageObservers{
+public class CommunicationProxy implements Runnable, MessageObservers {
     //counts the time since last message
     private static Timer timer;
     private static int timeConstant = 180;
