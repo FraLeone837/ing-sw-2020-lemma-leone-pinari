@@ -70,6 +70,8 @@ public class UserInterface implements Runnable {
                 if(inputUi){
                     inputUi = false;
                     client.sendThis(messageOut);
+                    if(messageOut.getType() == Message.MessageType.PLAYER_LOST || messageOut.getType() == Message.MessageType.PLAYER_WON)
+                        exit(0);
                 }
                 if(inputServer){
                     inputServer = false;
@@ -129,6 +131,7 @@ public class UserInterface implements Runnable {
                 case BUILD_BEFORE:
                 case MOVE_AGAIN:
                     input = ((String)input).equals("YES");
+                /* THESE RETURN A SIGNAL */
                 default:
                     //do nothing
             }
@@ -162,7 +165,6 @@ public class UserInterface implements Runnable {
                 break;
             case MOVE_INDEX_REQ:
                 messageOut = new Message(Message.MessageType.MOVE_INDEX_REQ);
-
                 playerManager.chooseMovement(convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case BUILD_INDEX_REQ:
@@ -188,12 +190,10 @@ public class UserInterface implements Runnable {
             case PLAYER_WON:
                 gameManager.printWin(true);
                 receivedUiInput(messageOut);
-                exit(1);
                 break;
             case PLAYER_LOST:
                 gameManager.printWin(false);
                 receivedUiInput(messageOut);
-                exit (1);
                 break;
             case GET_NAME:
                 messageOut = new Message(Message.MessageType.GET_NAME);
@@ -237,6 +237,8 @@ public class UserInterface implements Runnable {
                 receivedUiInput(messageOut);
                 break;
             case END_GAME:
+                System.out.println(msg.getObject());
+                System.out.println("Exiting");
                 /**
                  * method that quits the game with a warning
                  */

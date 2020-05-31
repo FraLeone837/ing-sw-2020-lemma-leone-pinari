@@ -43,9 +43,6 @@ public class Message {
          * REQUIRES NAME
          */
         GET_NAME,
-
-        PING_IS_ALIVE,
-
         /**
          * not needed
          */
@@ -142,7 +139,7 @@ public class Message {
         BUILD_BEFORE,
         /**
          * substitutes null value
-         * means that we have no msg received
+         * means that we have no msg received in output
          */
         YYY
 

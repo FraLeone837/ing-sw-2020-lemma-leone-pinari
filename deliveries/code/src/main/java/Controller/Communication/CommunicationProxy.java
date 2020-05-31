@@ -5,6 +5,8 @@ import Model.Index;
 
 import java.util.ArrayList;
 
+import static Controller.Communication.ClientHandler.ANSI_RED;
+import static Controller.Communication.ClientHandler.ANSI_RESET;
 import static Controller.Communication.Message.MessageType.*;
 
 /**
@@ -15,7 +17,7 @@ import static Controller.Communication.Message.MessageType.*;
 public class CommunicationProxy implements Runnable, MessageObservers {
     //counts the time since last message
     private static Timer timer;
-    private static int timeConstant = 180;
+    private static int timeConstant = 15;
 
     private boolean debugging = true;
 
@@ -63,7 +65,9 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     private synchronized void waitForReceiveMessage(){
         while(this.received.getType() == Message.MessageType.YYY){
             try{
-                wait();
+                if(debugging)
+                System.out.println("Waiting for a messg");
+                    wait();
             } catch(InterruptedException e){
                 e.printStackTrace();
             }
@@ -111,8 +115,14 @@ public class CommunicationProxy implements Runnable, MessageObservers {
              */
             Message.MessageType typeCopy = received.getType();
 
-            if(typeCopy == Message.MessageType.END_GAME)
+
+            if(typeCopy == END_GAME ||
+                typeCopy == PLAYER_LOST ||
+                typeCopy == PLAYER_WON){
+                if(debugging)
+                System.out.println("Exiting from comm proxy " + getClientHandler().getName());
                 return;
+            }
 
             toSend = new Message(Message.MessageType.ZZZ, "Waiting");
             //changes message toSend to ZZZ and waits until gamesidelock.notifyAll() updates toSend
@@ -184,8 +194,11 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 //        }
 
         Message copy;
-        if(messageType == END_GAME)
+        if(messageType == END_GAME){
+            received = new Message(END_GAME,"Ending");
             return new Object();
+        }
+
 
         /**
          * prepare to receive message
@@ -204,6 +217,10 @@ public class CommunicationProxy implements Runnable, MessageObservers {
                 System.out.println("What Comm proxy received: " + received + " " + this.clientHandler);
             copy = new Message(received);
             Object c = convertToSpecificObject(copy);
+            //accepts at most 3 players
+            if(copy.getType() == NUMBER_PLAYERS && (int)c == 3){
+                ic.changeNoOfPlayers();
+            }
             received = new Message(ZZZ,"waiting");
             return c;
         }
@@ -350,19 +367,19 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      * passed or connection has been dropped
      */
     public void interruptGame(Message.MessageType messageType, String cause){
+        System.out.println(ANSI_RED + "ANSI_RDE" + ANSI_RESET);
         //inform all other players that
-        ic.Broadcast(messageType, cause, this);
+        receivedMessage();
+        synchronized (this){
+            ic.Broadcast(new Message(messageType, cause));
 
-        ic.terminateGame();
-        synchronized (this) {
-            try {
-                wait(20 * 1000);
+            ic.terminateGame();
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         sendMessage(END_GAME,cause);
-        this.clientHandler.terminateGame();
+    }
+
+    public IntermediaryClass getIC() {
+        return ic;
     }
 }

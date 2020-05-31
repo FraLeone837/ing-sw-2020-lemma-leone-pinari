@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import static Controller.Communication.Message.MessageType.END_GAME;
 import static Controller.Communication.Message.MessageType.ZZZ;
 
 
@@ -89,10 +90,11 @@ public class ClientHandler implements Runnable
         try {
             handleClientConnection();
         } catch (IOException e) {
-            System.out.println("client " + client.getInetAddress() + " connection dropped");
+            System.out.println("client " + client.getInetAddress() + " connection dropped -- clh" + this.getName());
             //calls every client and this.personalProxy to close their connections
             terminateGame();
             //closes thread
+            System.out.println("Exiting from thread " + this.getName());
             return;
         }
     }
@@ -167,8 +169,8 @@ public class ClientHandler implements Runnable
      * receives a local message that allows the game to terminate
      */
     public void terminateGame(){
-        this.personalProxy.sendMessage(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
-        this.currentMessage = new Message(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
+        this.currentMessage = new Message(END_GAME,"One player disconnected, game has been interrupted.");
+        this.personalProxy.interruptGame(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
         notifyObservers();
     }
 

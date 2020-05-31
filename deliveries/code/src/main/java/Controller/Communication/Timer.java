@@ -8,7 +8,7 @@ import Controller.Communication.Message;
 public class Timer implements Runnable {
     private int currentSecond;
     boolean myTurn ;
-    boolean debugging = false;
+    boolean debugging = true;
     private IntermediaryClass intermediaryClass;
     private CommunicationProxy communicationProxy;
     public Timer(int currentSecond, IntermediaryClass intermediaryClass, CommunicationProxy communicationProxy){

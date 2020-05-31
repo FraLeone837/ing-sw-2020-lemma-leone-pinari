@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import static java.lang.System.exit;
 
 public class CommunicationClass implements Runnable {
     private Message messageToSend;
@@ -33,7 +34,9 @@ public class CommunicationClass implements Runnable {
             inputStm = new ObjectInputStream(server.getInputStream());
             openConnection();
         } catch (IOException e) {
-            System.out.println("server has died");
+            System.out.println("server has died -- exiting");
+            //close all other threads
+            exit(-1);
         } catch (ClassCastException | ClassNotFoundException e) {
             System.out.println("protocol violation");
         }

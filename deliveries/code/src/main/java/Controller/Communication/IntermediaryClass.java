@@ -11,13 +11,16 @@ import static Controller.Communication.ClientHandler.*;
  */
 public class IntermediaryClass {
     private MatchManager matchManager;
-    private final Object lock = new Object();
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
+
     private boolean notified;
     private int counter = 0;
+    private int maxPlayers = 2;
+
     // Mm means MatchManager
     private Thread threadOfMm;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
+    private ArrayList<CommunicationProxy> unusedProxies = new ArrayList<>();
     private ClientHandler clCause = null;
 
     public IntermediaryClass(){
@@ -29,23 +32,25 @@ public class IntermediaryClass {
 
     public synchronized void setClientHandlers(ClientHandler clientHandler) {
             this.clientHandlerArrayList.add(clientHandler);
+    }
 
+    public synchronized void changeNoOfPlayers(){
+        maxPlayers = 3;
+        if(unusedProxies.size() > 0){
+            setCommunicationProxy(unusedProxies.remove(0));
+        }
     }
 
     /**
      * method that finishes game and clears all threads after a 10 second period?
      */
-    public void terminateGame(){
+    public synchronized void terminateGame(){
         counter = 0;
         threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
         threadOfMm.start();
         this.notified = false;
-        for(ClientHandler cl : clientHandlerArrayList){
-            if(cl != clCause)
-            cl.terminateGame();
-        }
         communicationProxies = new ArrayList<>();
         clientHandlerArrayList = new ArrayList<>();
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
@@ -57,6 +62,7 @@ public class IntermediaryClass {
      * @param msg
      */
     public synchronized void Broadcast(Message msg){
+        System.out.println("Broadcasting");
         for(CommunicationProxy cp : communicationProxies) {
             cp.sendMessage(msg.getType(), msg.getObject());
         }
@@ -67,17 +73,20 @@ public class IntermediaryClass {
      * @param communicationProxy
      */
     public void setCommunicationProxy(CommunicationProxy communicationProxy) {
+
         synchronized (this){
-            this.communicationProxies.add(communicationProxy);
-            setClientHandlers(communicationProxy.getClientHandler());
+            // do not accept more than maxPlayers clients
+            if(maxPlayers > communicationProxies.size()){
+                this.communicationProxies.add(communicationProxy);
+                setClientHandlers(communicationProxy.getClientHandler());
+            } else {
+                this.unusedProxies.add(communicationProxy);
+            }
             notified = true;
             notifyAll();
         }
     }
 
-    public MatchManager getMatchManager() {
-        return matchManager;
-    }
 
     /**
      * Helps in asking the first player to be connected, how many players want to play
@@ -102,19 +111,21 @@ public class IntermediaryClass {
                 }
             }
 
-            notified = false;
             this.counter = this.counter+1;
             communicationProxies.get(counter-1).getClientHandler().setName(Integer.toString(counter));
+            if(counter == communicationProxies.size())
+                    notified = false;
             return communicationProxies.get(counter-1);
         }
     }
 
-    public synchronized void Broadcast(Message.MessageType messageType, String cause, CommunicationProxy communicationProxy) {
-        this.clCause = communicationProxy.getClientHandler();
-        for(CommunicationProxy cp : communicationProxies) {
+    public synchronized void Broadcast(Message.MessageType messageType, String cause, ClientHandler clientHandler) {
+        System.out.println(ANSI_RED + "aboutta broadcast " + cause +ANSI_RESET);
+        this.clCause = clientHandler;
+        for(ClientHandler clh : clientHandlerArrayList) {
             //notify every other player except for the one that caused the error
-            if(cp != communicationProxy)
-            cp.sendMessage(messageType,cause);
+            if(clh != clientHandler)
+                clh.getCommProxy().sendMessage(messageType,cause);
         }
     }
 }
