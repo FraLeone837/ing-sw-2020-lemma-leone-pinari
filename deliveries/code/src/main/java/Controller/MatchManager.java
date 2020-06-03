@@ -1,16 +1,11 @@
 package Controller;
-
-import Controller.Communication.ClientHandler;
 import Controller.Communication.CommunicationProxy;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
 import Model.*;
-
-import java.nio.charset.IllegalCharsetNameException;
 import java.util.ArrayList;
 import java.util.Random;
-
-import static Controller.Communication.ClientHandler.*;
+import java.util.Scanner;
 
 public class MatchManager implements Runnable{
 
@@ -42,12 +37,6 @@ public class MatchManager implements Runnable{
         }
     }
 
-    /**
-     * @return all the information of the game according to a protocol
-     */
-    public int[] getInformationArray() {
-        return match.getInformationArray();
-    }
 
 
     public boolean isAnyPlayerConnected(){
@@ -75,12 +64,11 @@ public class MatchManager implements Runnable{
         names.add(playerName);
         PlayerManager firstPlayer = new PlayerManager(new Player(playerName, 1), firstCP);
         playerManagers.add(firstPlayer);
+        match.initPlayers(firstPlayer.getPlayer());
 
         //ask how many players does he want to play with
         int playersNumber = (int)firstCP.sendMessage(Message.MessageType.NUMBER_PLAYERS, "How many players do you want to play with?");
-
         firstCP.sendMessage(Message.MessageType.WAIT_START, "Please wait for the game to start");
-
         for (int x=2; x<=playersNumber; x++){
             CommunicationProxy newCP = intermediaryClass.getNewCommunicationProxy();
             this.communicationProxies.add(newCP);
@@ -91,18 +79,18 @@ public class MatchManager implements Runnable{
             names.add(playerName);
             PlayerManager newPlayer = new PlayerManager(new Player(playerName, x), newCP);
             playerManagers.add(newPlayer);
+            match.initPlayers(newPlayer.getPlayer());
             newCP.sendMessage(Message.MessageType.WAIT_START, "Please wait for the game to start");
         }
 
         //give gods to the players
-        giveGods();
+        giveGodsTest();
     }
 
     /**
      * each player puts his own invisible blocks on the game board if his god foresees it, and sets his workers
      */
     public void setupGame(){
-        intermediaryClass.Broadcast(new Message(Message.MessageType.ISLAND_INFO, match.getInformationArray()));
         ArrayList<Index> possiblePosition = new ArrayList<Index>();
         for (int x=0; x<5; x++){
             for (int y=0; y<5; y++){
@@ -110,18 +98,22 @@ public class MatchManager implements Runnable{
                 possiblePosition.add(index);
             }
         }
+        match.notifyView();
         for(PlayerManager playerManager : playerManagers){
             playerManager.setup(match);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
+            intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START,playerManager.getPlayer().getName()));
 
             Index position1 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_FIRST_WORKER, possiblePosition);
             Index correctPosition1 = playerManager.getGod().correctIndex(match, position1);
             match.initWorker(playerManager.getPlayer().getWorker1(),correctPosition1);
+            playerManager.getGod().setPrevIndex(correctPosition1);
             possiblePosition.remove(correctPosition1);
 
             Index position2 = (Index)CP.sendMessage(Message.MessageType.CHOOSE_INDEX_SEC_WORKER, possiblePosition);
             Index correctPosition2 = playerManager.getGod().correctIndex(match, position2);
             match.initWorker(playerManager.getPlayer().getWorker2(),correctPosition2);
+            playerManager.getGod().setPrevIndex(correctPosition2);
             possiblePosition.remove(correctPosition2);
         }
     }
@@ -138,9 +130,7 @@ public class MatchManager implements Runnable{
                 matchInProgress = false;
                 return;
             }
-            String[] playerName = new String[1];
-            playerName[0] = playerManager.getPlayer().getName();
-            intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerName));
+            intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerManager.getPlayer().getName()));
             playerManager.turn(match);
             if(playerManager.getGod().getWinner()==true){
                 giveVictory(playerManager);
@@ -161,7 +151,7 @@ public class MatchManager implements Runnable{
      * give randomly a god to each player
      */
     public void giveGods(){
-        int numberOfGods = 9;
+        int numberOfGods = 11;
         ArrayList<Integer> given = new ArrayList<Integer>();
         Random godGen = new Random();
         God god = new Apollo();
@@ -199,6 +189,12 @@ public class MatchManager implements Runnable{
                 case 8:
                     god = new Prometheus();
                     break;
+                case 9:
+                    god = new Hera();
+                    break;
+                case 10:
+                    god = new Zeus();
+                    break;
             }
             playerManager.setGod(god);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
@@ -212,7 +208,62 @@ public class MatchManager implements Runnable{
         playerManagers.remove(playerManager);
         for (PlayerManager playerManager1 : playerManagers){
             playerManager1.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
-            playerManagers.remove(playerManager1);
+        }
+        playerManagers.clear();
+    }
+
+    /**
+     * give a god to each player, asking to the server with cli
+     * useful for testing gods
+     */
+    public void giveGodsTest(){
+        Scanner scanner = new Scanner(System.in);
+        God god = new Apollo();
+        String godCode = "apollo";
+        int i = 0;
+        for(PlayerManager playerManager : playerManagers){
+            i++;
+            System.out.println("Dio per il " + i + "-o giocatore");
+            godCode = scanner.nextLine();
+            switch (godCode){
+                case "apollo":
+                    god = new Apollo();
+                    break;
+                case "artemis":
+                    god = new Artemis();
+                    break;
+                case "athena":
+                    god = new Athena();
+                    break;
+                case "atlas":
+                    god = new Atlas();
+                    break;
+                case "demeter":
+                    god = new Demeter();
+                    break;
+                case "hephaestus":
+                    god = new Hephaestus();
+                    break;
+                case "minotaur":
+                    god = new Minotaur();
+                    break;
+                case "pan":
+                    god = new Pan();
+                    break;
+                case "prometheus":
+                    god = new Prometheus();
+                    break;
+                case "hera":
+                    god = new Hera();
+                    break;
+                case "zeus":
+                    god = new Zeus();
+                    break;
+            }
+            playerManager.setGod(god);
+            CommunicationProxy CP = playerManager.getCommunicationProxy();
+            CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
+            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
         }
     }
 }

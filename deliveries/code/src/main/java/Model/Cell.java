@@ -94,4 +94,19 @@ public class Cell {
 
     public ArrayList<Invisible> getForbidden(){return forbidden;}
 
+    @Override
+    public String toString() {
+        String toReturn = "This cell is found in: " + this.index.toString();
+        if(this.worker != null){
+            toReturn = toReturn + " it contains worker" + worker.getIdWorker();
+        }
+        if(this.building){
+            if(this.dome){
+                toReturn = toReturn + " it contains dome";
+            } else{
+                toReturn = toReturn + " is building";
+            }
+        }
+        return toReturn + ".";
+    }
 }

@@ -97,7 +97,7 @@ public class Prometheus extends God {
         for(int x=0; x<5; x++){
             for(int y=0; y<5; y++){
                 for(int z=1; z<4; z++){
-                    Index index=new Index(x,y,z);
+                    Index index = new Index(x,y,z);
                     Invisible invisible = new ForbiddenMove(player);
                     match.buildInvisible(invisible, index);
                 }

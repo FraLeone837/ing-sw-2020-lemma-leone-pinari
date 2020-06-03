@@ -38,9 +38,9 @@ public class Minotaur extends God {
         Worker opponent = match.selectCell(actuaMovelIndex).getWorker();
         if(opponent!=null){
             Index moveOpponent = indexForward(match, worker, opponent);
-            match.moveWorker(opponent, moveOpponent);
+            match.moveWorker(opponent, moveOpponent, false);
         }
-        match.moveWorker(worker, actuaMovelIndex);
+        match.moveWorker(worker, actuaMovelIndex, true);
         if(checkWin(match, worker)){
             setWinner(true);
             return;
@@ -75,6 +75,8 @@ public class Minotaur extends God {
                                 if(checkedCell.isDome()){
                                     break;
                                 }
+                                if(checkedCell.getWorker()!=null && checkedCell.getWorker()!=worker && checkedCell.getWorker().getOwner()==worker.getOwner())
+                                    break;
                                 if(!checkedCell.isBuilding()){
                                     if(checkedCell.getWorker() == null || checkedCell.getWorker()==worker) {
                                         ArrayList<Invisible> invisibles = checkedCell.getForbidden();
@@ -93,13 +95,22 @@ public class Minotaur extends God {
                                     }
                                     else{
                                         Worker opponent = checkedCell.getWorker();
-                                        if(opponent.getOwner() != worker.getOwner()) {
-                                            Index indexForward = indexForward(match, worker, opponent);
-                                            if(indexForward == null)
-                                                break;
-                                            cellsWhereToMove.add(checkedIndex);
+                                        Index indexForward = indexForward(match, worker, opponent);
+                                        if(indexForward == null)
                                             break;
+                                        ArrayList<Invisible> invisibles = checkedCell.getForbidden();
+                                        forbiddenCell = false;
+                                        for (Invisible inv : invisibles) {
+                                            if (inv instanceof ForbiddenMove && inv.isIn(worker)) {
+                                                forbiddenCell = true;
+                                                break;
+                                            }
                                         }
+                                        if (!forbiddenCell) {
+                                            cellsWhereToMove.add(checkedIndex);
+                                            forbiddenCell = true;
+                                        }
+                                        break;
                                     }
                                 }
                                 z++;
@@ -162,5 +173,18 @@ public class Minotaur extends God {
             newZ++;
         }
         return null;
+    }
+
+    @Override
+    public Index correctIndex(Match match, Index index){
+        int x = index.getX();
+        int y = index.getY();
+        Index currentIndex = index;
+        for(int z=0; z<4; z++){
+            currentIndex = new Index(x,y,z);
+            if(!(match.selectCell(currentIndex).isBuilding()))
+                return currentIndex;
+        }
+        return currentIndex;
     }
 }

@@ -14,23 +14,31 @@ import java.util.List;
 
 public class ServerAdapter implements Runnable
 {
+
+
     private enum Commands {
         SEND_MESSAGE,
-        STOP
+        STOP;
+
     }
     private Commands nextCommand;
     private Message messageToSend;
+    //lock
+    private Object toSendLock = new Object();
+    private boolean isWaitingToReceive;
+    private Object receivedLock = new Object();
+
+    private CommunicationClass cc;
 
     private Socket server;
-    private ObjectOutputStream outputStm;
-    private ObjectInputStream inputStm;
-
     private List<ServerObserver> observers = new ArrayList<>();
 
 
     public ServerAdapter(Socket server)
     {
         this.server = server;
+        isWaitingToReceive = false;
+        cc = new CommunicationClass(server);
     }
 
 
@@ -38,7 +46,9 @@ public class ServerAdapter implements Runnable
     {
         synchronized (observers) {
             observers.add(observer);
+            cc.addObserver(observer);
         }
+
     }
 
 
@@ -46,6 +56,7 @@ public class ServerAdapter implements Runnable
     {
         synchronized (observers) {
             observers.remove(observer);
+            cc.removeObserver(observer);
         }
     }
 
@@ -69,8 +80,8 @@ public class ServerAdapter implements Runnable
     public void run()
     {
         try {
-            outputStm = new ObjectOutputStream(server.getOutputStream());
-            inputStm = new ObjectInputStream(server.getInputStream());
+            Thread t2 = new Thread(cc);
+            t2.start();
             handleServerConnection();
         } catch (IOException e) {
             System.out.println("server has died");
@@ -80,7 +91,9 @@ public class ServerAdapter implements Runnable
 
         try {
             server.close();
+            return;
         } catch (IOException e) { }
+        return;
     }
 
 
@@ -98,7 +111,7 @@ public class ServerAdapter implements Runnable
 
             switch (nextCommand) {
                 case SEND_MESSAGE:
-                    doSendMessage();
+                    canSendMessage();
                     break;
 
                 case STOP:
@@ -107,39 +120,21 @@ public class ServerAdapter implements Runnable
         }
     }
 
-
-    private synchronized void doSendMessage() throws IOException, ClassNotFoundException
-    {
-        //We have problem if you send message with GsonBuilder ecc ecc
-        //Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-        Gson gson = new Gson();
-        Message copy = new Message(messageToSend.getType(),messageToSend.getObject());
-        String converted = gson.toJson(copy);
-        System.out.println("Message to send is: " + messageToSend );
-        reset(messageToSend);
-
-        /* send the string to the server and get the new string back */
-        outputStm.writeObject(converted);
-
-
-        String newStr = (String)inputStm.readObject();
-        /* copy the list of observers in case some observers changes it from inside
-         * the notification method */
-        List<ServerObserver> observersCpy;
-        synchronized (observers) {
-            observersCpy = new ArrayList<>(observers);
-        }
-
-        Message msg = gson.fromJson(newStr, Message.class);
-        System.out.println("Received message is " + msg);//+" and it contains: "+msg.getObject());
-        /* notify the observers that we got the string */
-        for (ServerObserver observer: observersCpy) {
-            observer.didReceiveMessage(msg);
-        }
+    /**
+     * takes lock of if we can send message and sends message, afterwards stands in wait
+     */
+    private synchronized void canSendMessage()  throws IOException, ClassNotFoundException{
+        cc.notifyToSendMessage(messageToSend);
     }
 
-    private void reset(Message messageToSend) {
-        this.messageToSend = null;
+
+    /**
+     * notifies that client received a message
+     * so we can send an ack
+     */
+    public synchronized void receivedMessage() {
+        cc.receivedMessage();
     }
+
 
 }

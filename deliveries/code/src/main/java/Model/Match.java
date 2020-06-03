@@ -3,6 +3,7 @@ package Model;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
 
+import java.io.IOException;
 import java.lang.management.PlatformLoggingMXBean;
 import java.util.ArrayList;
 
@@ -16,7 +17,6 @@ public class Match {
     private Island island;
 
     private IntermediaryClass intermediaryClass;
-
     //decide list or normal array
     public Match(int id){
         players = new ArrayList<Player>();
@@ -55,14 +55,29 @@ public class Match {
     /**
      * move a worker from a cell to another
      * @param w the worker to move
-      * @param i the position where to move the worker
+     * @param i the position where to move the worker
      */
     public void moveWorker(Worker w, Index i){
         if(w != null){
             w.delete(selectCell(w.getPosition()));
             w.move(selectCell(i));
+            notifyView();
         }
-        notifyView();
+    }
+
+    /**
+     * move a worker from a cell to another
+     * @param w the worker to move
+     * @param i the position where to move the worker
+     * @param print is true if the view has to print the game board on the screen after this movement
+     */
+    public void moveWorker(Worker w, Index i, Boolean print){
+        if(w != null){
+            w.delete(selectCell(w.getPosition()));
+            w.move(selectCell(i));
+            if(print == true)
+                notifyView();
+        }
     }
 
     /**
@@ -85,6 +100,7 @@ public class Match {
      */
     public void buildDome(Worker w, Index i){
         w.buildDome(selectCell(i));
+        notifyView();
 
     }
 
@@ -103,8 +119,10 @@ public class Match {
      * @param i the position where to put the worker at the beginning of the game
      */
     public void initWorker(Worker w, Index i){
-        w.move(selectCell(i));
-        notifyView();
+        if(w!=null) {
+            w.move(selectCell(i));
+            notifyView();
+        }
     }
 
     /**
@@ -141,18 +159,21 @@ public class Match {
                         if(cell.isBuilding()){
                             if(cell.isDome()){
                                 //if k = 3 then dome is built in level 4 else k = 2 dome is built in level 3 (val = 5) else k = 1 (val = 6) else val = 7
-                                informationArray[i+5*j] = 4 + k;
+                                informationArray[i+5*j] += 4 + k;
                             } else {
                                 //if there are no domes built then we give the lowest level of the building built
-                                informationArray[i+5*j] = k;
+                                informationArray[i+5*j] += k + 1;
                             }
                         }
                         if(cell.getWorker() != null){
                             //Based on the id we connect the players (10-20 player 1) (30-40 player 2) ecc
-                            informationArray[i+5*j] += 10*cell.getWorker().getIdWorker();
+                            informationArray[i+5*j] = informationArray[i+5*j] + 10*cell.getWorker().getIdWorker();
+                            //next cell might be a building else ground floor
+                            continue;
                         }
                         break;
                     }
+                    else
                     //else if cell is empty
                     informationArray[i+5*j] = 0;
                 }

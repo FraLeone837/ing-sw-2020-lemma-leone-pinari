@@ -58,13 +58,15 @@ public class Artemis extends God {
             setWinner(true);
             return;
         }
-        Cell cell = match.selectCell(prevMoveIndex);
-        ArrayList<Invisible> invisibles = cell.getForbidden();
-        for (Invisible inv : invisibles) {
-            if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
-                inv.addWorker(worker);
-        }
+//        Cell cell = match.selectCell(prevMoveIndex);
+//        ArrayList<Invisible> invisibles = cell.getForbidden();
+//        for (Invisible inv : invisibles) {
+//            if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
+//                inv.addWorker(worker);
+//        }
         possibleMove = whereToMove(match, worker, worker.getPosition());
+        if(possibleMove.contains(prevMoveIndex))
+            possibleMove.remove(prevMoveIndex);
         if(!possibleMove.isEmpty()) {
             //ask to move another time
             Boolean moveAgainAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.MOVE_AGAIN, "Want to move again?");
@@ -116,28 +118,28 @@ public class Artemis extends God {
         match.build(worker, index3);
     }
 
-    @Override
-    public void setup(Match match, Player player) {
-        for(int x=0; x<5; x++){
-            for(int y=0; y<5; y++){
-                for(int z=0; z<4; z++){
-                    Index i=new Index(x,y,z);
-                    Invisible invisible = new ForbiddenMove(player);
-                    match.buildInvisible(invisible, i);
-                }
-            }
-        }
-    }
+//    @Override
+//    public void setup(Match match, Player player) {
+//        for(int x=0; x<5; x++){
+//            for(int y=0; y<5; y++){
+//                for(int z=0; z<4; z++){
+//                    Index index = new Index(x,y,z);
+//                    Invisible invisible = new ForbiddenMove(player);
+//                    match.buildInvisible(invisible, index);
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void resetPower(Match match, Worker worker) {
         setMoveAgain(false);
-        Cell cell = match.selectCell(prevMoveIndex);
-        ArrayList<Invisible> invisibles = cell.getForbidden();
-        for(Invisible inv : invisibles){
-            if(inv instanceof ForbiddenMove && worker.getOwner()==inv.getCreator())
-                inv.removeWorkers();
-        }
+//        Cell cell = match.selectCell(prevMoveIndex);
+//        ArrayList<Invisible> invisibles = cell.getForbidden();
+//        for(Invisible inv : invisibles){
+//            if(inv instanceof ForbiddenMove && worker.getOwner()==inv.getCreator())
+//                inv.removeWorkers();
+//        }
     }
 
     /**

@@ -21,7 +21,15 @@ public interface PlayerManager {
     final String LABEL_SERVER_IP = "Which server do you want to connect to?";
     final String LABEL_TURN = "It is ";
     final String LABEL_TURN_2 = "'s turn";
-    final String LABEL_HELP = "To see who are your gods type /gods, to see your name type /name, to see your worker's id type /id, else type /...";
+    final String LABEL_HELP = "To see which is your god type /god" + System.lineSeparator() +
+                                "To see map's legend type /map" + System.lineSeparator() +
+                                "To see your name type /name" + System.lineSeparator() +
+                                "To see your worker's id type /id" + System.lineSeparator() +
+                                "To see whose turn it is type /turn" + System.lineSeparator() +
+                                "To exit from the game type /exit" + System.lineSeparator() +
+                                "To see what is the valid input to reply with type /input";
+    final String LABEL_NO_INPUT = "Please wait for the game to start";
+    final String LABEL_WAIT_YOUR_TURN = "It is not your turn yet, ask that question after the beginning of your turn";
     final String LABEL_USERNAME = "Write your username";
     final String LABEL_NUMBER_PLAYERS = "How many players do you want in this match? (2 or 3)";
     final String LABEL_FIRST_WORKER = "Choose where to locate the first worker";
@@ -32,10 +40,12 @@ public interface PlayerManager {
     final String LABEL_CHOOSE_WHERE_TO_MOVE = "Where do you want to move the worker?";
     final String LABEL_CHOOSE_WHERE_TO_BUILD = "Where do you want to build?";
     final String LABEL_BUILD_DOME = "Do you want to build a dome or a building?";
-    final String LABEL_YOUR_GOD = "Your God is: " + ANSI_BLUE ;
-    final String LABEL_YOUR_GOD_DESC = ANSI_RESET +", ";
     final String LABEL_MOVE_AGAIN = "Do you want to ";
     final String LABEL_BUILD_BEFORE = "Do you want to build before moving?";
+    final String LABEL_ID_BEGIN = "Your Id is: ";
+    final String LABEL_ID_FINAL = " and the workers you can move are: ";
+    final String LABEL_YOUR_GOD = "Your god is: ";
+    final String LABEL_YOUR_GOD_DESC = ", ";
 
 
     /**
@@ -114,4 +124,10 @@ public interface PlayerManager {
      * @param object
      */
     public void showTurn(String object);
+
+    /**
+     * shows request of get name
+     * @param object
+     */
+    public void getName(String object);
 }

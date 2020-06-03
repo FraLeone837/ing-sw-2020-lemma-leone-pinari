@@ -4,8 +4,6 @@ import Controller.Communication.CommunicationProxy;
 import Controller.Communication.Message;
 import Model.*;
 
-import java.util.ArrayList;
-
 public class PlayerManager {
     private Player player;
     private God god;

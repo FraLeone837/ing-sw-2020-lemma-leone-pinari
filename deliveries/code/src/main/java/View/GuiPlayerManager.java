@@ -133,6 +133,11 @@ public class GuiPlayerManager implements PlayerManager{
 
     }
 
+    @Override
+    public void getName(String object) {
+
+    }
+
     public JPanel getPanel() {
         return panel;
     }

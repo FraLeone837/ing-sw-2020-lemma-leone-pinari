@@ -1,15 +1,9 @@
 package View;
 
 import Controller.Communication.Message;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 
 import javax.swing.*;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-
-import static View.CliGameManager.ANSI_BLUE;
-import static View.CliGameManager.ANSI_RESET;
 import static java.lang.System.exit;
 
 public class UserInterface implements Runnable {
@@ -27,9 +21,6 @@ public class UserInterface implements Runnable {
 
     String ip;
     int idFirstWorker;
-
-
-    private String godDescription;
 
     public enum Mode{
         CLI,
@@ -75,13 +66,17 @@ public class UserInterface implements Runnable {
     @Override
     public void run() {
         while(true){
-            if(inputUi){
-                inputUi = false;
-                client.sendThis(messageOut);
-            }
-            if(inputServer){
-                inputServer = false;
-                identificationMessage(messageIn);
+            synchronized (this){
+                if(inputUi){
+                    inputUi = false;
+                    client.sendThis(messageOut);
+                    if(messageOut.getType() == Message.MessageType.PLAYER_LOST || messageOut.getType() == Message.MessageType.PLAYER_WON)
+                        exit(0);
+                }
+                if(inputServer){
+                    inputServer = false;
+                    identificationMessage(messageIn);
+                }
             }
 
             try {
@@ -96,18 +91,16 @@ public class UserInterface implements Runnable {
      * It notifies the thread of UserInterface to wake it up from the previous wait
      * @param msg the messaged received
      */
-    public void receivedServerInput(Message msg){
+    public synchronized void receivedServerInput(Message msg){
         inputServer = true;
         messageIn = msg;
-        synchronized (this){
-            notify();
-        }
+        notifyAll();
     }
     /**
      * Method called by the PlayerManager when a new input is received
      * It notifies the thread of UserInterface to wake it up from the previous wait
      */
-    public void receivedUiInput(Object input){
+    public synchronized void receivedUiInput(Object input){
         if(messageOut.getType().equals(Message.MessageType.JOIN_GAME)){
             client = new Client(this, ip);
             Thread t = new Thread(client);
@@ -116,6 +109,7 @@ public class UserInterface implements Runnable {
         else{
             inputUi = true;
             switch(messageOut.getType()){
+                /* THESE RETURN A NUMBER */
                 case MOVE_INDEX_REQ:
                 case BUILD_INDEX_REQ:
                 case CHOOSE_INDEX_FIRST_WORKER:
@@ -126,16 +120,23 @@ public class UserInterface implements Runnable {
                     input = (Integer.parseInt((String)input)) - idFirstWorker + 1;
                     break;
                 case NUMBER_PLAYERS:
+                case MOVEMENT:
                     input = Integer.parseInt((String)input);
                     break;
+                /* THESE RETURN A BOOLEAN */
                 case BUILD_DOME:
                     input = ((String)input).equals("DOME");
                     break;
+                case BUILD_AGAIN:
+                case BUILD_BEFORE:
+                case MOVE_AGAIN:
+                    input = ((String)input).equals("YES");
+                /* THESE RETURN A SIGNAL */
+                default:
+                    //do nothing
             }
             messageOut.setObject(input);
-            synchronized (this){
-                notify();
-            }
+            notifyAll();
         }
     }
 
@@ -145,14 +146,13 @@ public class UserInterface implements Runnable {
      * screen, or of the PlayerManager to ask the player an input
      * @param msg
      */
-    private void identificationMessage(Message msg){
-        /*default message is ZZZ*/
-        messageOut = new Message(Message.MessageType.ZZZ, "Ok!");
+    private synchronized void identificationMessage(Message msg){
+        messageOut = new Message(msg.getType(), "Ok!");
 
 
         switch(msg.getType()){
             case ISLAND_INFO:
-                gameManager.updateMap(convertLinkedTreeMap(msg));
+                gameManager.updateMap(convertToIntArray((ArrayList<Double>)msg.getObject()));
                 receivedUiInput(messageOut);
                 break;
             case GAME_START:
@@ -165,7 +165,6 @@ public class UserInterface implements Runnable {
                 break;
             case MOVE_INDEX_REQ:
                 messageOut = new Message(Message.MessageType.MOVE_INDEX_REQ);
-
                 playerManager.chooseMovement(convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case BUILD_INDEX_REQ:
@@ -185,34 +184,32 @@ public class UserInterface implements Runnable {
                 playerManager.placeWorker(false, convertToIntArray((ArrayList<Double>)msg.getObject()));
                 break;
             case WAIT_START:
-                messageOut = new Message(Message.MessageType.ZZZ, "Ok waiting!");
                 receivedUiInput(messageOut);
                 gameManager.waitForPlayer();
                 break;
+            case PLAYER_WON:
+                gameManager.printWin(true);
+                receivedUiInput(messageOut);
+                break;
             case PLAYER_LOST:
                 gameManager.printWin(false);
+                receivedUiInput(messageOut);
                 break;
             case GET_NAME:
                 messageOut = new Message(Message.MessageType.GET_NAME);
-                playerManager.getName();
+                playerManager.getName((String)msg.getObject());
                 break;
             case NUMBER_PLAYERS:
                 messageOut = new Message(Message.MessageType.NUMBER_PLAYERS);
                 playerManager.chooseNumberPlayers();
                 break;
             case YOUR_GOD:
-                messageOut = new Message(Message.MessageType.ZZZ);
                 String[] god = new String[2];
                 god[0] = ((ArrayList<String>) msg.getObject()).get(0);
                 god[1] = ((ArrayList<String>) msg.getObject()).get(1);
                 gameManager.showGod(god);
                 playerManager.showGods(god);
-                break;
-            case END_GAME:
-                /**
-                 * method that quits the game with a warning
-                 */
-                exit(-1);
+                receivedUiInput(messageOut);
                 break;
             case BUILD_AGAIN:
                 messageOut = new Message(Message.MessageType.BUILD_AGAIN);
@@ -236,37 +233,22 @@ public class UserInterface implements Runnable {
                 break;
             //NEWLY ADDED! as of 23-05
             case TURN_START:
-                String[] x = convertLinkedTreeMapToString(msg);
-                playerManager.showTurn(x[0]);
+                playerManager.showTurn((String)msg.getObject());
                 receivedUiInput(messageOut);
+                break;
+            case END_GAME:
+                System.out.println(msg.getObject());
+                System.out.println("Exiting");
+                /**
+                 * method that quits the game with a warning
+                 */
+                exit(-1);
                 break;
             default:
                 receivedUiInput(messageOut);
         }
     }
 
-    private String[] convertLinkedTreeMapToString(Message message) {
-        com.google.gson.internal.LinkedTreeMap x = (com.google.gson.internal.LinkedTreeMap)message.getObject();
-        Object[] z = x.values().toArray();
-        String[] toRet = null;
-        for(Object d : z){
-            if(d.getClass() == java.util.ArrayList.class){
-                java.util.ArrayList copy = ((java.util.ArrayList)d);
-                toRet = new String[copy.size()];
-                for(int i =0; i< copy.size(); i++){
-                    toRet[i] = (String) copy.get(i);
-                }
-            }
-        }
-        if(toRet!=null)
-            return toRet;
-        else
-            for(int i = 0;i<100; i++){
-                System.out.println("Error");
-            }
-        exit(-1);
-        return new String[2];
-    }
 
     private int convertToInt(Double d){
         return d.intValue();
@@ -280,13 +262,6 @@ public class UserInterface implements Runnable {
         return toReturn;
     }
 
-    private int[] convertToIntArray(Double[] d){
-        int[] toReturn = new int[d.length];
-        for(int i=0; i<d.length; i++){
-            toReturn[i] = d[i].intValue();
-        }
-        return toReturn;
-    }
 
     /**
      * Given the coordinates from console, this method validates them
@@ -301,37 +276,9 @@ public class UserInterface implements Runnable {
             return -1;
         if(coor.charAt(1)<'1'&& coor.charAt(1)>'5')
             return -1;
-        int x = coor.charAt(0)-97;
-        int y = coor.charAt(1)-48;
+        int x = coor.charAt(0)-65;
+        int y = coor.charAt(1)-48-1;
         return y * 5 + x;
-    }
-
-    /**
-     * converts a google.gson.linkedtreemap into an array of int
-     * @param message not null
-     * @return int[] according to protocol
-     */
-    private int[] convertLinkedTreeMap(Message message){
-        com.google.gson.internal.LinkedTreeMap x = (com.google.gson.internal.LinkedTreeMap)message.getObject();
-        Object[] z = x.values().toArray();
-        Double[] toRet = null;
-        for(Object d : z){
-            if(d.getClass() == java.util.ArrayList.class){
-                java.util.ArrayList copy = ((java.util.ArrayList)d);
-                toRet = new Double[copy.size()];
-                for(int i =0; i< copy.size(); i++){
-                    toRet[i] = (Double)copy.get(i);
-                }
-            }
-        }
-        if(toRet!=null)
-        return convertToIntArray(toRet);
-        else
-            for(int i = 0;i<100; i++){
-                System.out.println("Error");
-            }
-        exit(-1);
-            return new int[2];
     }
 
 }
