@@ -46,7 +46,7 @@ public class IntermediaryClass {
      */
     public synchronized void terminateGame(){
         counter = 0;
-        threadOfMm.stop();
+//        threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
         threadOfMm.start();

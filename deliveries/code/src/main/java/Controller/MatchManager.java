@@ -35,6 +35,7 @@ public class MatchManager implements Runnable{
         while(matchInProgress) {
             turn();
         }
+        intermediaryClass.terminateGame();
     }
 
 
