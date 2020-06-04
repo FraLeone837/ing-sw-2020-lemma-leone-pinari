@@ -52,6 +52,9 @@ public class IntermediaryClass {
         threadOfMm.start();
         this.notified = false;
         communicationProxies = new ArrayList<>();
+        for(CommunicationProxy communicationProxy : unusedProxies){
+            this.setCommunicationProxy(communicationProxy);
+        }
         clientHandlerArrayList = new ArrayList<>();
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
     }
