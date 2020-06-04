@@ -14,6 +14,9 @@ public class MatchManager implements Runnable{
     private IntermediaryClass intermediaryClass;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
     private Boolean matchInProgress;
+    //author Etion
+    private boolean disconnected = false;
+    private int disconnectedPlayer;
 
     /**
      * starts with only the first player who is also the creator of the match
@@ -32,12 +35,25 @@ public class MatchManager implements Runnable{
     public void run() {
         setupPlayers();
         setupGame();
-        while(matchInProgress) {
+        while(matchInProgress ){
             turn();
         }
         intermediaryClass.terminateGame();
     }
 
+    /**
+     * if any player is disconnected notifies
+     * all the other players
+     */
+    private void notifyDisconnection() {
+        if(disconnected){
+            for(int i=0; i<communicationProxies.size(); i++){
+                if(i != disconnectedPlayer){
+                    communicationProxies.get(i).sendMessage(Message.MessageType.END_GAME, "One player disconnected");
+                }
+            }
+        }
+    }
 
 
     public boolean isAnyPlayerConnected(){
@@ -123,8 +139,12 @@ public class MatchManager implements Runnable{
      * each player moves a worker and builds. If he cannot do this with none of his workers he loses,
      * if he is the last remained player, he wins
      */
-    public void turn(){
+    public synchronized void turn(){
         for(PlayerManager playerManager : playerManagers){
+            if(disconnected){
+                notifyDisconnection();
+                return;
+            }
             CommunicationProxy thisPlayer = playerManager.getCommunicationProxy();
             if(playerManagers.size()==1){
                 giveVictory(playerManager);
@@ -266,5 +286,16 @@ public class MatchManager implements Runnable{
             CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
         }
+    }
+
+    public void setDisconnected(String name) {
+        this.disconnected = true;
+        this.disconnectedPlayer = Integer.parseInt(name);
+    }
+
+    public synchronized CommunicationProxy getDisconnectedProxy(){
+        if(disconnected)
+        return communicationProxies.get(disconnectedPlayer);
+        return null;
     }
 }
