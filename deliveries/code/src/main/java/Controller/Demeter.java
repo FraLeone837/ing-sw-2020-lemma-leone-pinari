@@ -86,7 +86,7 @@ public class Demeter extends God {
             Index actualBuildIndex2 = correctIndex(match,tempBuildIndex2);
             match.build(worker, actualBuildIndex2);
         }
-        resetPower(match, worker);
+        setBuildAgain(false);
     }
 
 
@@ -108,7 +108,8 @@ public class Demeter extends God {
             }
             //take index3 where to build a second time
             match.build(worker, index3);
-            resetPower(match,worker);
+            setBuildAgain(false);
+//            resetPower(match,worker);
         }
     }
 
@@ -127,14 +128,14 @@ public class Demeter extends God {
 //        }
 //    }
 
-    @Override
-    public void resetPower(Match match, Worker worker) {
-        setBuildAgain(false);
+//    @Override
+//    public void resetPower(Match match, Worker worker) {
+//        setBuildAgain(false);
 //        Cell cell = match.selectCell(prevBuildIndex);
 //        ArrayList<Invisible> invisibles = cell.getForbidden();
 //        for(Invisible inv : invisibles){
 //            if(inv instanceof ForbiddenConstruction && worker.getOwner()==inv.getCreator())
 //                inv.removeWorkers();
 //        }
-    }
+//    }
 }
