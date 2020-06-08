@@ -41,17 +41,24 @@ public class IntermediaryClass {
         }
     }
 
+    public MatchManager getMatchManager() {
+        return matchManager;
+    }
+
     /**
      * method that finishes game and clears all threads after a 10 second period?
      */
     public synchronized void terminateGame(){
         counter = 0;
-        threadOfMm.stop();
+//        threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
         threadOfMm.start();
         this.notified = false;
         communicationProxies = new ArrayList<>();
+        for(CommunicationProxy communicationProxy : unusedProxies){
+            this.setCommunicationProxy(communicationProxy);
+        }
         clientHandlerArrayList = new ArrayList<>();
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
     }
@@ -64,7 +71,8 @@ public class IntermediaryClass {
     public synchronized void Broadcast(Message msg){
         System.out.println("Broadcasting");
         for(CommunicationProxy cp : communicationProxies) {
-            cp.sendMessage(msg.getType(), msg.getObject());
+            if(cp != matchManager.getDisconnectedProxy())
+                cp.sendMessage(msg.getType(), msg.getObject());
         }
     }
 

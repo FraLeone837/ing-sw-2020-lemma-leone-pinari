@@ -91,8 +91,9 @@ public class ClientHandler implements Runnable
             handleClientConnection();
         } catch (IOException e) {
             System.out.println("client " + client.getInetAddress() + " connection dropped -- clh" + this.getName());
+            this.personalProxy.getIC().getMatchManager().setDisconnected(this.name);
             //calls every client and this.personalProxy to close their connections
-            terminateGame();
+//            terminateGame();
             //closes thread
             System.out.println("Exiting from thread " + this.getName());
             return;
