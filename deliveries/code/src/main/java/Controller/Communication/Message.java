@@ -138,6 +138,11 @@ public class Message {
          */
         BUILD_BEFORE,
         /**
+         * used for Poseidon power: at the end of your turn if the worker you didn't use respects some conditions,
+         * you can build with it up to three more times
+         */
+        BUILD_OTHER_WORKER,
+        /**
          * substitutes null value
          * means that we have no msg received in output
          */

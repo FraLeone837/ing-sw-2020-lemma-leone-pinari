@@ -10,15 +10,6 @@ import java.util.ArrayList;
 
 public class Hestia extends God{
 
-    /**
-     * this flag is for building once again if the player wants
-     */
-    private boolean buildAgain;
-
-    public void setBuildAgain(boolean buildAgain) {
-        this.buildAgain = buildAgain;
-    }
-
     @Override
     public String getName() {
         return "Hestia";
@@ -70,18 +61,16 @@ public class Hestia extends God{
                 }
             }
         }
-        if(!possibleBuild.isEmpty()) {
-            //ask to build another time
-            Boolean buildAgainAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.BUILD_AGAIN, "Want to build again?");
-            setBuildAgain(buildAgainAsked);
-        }
+        if(possibleBuild.isEmpty())
+            return;
+        //ask to build another time
+        Boolean buildAgain = (Boolean) communicationProxy.sendMessage(Message.MessageType.BUILD_AGAIN, "Want to build again?");
         if(buildAgain) {
             //take index3 where to build a second time
             Index tempBuildIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
             Index actualBuildIndex2 = correctIndex(match,tempBuildIndex2);
             match.build(worker, actualBuildIndex2);
         }
-        setBuildAgain(false);
     }
 
 }

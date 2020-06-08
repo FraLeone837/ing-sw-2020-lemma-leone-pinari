@@ -83,7 +83,7 @@ public class Artemis extends God {
                 return;
             }
         }
-        resetPower(match, worker);
+        setMoveAgain(false);
         ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
@@ -131,16 +131,16 @@ public class Artemis extends God {
 //        }
 //    }
 
-    @Override
-    public void resetPower(Match match, Worker worker) {
-        setMoveAgain(false);
+//    @Override
+//    public void resetPower(Match match, Worker worker) {
+//        setMoveAgain(false);
 //        Cell cell = match.selectCell(prevMoveIndex);
 //        ArrayList<Invisible> invisibles = cell.getForbidden();
 //        for(Invisible inv : invisibles){
 //            if(inv instanceof ForbiddenMove && worker.getOwner()==inv.getCreator())
 //                inv.removeWorkers();
 //        }
-    }
+//    }
 
     /**
      * allows you to know if you can end the turn with the selected worker by moving once
