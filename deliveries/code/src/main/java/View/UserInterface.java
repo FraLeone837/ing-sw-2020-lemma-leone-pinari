@@ -1,6 +1,8 @@
 package View;
 
 import Controller.Communication.Message;
+import View.*;
+import View.PlayerManager;
 
 import javax.swing.*;
 import java.util.ArrayList;

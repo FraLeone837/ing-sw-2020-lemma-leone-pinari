@@ -139,11 +139,11 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         switch(workers){
             case 1:
                 System.out.println(LABEL_ONLY_FIRST_WORKER_MOVE);
-                ui.receivedUiInput(chosenWorker);
+                ui.receivedUiInput(Integer.toString(chosenWorker));
                 break;
             case 2:
                 System.out.println(LABEL_ONLY_SECOND_WORKER_MOVE);
-                ui.receivedUiInput(chosenWorker);
+                ui.receivedUiInput(Integer.toString(chosenWorker));
                 break;
             case 3:
                 System.out.println(LABEL_CHOOSE_WORKER_TO_MOVE);

@@ -14,6 +14,9 @@ public class MatchManager implements Runnable{
     private IntermediaryClass intermediaryClass;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
     private Boolean matchInProgress;
+    //author Etion
+    private boolean disconnected = false;
+    private int disconnectedPlayer;
 
     /**
      * starts with only the first player who is also the creator of the match
@@ -32,11 +35,26 @@ public class MatchManager implements Runnable{
     public void run() {
         setupPlayers();
         setupGame();
-        while(matchInProgress) {
+        while(matchInProgress ){
             turn();
         }
+        System.out.println("stacca stacca");
+        intermediaryClass.terminateGame();
     }
 
+    /**
+     * if any player is disconnected notifies
+     * all the other players
+     */
+    private void notifyDisconnection() {
+        if(disconnected){
+            for(int i=0; i<communicationProxies.size(); i++){
+                if(i != disconnectedPlayer){
+                    communicationProxies.get(i).sendMessage(Message.MessageType.END_GAME, "One player disconnected");
+                }
+            }
+        }
+    }
 
 
     public boolean isAnyPlayerConnected(){
@@ -122,16 +140,24 @@ public class MatchManager implements Runnable{
      * each player moves a worker and builds. If he cannot do this with none of his workers he loses,
      * if he is the last remained player, he wins
      */
-    public void turn(){
+    public synchronized void turn(){
+        PlayerManager toRemove = null;
+        ArrayList<PlayerManager> playerManagersCopy = (ArrayList<PlayerManager>) playerManagers.clone();
+        if(playerManagers.size()==1){
+            giveVictory(playerManagers.get(0));
+            matchInProgress = false;
+            return;
+        }
         for(PlayerManager playerManager : playerManagers){
-            CommunicationProxy thisPlayer = playerManager.getCommunicationProxy();
-            if(playerManagers.size()==1){
-                giveVictory(playerManager);
-                matchInProgress = false;
+            if(disconnected){
+                notifyDisconnection();
                 return;
             }
+            CommunicationProxy thisPlayer = playerManager.getCommunicationProxy();
             intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerManager.getPlayer().getName()));
+
             playerManager.turn(match);
+
             if(playerManager.getGod().getWinner()==true){
                 giveVictory(playerManager);
                 matchInProgress = false;
@@ -139,19 +165,28 @@ public class MatchManager implements Runnable{
             }
             if(playerManager.getGod().getInGame()==false){
                 thisPlayer.sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
-                match.removeWorker(playerManager.getPlayer().getWorker1());
-                match.removeWorker(playerManager.getPlayer().getWorker2());
-                match.removePlayer(playerManager.getPlayer());
-                playerManagers.remove(playerManager);
+                intermediaryClass.removeCommunicationProxy(thisPlayer);
+                if(playerManagers.size()>2) {
+                    match.removeWorker(playerManager.getPlayer().getWorker1());
+                    match.removeWorker(playerManager.getPlayer().getWorker2());
+                    match.removePlayer(playerManager.getPlayer());
+                    match.notifyView();
+                }
+                toRemove = playerManager;
+                if(toRemove != null) {
+                    playerManagersCopy.remove(toRemove);
+                    toRemove = null;
+                }
             }
         }
+        playerManagers = playerManagersCopy;
     }
 
     /**
      * give randomly a god to each player
      */
     public void giveGods(){
-        int numberOfGods = 11;
+        int numberOfGods = 14;
         ArrayList<Integer> given = new ArrayList<Integer>();
         Random godGen = new Random();
         God god = new Apollo();
@@ -193,6 +228,15 @@ public class MatchManager implements Runnable{
                     god = new Hera();
                     break;
                 case 10:
+                    god = new Hestia();
+                    break;
+                case 11:
+                    god = new Poseidon();
+                    break;
+                case 12:
+                    god = new Triton();
+                    break;
+                case 13:
                     god = new Zeus();
                     break;
             }
@@ -256,6 +300,15 @@ public class MatchManager implements Runnable{
                 case "hera":
                     god = new Hera();
                     break;
+                case "hestia":
+                    god = new Hestia();
+                    break;
+                case "poseidon":
+                    god = new Poseidon();
+                    break;
+                case "triton":
+                    god = new Triton();
+                    break;
                 case "zeus":
                     god = new Zeus();
                     break;
@@ -265,5 +318,16 @@ public class MatchManager implements Runnable{
             CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
         }
+    }
+
+    public void setDisconnected(String name) {
+        this.disconnected = true;
+        this.disconnectedPlayer = Integer.parseInt(name);
+    }
+
+    public synchronized CommunicationProxy getDisconnectedProxy(){
+        if(disconnected)
+        return communicationProxies.get(disconnectedPlayer);
+        return null;
     }
 }

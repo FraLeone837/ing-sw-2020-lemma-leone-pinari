@@ -38,9 +38,14 @@ public class PlayerManager {
      * @param match the current match
      */
     public void turn(Match match){
-        if(god.canMove(match, player.getWorker1()) || god.canMove(match, player.getWorker2())) {
+        int toSend = 0;
+        if(god.canMove(match, player.getWorker1()))
+            toSend += 1;
+        if(god.canMove(match, player.getWorker2()))
+            toSend += 2;
+        if(toSend>0) {
             //ask what worker to move
-            int IDWorker = (int)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, 3);
+            int IDWorker = (int)communicationProxy.sendMessage(Message.MessageType.MOVEMENT, toSend);
             Worker worker;
             if(IDWorker == 1){
                 worker = player.getWorker1();

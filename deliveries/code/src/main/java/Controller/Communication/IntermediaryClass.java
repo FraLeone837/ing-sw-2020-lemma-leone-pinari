@@ -41,19 +41,26 @@ public class IntermediaryClass {
         }
     }
 
+    public MatchManager getMatchManager() {
+        return matchManager;
+    }
+
     /**
      * method that finishes game and clears all threads after a 10 second period?
      */
     public synchronized void terminateGame(){
         counter = 0;
-        threadOfMm.stop();
+//        threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
-        threadOfMm.start();
         this.notified = false;
         communicationProxies = new ArrayList<>();
+        for(CommunicationProxy communicationProxy : unusedProxies){
+            this.setCommunicationProxy(communicationProxy);
+        }
         clientHandlerArrayList = new ArrayList<>();
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
+        threadOfMm.start();
     }
 
 
@@ -64,7 +71,8 @@ public class IntermediaryClass {
     public synchronized void Broadcast(Message msg){
         System.out.println("Broadcasting");
         for(CommunicationProxy cp : communicationProxies) {
-            cp.sendMessage(msg.getType(), msg.getObject());
+            if(cp != matchManager.getDisconnectedProxy())
+                cp.sendMessage(msg.getType(), msg.getObject());
         }
     }
 
@@ -85,6 +93,34 @@ public class IntermediaryClass {
             notified = true;
             notifyAll();
         }
+    }
+
+    /**
+     * removes a comm proxy from matchManager
+     * @param communicationProxy
+     */
+    public void removeCommunicationProxy(CommunicationProxy communicationProxy) {
+        synchronized (this){
+            // do not accept more than maxPlayers clients
+            if(maxPlayers > communicationProxies.size()){
+                this.communicationProxies.add(communicationProxy);
+                setClientHandlers(communicationProxy.getClientHandler());
+            } else {
+                this.unusedProxies.add(communicationProxy);
+            }
+            try{
+                communicationProxies.remove(communicationProxy);
+                removeClientHandlers(communicationProxy);
+                this.counter--;
+            } catch (NullPointerException e){
+                e.printStackTrace();
+                System.out.println("Communication proxy not found");
+            }
+        }
+    }
+
+    private void removeClientHandlers(CommunicationProxy communicationProxy) {
+        clientHandlerArrayList.remove(communicationProxy.getClientHandler());
     }
 
 
