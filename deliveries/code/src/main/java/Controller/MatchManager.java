@@ -38,6 +38,7 @@ public class MatchManager implements Runnable{
         while(matchInProgress ){
             turn();
         }
+        System.out.println("stacca stacca");
         intermediaryClass.terminateGame();
     }
 
@@ -140,19 +141,23 @@ public class MatchManager implements Runnable{
      * if he is the last remained player, he wins
      */
     public synchronized void turn(){
+        PlayerManager toRemove = null;
+        ArrayList<PlayerManager> playerManagersCopy = (ArrayList<PlayerManager>) playerManagers.clone();
+        if(playerManagers.size()==1){
+            giveVictory(playerManagers.get(0));
+            matchInProgress = false;
+            return;
+        }
         for(PlayerManager playerManager : playerManagers){
             if(disconnected){
                 notifyDisconnection();
                 return;
             }
             CommunicationProxy thisPlayer = playerManager.getCommunicationProxy();
-            if(playerManagers.size()==1){
-                giveVictory(playerManager);
-                matchInProgress = false;
-                return;
-            }
             intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerManager.getPlayer().getName()));
+
             playerManager.turn(match);
+
             if(playerManager.getGod().getWinner()==true){
                 giveVictory(playerManager);
                 matchInProgress = false;
@@ -160,12 +165,21 @@ public class MatchManager implements Runnable{
             }
             if(playerManager.getGod().getInGame()==false){
                 thisPlayer.sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
-                match.removeWorker(playerManager.getPlayer().getWorker1());
-                match.removeWorker(playerManager.getPlayer().getWorker2());
-                match.removePlayer(playerManager.getPlayer());
-                playerManagers.remove(playerManager);
+                intermediaryClass.removeCommunicationProxy(thisPlayer);
+                if(playerManagers.size()>2) {
+                    match.removeWorker(playerManager.getPlayer().getWorker1());
+                    match.removeWorker(playerManager.getPlayer().getWorker2());
+                    match.removePlayer(playerManager.getPlayer());
+                    match.notifyView();
+                }
+                toRemove = playerManager;
+                if(toRemove != null) {
+                    playerManagersCopy.remove(toRemove);
+                    toRemove = null;
+                }
             }
         }
+        playerManagers = playerManagersCopy;
     }
 
     /**

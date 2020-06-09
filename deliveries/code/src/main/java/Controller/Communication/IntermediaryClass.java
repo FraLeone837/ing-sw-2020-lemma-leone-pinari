@@ -53,7 +53,6 @@ public class IntermediaryClass {
 //        threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
-        threadOfMm.start();
         this.notified = false;
         communicationProxies = new ArrayList<>();
         for(CommunicationProxy communicationProxy : unusedProxies){
@@ -61,6 +60,7 @@ public class IntermediaryClass {
         }
         clientHandlerArrayList = new ArrayList<>();
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
+        threadOfMm.start();
     }
 
 
@@ -93,6 +93,34 @@ public class IntermediaryClass {
             notified = true;
             notifyAll();
         }
+    }
+
+    /**
+     * removes a comm proxy from matchManager
+     * @param communicationProxy
+     */
+    public void removeCommunicationProxy(CommunicationProxy communicationProxy) {
+        synchronized (this){
+            // do not accept more than maxPlayers clients
+            if(maxPlayers > communicationProxies.size()){
+                this.communicationProxies.add(communicationProxy);
+                setClientHandlers(communicationProxy.getClientHandler());
+            } else {
+                this.unusedProxies.add(communicationProxy);
+            }
+            try{
+                communicationProxies.remove(communicationProxy);
+                removeClientHandlers(communicationProxy);
+                this.counter--;
+            } catch (NullPointerException e){
+                e.printStackTrace();
+                System.out.println("Communication proxy not found");
+            }
+        }
+    }
+
+    private void removeClientHandlers(CommunicationProxy communicationProxy) {
+        clientHandlerArrayList.remove(communicationProxy.getClientHandler());
     }
 
 

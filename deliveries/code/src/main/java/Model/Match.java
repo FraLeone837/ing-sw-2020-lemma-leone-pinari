@@ -131,7 +131,7 @@ public class Match {
      */
     public void removeWorker(Worker w){
         w.delete(selectCell(w.getPosition()));
-        notifyView();
+//        notifyView();
     }
 
     /**
