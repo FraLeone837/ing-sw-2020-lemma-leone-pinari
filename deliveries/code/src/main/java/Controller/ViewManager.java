@@ -1,4 +1,8 @@
-package Controller.Communication;
+package Controller;
+
+import Controller.Communication.ClientHandler;
+import Controller.Communication.IntermediaryClass;
+import Controller.Communication.Message;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -23,11 +27,10 @@ public class ViewManager
             System.exit(1);
             return;
         }
+        int counter = 1;
 
         IntermediaryClass iC = new IntermediaryClass();
 
-
-        int counter = 1;
         while (true) {
             try {
                 /* accepts connections; for every connection we accept,

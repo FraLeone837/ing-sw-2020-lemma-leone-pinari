@@ -12,7 +12,7 @@ import static Controller.Communication.ClientHandler.*;
 public class IntermediaryClass {
     private MatchManager matchManager;
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
-
+    //if there are new players online
     private boolean notified;
     private int counter = 0;
     private int maxPlayers = 2;
@@ -50,15 +50,17 @@ public class IntermediaryClass {
      */
     public synchronized void terminateGame(){
         counter = 0;
+        this.maxPlayers = 2;
+        this.notified = false;
 //        threadOfMm.stop();
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
         this.notified = false;
         communicationProxies = new ArrayList<>();
+        clientHandlerArrayList = new ArrayList<>();
         for(CommunicationProxy communicationProxy : unusedProxies){
             this.setCommunicationProxy(communicationProxy);
         }
-        clientHandlerArrayList = new ArrayList<>();
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
         threadOfMm.start();
     }

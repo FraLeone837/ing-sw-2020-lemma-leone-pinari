@@ -12,6 +12,7 @@ import View.Interfaces.PlayerManager;
 import javax.swing.*;
 import java.util.ArrayList;
 import static java.lang.System.exit;
+import static java.lang.System.in;
 
 /**
  * Converts logic of communication into
@@ -140,12 +141,19 @@ public class UserInterface implements Runnable {
                     input = ((String)input).equals("DOME");
                     break;
                 case BUILD_AGAIN:
+                case BUILD_OTHER_WORKER:
                 case BUILD_BEFORE:
                 case MOVE_AGAIN:
+                    if(((String)input).length() == 1){
+                        input = ((String)input).equals("Y");
+                    }
+                    else
                     input = ((String)input).equals("YES");
+                    break;
                 /* THESE RETURN A SIGNAL */
                 case GET_NAME:
                     ((CliPlayerManager)playerManager).setName((String)input);
+                    break;
                 default:
                     //do nothing
             }
@@ -250,6 +258,7 @@ public class UserInterface implements Runnable {
                 playerManager.showTurn((String)msg.getObject());
                 receivedUiInput(messageOut);
                 break;
+            //added in 11-06
             case BUILD_OTHER_WORKER:
                 playerManager.buildOtherWorker();
                 break;

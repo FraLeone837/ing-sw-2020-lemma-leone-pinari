@@ -2,6 +2,7 @@ package Controller;
 import Controller.Communication.CommunicationProxy;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
+import Controller.Gods.*;
 import Model.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -102,7 +103,8 @@ public class MatchManager implements Runnable{
         }
 
         //give gods to the players
-        giveGodsTest();
+//        giveGodsTest();
+        giveGods();
     }
 
     /**
@@ -327,7 +329,7 @@ public class MatchManager implements Runnable{
 
     public synchronized CommunicationProxy getDisconnectedProxy(){
         if(disconnected)
-        return communicationProxies.get(disconnectedPlayer);
+            return communicationProxies.get(disconnectedPlayer-1);
         return null;
     }
 }

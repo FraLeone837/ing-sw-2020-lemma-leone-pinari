@@ -1,6 +1,6 @@
 package ControllerTest;
 
-import Controller.*;
+import Controller.Gods.*;
 import Model.*;
 
 import java.util.ArrayList;

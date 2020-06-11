@@ -32,6 +32,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     //Message to be requested from matchManager
     private Message received = new Message(Message.MessageType.ZZZ,"have not received anything");
     private boolean acceptInput;
+    private boolean disconnected = false;
 
     /**
      * @param cl not null
@@ -205,7 +206,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 //        synchronized (this){
             if(debugging)
                 System.out.println("Comm proxy waiting for response for " + messageType);
-            while(received.getType() != messageType){
+            while(received.getType() != messageType && !disconnected){
                 try{
                     wait();
                 } catch (InterruptedException e){
@@ -380,5 +381,11 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
     public IntermediaryClass getIC() {
         return ic;
+    }
+    public void setDisconnected(boolean disconnected){
+        this.disconnected = disconnected;
+        synchronized (this){
+            notifyAll();
+        }
     }
 }

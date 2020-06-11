@@ -71,7 +71,7 @@ public class ClientHandler implements Runnable
     }
 
 
-    ClientHandler(Socket client, IntermediaryClass ic, int counter)
+    public ClientHandler(Socket client, IntermediaryClass ic, int counter)
     {
         this.client = client;
         toSendMsg = new Message(ZZZ, "Waiting");
@@ -92,8 +92,9 @@ public class ClientHandler implements Runnable
         } catch (IOException e) {
             System.out.println("client " + client.getInetAddress() + " connection dropped -- clh" + this.getName());
             this.personalProxy.getIC().getMatchManager().setDisconnected(this.name);
+            personalProxy.setDisconnected(true);
             //calls every client and this.personalProxy to close their connections
-//            terminateGame();
+            terminateGame();
             //closes thread
             System.out.println("Exiting from thread " + this.getName());
             return;
@@ -170,9 +171,9 @@ public class ClientHandler implements Runnable
      * receives a local message that allows the game to terminate
      */
     public void terminateGame(){
-        this.currentMessage = new Message(END_GAME,"One player disconnected, game has been interrupted.");
         this.personalProxy.interruptGame(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
         notifyObservers();
+        this.currentMessage = new Message(END_GAME,"One player disconnected, game has been interrupted.");
     }
 
     /**

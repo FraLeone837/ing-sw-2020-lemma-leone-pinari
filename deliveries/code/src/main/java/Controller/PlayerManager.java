@@ -2,6 +2,7 @@ package Controller;
 
 import Controller.Communication.CommunicationProxy;
 import Controller.Communication.Message;
+import Controller.Gods.God;
 import Model.*;
 
 public class PlayerManager {
