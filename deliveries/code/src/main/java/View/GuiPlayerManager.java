@@ -31,7 +31,6 @@ public class GuiPlayerManager implements PlayerManager{
 
     @Override
     public void getName() {
-        prepareTextInputPanel(LABEL_USERNAME);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class GuiPlayerManager implements PlayerManager{
 
     @Override
     public void getName(String object) {
-
+        prepareTextInputPanel(LABEL_USERNAME);
     }
 
     public JPanel getPanel() {
