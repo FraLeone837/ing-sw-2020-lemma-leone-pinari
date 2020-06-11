@@ -1,13 +1,23 @@
 package View;
 
 import Controller.Communication.Message;
-import View.*;
-import View.PlayerManager;
+import View.CliMode.CliGameManager;
+import View.CliMode.CliPlayerManager;
+import View.GUIMode.GuiGameManager;
+import View.GUIMode.GuiPlayerManager;
+import View.GUIMode.MainFrame;
+import View.Interfaces.GameManager;
+import View.Interfaces.PlayerManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import static java.lang.System.exit;
 
+/**
+ * Converts logic of communication into
+ * human-readable input for the player to
+ * interact with
+ */
 public class UserInterface implements Runnable {
 
     private Mode mode;
@@ -134,6 +144,8 @@ public class UserInterface implements Runnable {
                 case MOVE_AGAIN:
                     input = ((String)input).equals("YES");
                 /* THESE RETURN A SIGNAL */
+                case GET_NAME:
+                    ((CliPlayerManager)playerManager).setName((String)input);
                 default:
                     //do nothing
             }
@@ -237,6 +249,9 @@ public class UserInterface implements Runnable {
             case TURN_START:
                 playerManager.showTurn((String)msg.getObject());
                 receivedUiInput(messageOut);
+                break;
+            case BUILD_OTHER_WORKER:
+                playerManager.buildOtherWorker();
                 break;
             case END_GAME:
                 System.out.println(msg.getObject());

@@ -1,12 +1,11 @@
 package Controller.Communication;
 
-import Controller.God;
+import Controller.Gods.God;
 import Model.Index;
 
 import java.util.ArrayList;
 
-import static Controller.Communication.ClientHandler.ANSI_RED;
-import static Controller.Communication.ClientHandler.ANSI_RESET;
+import static Controller.Communication.ClientHandler.*;
 import static Controller.Communication.Message.MessageType.*;
 
 /**
@@ -120,7 +119,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
                 typeCopy == PLAYER_LOST ||
                 typeCopy == PLAYER_WON){
                 if(debugging)
-                System.out.println("Exiting from comm proxy " + getClientHandler().getName());
+                System.out.println(ANSI_PURPLE + "Exiting from comm proxy " + getClientHandler().getName() + ANSI_RESET);
                 return;
             }
 
