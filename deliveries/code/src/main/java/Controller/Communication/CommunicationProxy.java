@@ -18,7 +18,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     private static Timer timer;
     private static int timeConstant = 15;
 
-    private boolean debugging = true;
+    private boolean debugging = false;
 
     private ClientHandler clientHandler;
     //serves for methods referring to matchManager
@@ -206,7 +206,9 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 //        synchronized (this){
             if(debugging)
                 System.out.println("Comm proxy waiting for response for " + messageType);
-            while(received.getType() != messageType && !disconnected){
+            while(received.getType() != messageType){
+                if(disconnected)
+                    break;
                 try{
                     wait();
                 } catch (InterruptedException e){
@@ -367,16 +369,24 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      * passed or connection has been dropped
      */
     public void interruptGame(Message.MessageType messageType, String cause){
-        System.out.println(ANSI_RED + "ANSI_RDE" + ANSI_RESET);
-        //inform all other players that
-        receivedMessage();
-        synchronized (this){
-            ic.Broadcast(new Message(messageType, cause));
-
-            ic.terminateGame();
-
+        if(debugging)
+        System.out.println(ANSI_RED + "Interrupting Game");
+        synchronized (this) {
+            //inform all other players that they have been disconnected
+            setDisconnected(true);
         }
-        sendMessage(END_GAME,cause);
+            if(debugging)
+                System.out.println("Set disconnected");
+            receivedMessage();
+            if(debugging)
+                System.out.println("Received fake message, calling terminate game.");
+            ic.terminateGame();
+            if(debugging)
+                System.out.println("Sending message end_game");
+            sendMessage(END_GAME,cause);
+
+        if(debugging)
+            System.out.println("Done" + ANSI_RESET);
     }
 
     public IntermediaryClass getIC() {

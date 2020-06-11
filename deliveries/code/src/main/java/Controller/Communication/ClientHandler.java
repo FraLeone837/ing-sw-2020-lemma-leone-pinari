@@ -92,7 +92,6 @@ public class ClientHandler implements Runnable
         } catch (IOException e) {
             System.out.println("client " + client.getInetAddress() + " connection dropped -- clh" + this.getName());
             this.personalProxy.getIC().getMatchManager().setDisconnected(this.name);
-            personalProxy.setDisconnected(true);
             //calls every client and this.personalProxy to close their connections
             terminateGame();
             //closes thread
@@ -170,10 +169,9 @@ public class ClientHandler implements Runnable
     /**
      * receives a local message that allows the game to terminate
      */
-    public void terminateGame(){
-        this.personalProxy.interruptGame(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
-        notifyObservers();
+    public synchronized void terminateGame(){
         this.currentMessage = new Message(END_GAME,"One player disconnected, game has been interrupted.");
+        this.personalProxy.interruptGame(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
     }
 
     /**
