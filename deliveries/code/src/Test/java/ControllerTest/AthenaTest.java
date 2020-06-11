@@ -1,7 +1,7 @@
 package ControllerTest;
 
-import Controller.Apollo;
-import Controller.Athena;
+import Controller.Gods.Apollo;
+import Controller.Gods.Athena;
 import Model.*;
 import org.junit.After;
 import org.junit.Before;

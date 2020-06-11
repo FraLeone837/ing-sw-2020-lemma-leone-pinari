@@ -1,13 +1,10 @@
 package ControllerTest;
 
-import Controller.Artemis;
+import Controller.Gods.Artemis;
 import Model.Index;
 import Model.Match;
 import Model.Player;
 import Model.Worker;
-
-import java.io.IOException;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 

@@ -1,11 +1,18 @@
 package View;
 
 import Controller.Communication.Message;
+import View.Communication.ServerAdapter;
+import View.Interfaces.ServerObserver;
 
 import java.io.IOException;
 import java.net.Socket;
 
-
+/**
+ * Accepts Clicks and text input and
+ * then displays the result on screen,
+ * after it being processed by other
+ * classes and methods!
+ */
 public class Client implements Runnable, ServerObserver
 {
     private Message messageIn = null;
@@ -43,7 +50,7 @@ public class Client implements Runnable, ServerObserver
 
         synchronized (this) {
             try {
-                wait(1500);
+                wait(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

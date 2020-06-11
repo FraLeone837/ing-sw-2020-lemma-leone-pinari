@@ -12,7 +12,7 @@ import static Controller.Communication.ClientHandler.*;
 public class IntermediaryClass {
     private MatchManager matchManager;
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
-
+    //if there are new players online
     private boolean notified;
     private int counter = 0;
     private int maxPlayers = 2;
@@ -49,19 +49,34 @@ public class IntermediaryClass {
      * method that finishes game and clears all threads after a 10 second period?
      */
     public synchronized void terminateGame(){
+        System.out.println("Start method terminate game");
+        Broadcast(new Message(Message.MessageType.END_GAME, "Player has disconnected"));
         counter = 0;
-//        threadOfMm.stop();
-        this.matchManager = new MatchManager(1, this);
-        threadOfMm = new Thread(matchManager);
+        this.maxPlayers = 2;
+        this.notified = false;
+        threadOfMm.stop();
+
+        System.out.println("Stopped match manager");
         this.notified = false;
         communicationProxies = new ArrayList<>();
+        clientHandlerArrayList = new ArrayList<>();
         for(CommunicationProxy communicationProxy : unusedProxies){
             this.setCommunicationProxy(communicationProxy);
         }
-        clientHandlerArrayList = new ArrayList<>();
+
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
+        this.matchManager = new MatchManager(1, this);
+        threadOfMm = new Thread(matchManager);
         threadOfMm.start();
     }
+//    /**
+//     * method that finishes game and clears all threads after a 10 second period?
+//     */
+//    public synchronized void terminateGame(ClientHandler clientHandler){
+//        for(CommunicationProxy cp : communicationProxies){
+//
+//        }
+//    }
 
 
     /**

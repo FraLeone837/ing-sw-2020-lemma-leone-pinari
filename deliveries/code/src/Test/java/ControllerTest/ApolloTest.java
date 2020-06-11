@@ -1,16 +1,13 @@
 package ControllerTest;
 
-import Controller.Apollo;
-import Controller.God;
+import Controller.Gods.Apollo;
 import Model.Index;
 import Model.Match;
 import Model.Player;
 import Model.Worker;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 
 import static junit.framework.TestCase.assertTrue;

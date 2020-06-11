@@ -1,13 +1,24 @@
 package View;
 
 import Controller.Communication.Message;
-import View.*;
-import View.PlayerManager;
+import View.CliMode.CliGameManager;
+import View.CliMode.CliPlayerManager;
+import View.GUIMode.GuiGameManager;
+import View.GUIMode.GuiPlayerManager;
+import View.GUIMode.MainFrame;
+import View.Interfaces.GameManager;
+import View.Interfaces.PlayerManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import static java.lang.System.exit;
+import static java.lang.System.in;
 
+/**
+ * Converts logic of communication into
+ * human-readable input for the player to
+ * interact with
+ */
 public class UserInterface implements Runnable {
 
     private Mode mode;
@@ -130,10 +141,19 @@ public class UserInterface implements Runnable {
                     input = ((String)input).equals("DOME");
                     break;
                 case BUILD_AGAIN:
+                case BUILD_OTHER_WORKER:
                 case BUILD_BEFORE:
                 case MOVE_AGAIN:
+                    if(((String)input).length() == 1){
+                        input = ((String)input).equals("Y");
+                    }
+                    else
                     input = ((String)input).equals("YES");
+                    break;
                 /* THESE RETURN A SIGNAL */
+                case GET_NAME:
+                    ((CliPlayerManager)playerManager).setName((String)input);
+                    break;
                 default:
                     //do nothing
             }
@@ -237,6 +257,10 @@ public class UserInterface implements Runnable {
             case TURN_START:
                 playerManager.showTurn((String)msg.getObject());
                 receivedUiInput(messageOut);
+                break;
+            //added in 11-06
+            case BUILD_OTHER_WORKER:
+                playerManager.buildOtherWorker();
                 break;
             case END_GAME:
                 System.out.println(msg.getObject());

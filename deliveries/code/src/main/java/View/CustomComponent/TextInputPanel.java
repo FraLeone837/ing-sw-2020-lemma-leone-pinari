@@ -1,7 +1,5 @@
 package View.CustomComponent;
 
-import View.GuiPlayerManager;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

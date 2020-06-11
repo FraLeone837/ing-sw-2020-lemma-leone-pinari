@@ -1,6 +1,6 @@
 package ControllerTest;
 
-import Controller.Atlas;
+import Controller.Gods.Atlas;
 import Model.Index;
 import Model.Match;
 import Model.Player;
