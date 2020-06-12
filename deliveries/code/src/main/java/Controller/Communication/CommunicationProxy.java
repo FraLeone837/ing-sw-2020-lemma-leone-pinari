@@ -350,10 +350,11 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      * @param god not null, god of this player
      * @return not null
      */
-    public String[] godDescription(God god){
-        String[] x = new String[2];
+    public String[] godDescription(God god, String name){
+        String[] x = new String[3];
         x[0] = god.getName();
         x[1] = god.getDescription();
+        x[2] = name;
         return x;
     }
 

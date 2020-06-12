@@ -97,7 +97,7 @@ public class GuiPlayerManager implements PlayerManager {
     }
 
     @Override
-    public void showGods(String[] god) {
+    public void showGods(String[] god, String owner) {
 
     }
 

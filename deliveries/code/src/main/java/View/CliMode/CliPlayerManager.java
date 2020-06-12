@@ -4,7 +4,6 @@ import Controller.Communication.Message;
 import View.Interfaces.PlayerManager;
 import View.UserInterface;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -229,8 +228,11 @@ public class CliPlayerManager implements PlayerManager, Runnable{
 
     @Override
     public void showTurn(String object) {
-        this.turn = LABEL_TURN + object + LABEL_TURN_2;
-        System.out.println(LABEL_TURN + object + LABEL_TURN_2);
+        if(object.toUpperCase().equals(this.name))
+            this.turn = LABEL_YOUR_TURN;
+        else
+            this.turn = LABEL_TURN + object + LABEL_TURN_2;
+        System.out.println(this.turn);
     }
 
     @Override
@@ -254,10 +256,14 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     }
 
     @Override
-    public void showGods(String[] god) {
-        this.godName = "Your god is " + ANSI_BLUE + god[0] + ANSI_RESET;
-        this.godDescription = god[1];
-        System.out.println(godName + ", " + godDescription);
+    public void showGods(String[] god, String name) {
+        if(this.name.equals(name.toUpperCase())){
+            this.godName = "Your god is " + ANSI_BLUE + god[0] + ANSI_RESET;
+            this.godDescription = god[1];
+            System.out.println(godName + "," +godDescription);
+            return;
+        }
+        System.out.println(name + "'s God is:" + god[0] + ", " + god[1]);
     }
 
     /**

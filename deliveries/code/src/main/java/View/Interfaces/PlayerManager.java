@@ -1,10 +1,6 @@
 package View.Interfaces;
 
 import Controller.Communication.Message;
-import Model.Index;
-import Model.Worker;
-
-import java.util.List;
 
 public interface PlayerManager {
 
@@ -46,6 +42,7 @@ public interface PlayerManager {
     final String LABEL_ID_FINAL = " and the workers you can move are: ";
     final String LABEL_YOUR_GOD = "Your god is: ";
     final String LABEL_YOUR_GOD_DESC = ", ";
+    final String LABEL_YOUR_TURN = "It is your turn.";
     final String LABEL_POSEIDON_POWER = "Do you want to build with the other worker?";
 
 
@@ -106,7 +103,7 @@ public interface PlayerManager {
     /**
      * show the god's description and name
      */
-    public abstract void showGods(String[] god);
+    public abstract void showGods(String[] god, String owner);
 
     /**
      * used if god power allows to move/build again
