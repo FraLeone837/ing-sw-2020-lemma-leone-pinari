@@ -1,14 +1,17 @@
-package View;
+package View.GUIMode;
 
 import Controller.Communication.Message;
 import View.CustomComponent.CellButton;
+import View.Interfaces.PlayerManager;
+import View.UserInterface;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class GuiPlayerManager implements PlayerManager{
+public class GuiPlayerManager implements PlayerManager {
 
     private JPanel panel;
     private String input;
@@ -48,7 +51,7 @@ public class GuiPlayerManager implements PlayerManager{
         gridPanel.setLayout(new GridLayout(5, 5));
         for(int i=0; i<25; i++){
             cells[i] = new CellButton(val[i]);
-
+            /*
             cells[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -60,7 +63,7 @@ public class GuiPlayerManager implements PlayerManager{
                         }
                     });
                 }
-            });
+            });*/
             gridPanel.add(cells[i]);
         }
         gridPanel.setLocation(0, 0);
@@ -78,19 +81,30 @@ public class GuiPlayerManager implements PlayerManager{
 
     @Override
     public void placeWorker(boolean firstWorker, int[] possiblePositions) {
-        for(int i=0; i<possiblePositions.length; i++){
-            cells[possiblePositions[i]].addActionListener(new CellListener(possiblePositions[i]));
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                for(int i=0; i<possiblePositions.length; i++){
+                    cells[possiblePositions[i]].addActionListener(new CellListener(possiblePositions[i]));
+                }
+            }
+        });
     }
 
     @Override
     public void chooseWorker(int workers) {
-        if(workers==3){
-            for(int i=0; i<25; i++){
-                if(cells[i].idPlayerWorker(idFirstWorker)!=-1)
-                  cells[i].addActionListener(new CellListener(cells[i].idPlayerWorker(idFirstWorker)));
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if(workers==3){
+                    for(int i=0; i<25; i++){
+                        if(cells[i].idPlayerWorker(idFirstWorker)!=-1)
+                            cells[i].addActionListener(new CellListener(cells[i].idPlayerWorker(idFirstWorker)));
+                            cells[i].addActionListener(e -> ((CellButton)e.getSource()).setSelected());
+                    }
+                }
             }
-        }
+        });
     }
 
     @Override
@@ -135,6 +149,11 @@ public class GuiPlayerManager implements PlayerManager{
     @Override
     public void getName(String object) {
         prepareTextInputPanel(LABEL_USERNAME);
+    }
+
+    @Override
+    public void buildOtherWorker() {
+
     }
 
     public JPanel getPanel() {
@@ -206,6 +225,8 @@ public class GuiPlayerManager implements PlayerManager{
         @Override
         public void actionPerformed(ActionEvent e) {
             //cellInput(cellNumber);
+            ui.receivedUiInput(cellNumber);
+            System.out.println(cellNumber);
             removeCellListeners();
         }
     }

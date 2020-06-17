@@ -127,14 +127,18 @@ public class UserInterface implements Runnable {
                 case BUILD_INDEX_REQ:
                 case CHOOSE_INDEX_FIRST_WORKER:
                 case CHOOSE_INDEX_SEC_WORKER:
-                    input = correspondingCellNumeration((String) input);
+                    if(mode == Mode.CLI)
+                        input = correspondingCellNumeration((String) input);
                     break;
                 case CHOOSE_WORKER:
                     input = (Integer.parseInt((String)input)) - idFirstWorker + 1;
                     break;
                 case NUMBER_PLAYERS:
-                case MOVEMENT:
                     input = Integer.parseInt((String)input);
+                    break;
+                case MOVEMENT:
+                    if(mode == Mode.CLI)
+                        input = Integer.parseInt((String)input);
                     break;
                 /* THESE RETURN A BOOLEAN */
                 case BUILD_DOME:
@@ -152,7 +156,9 @@ public class UserInterface implements Runnable {
                     break;
                 /* THESE RETURN A SIGNAL */
                 case GET_NAME:
-                    ((CliPlayerManager)playerManager).setName((String)input);
+                    if(mode == Mode.CLI)
+                        ((CliPlayerManager)playerManager).setName((String)input);
+
                     break;
                 default:
                     //do nothing
@@ -174,7 +180,16 @@ public class UserInterface implements Runnable {
 
         switch(msg.getType()){
             case ISLAND_INFO:
-                gameManager.updateMap(convertToIntArray((ArrayList<Double>)msg.getObject()));
+                if(mode == Mode.CLI)
+                    gameManager.updateMap(convertToIntArray((ArrayList<Double>)msg.getObject()));
+                else{
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((GuiPlayerManager) playerManager).setUpMap(convertToIntArray((ArrayList<Double>)msg.getObject()));
+                        }
+                    });
+                }
                 receivedUiInput(messageOut);
                 break;
             case GAME_START:

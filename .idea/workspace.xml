@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="f9499d06-4555-4b26-a23e-da8653dd9100" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiMain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GuiPlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/CustomComponent/CellButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/CustomComponent/CellButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/GuiPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/GuiPlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +56,20 @@
       <recent name="$PROJECT_DIR$/deliveries/code/src/main/resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.CliMain">
+  <component name="RunManager" selected="Application.GuiMain (1)">
+    <configuration name="CliMain (1)" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="View.CliMode.CliMain" />
+      <module name="ing-sw-2020-lemma-leone-pinari" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="View.CliMode.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="CliMain" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="View.CliMain" />
       <module name="ing-sw-2020-lemma-leone-pinari" />
@@ -69,12 +83,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GuiMain" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="View.GuiMain" />
+    <configuration name="GuiMain (1)" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="View.GUIMode.GuiMain" />
       <module name="ing-sw-2020-lemma-leone-pinari" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="View.*" />
+          <option name="PATTERN" value="View.GUIMode.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ViewManager (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Controller.ViewManager" />
+      <module name="ing-sw-2020-lemma-leone-pinari" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Controller.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -97,14 +124,18 @@
     </configuration>
     <list>
       <item itemvalue="Application.CliMain" />
-      <item itemvalue="Application.GuiMain" />
       <item itemvalue="Application.ViewManager" />
+      <item itemvalue="Application.ViewManager (1)" />
+      <item itemvalue="Application.CliMain (1)" />
+      <item itemvalue="Application.GuiMain (1)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.GuiMain (1)" />
+        <item itemvalue="Application.ViewManager (1)" />
+        <item itemvalue="Application.CliMain (1)" />
         <item itemvalue="Application.CliMain" />
         <item itemvalue="Application.ViewManager" />
-        <item itemvalue="Application.GuiMain" />
       </list>
     </recent_temporary>
   </component>
@@ -123,7 +154,7 @@
       <workItem from="1589901938256" duration="11254000" />
       <workItem from="1590310779165" duration="12260000" />
       <workItem from="1591135470132" duration="5052000" />
-      <workItem from="1591909698699" duration="814000" />
+      <workItem from="1591909698699" duration="7412000" />
     </task>
     <task id="LOCAL-00001" summary="Build dome added client side">
       <created>1589540064104</created>
@@ -160,7 +191,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591182756493</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Gui Map">
+      <created>1591910542464</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1591910542464</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -192,50 +230,50 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="523" y="270" key="#Notifications/0.0.1280.800@0.0.1280.800" timestamp="1590165390345" />
-    <state x="104" y="62" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590049702726">
+    <state x="104" y="62" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591910970237">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="104" y="62" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.800@0.0.1280.800" timestamp="1590049702726" />
-    <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser" timestamp="1590055136979">
+    <state x="104" y="62" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.800@0.0.1280.800" timestamp="1591910970237" />
+    <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser" timestamp="1591910661820">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1280.800@0.0.1280.800" timestamp="1590055136979" />
-    <state x="126" y="0" key="CommitChangelistDialog2" timestamp="1591182756077">
+    <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1280.800@0.0.1280.800" timestamp="1591910661820" />
+    <state x="126" y="0" key="CommitChangelistDialog2" timestamp="1591910542153">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="126" y="0" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1591182756077" />
-    <state width="1238" height="154" key="GridCell.Tab.0.bottom" timestamp="1591910477300">
+    <state x="126" y="0" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1591910542153" />
+    <state width="1238" height="150" key="GridCell.Tab.0.bottom" timestamp="1592057788269">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1238" height="154" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1591910477300" />
+    <state width="1238" height="150" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1592057788269" />
     <state width="1238" height="652" key="GridCell.Tab.0.bottom/0.23.1280.716@0.23.1280.716" timestamp="1590247691022" />
     <state width="1238" height="167" key="GridCell.Tab.0.bottom/0.23.1280.721@0.23.1280.721" timestamp="1590849367935" />
     <state width="1238" height="167" key="GridCell.Tab.0.bottom/0.23.1280.728@0.23.1280.728" timestamp="1590510340332" />
-    <state width="1238" height="154" key="GridCell.Tab.0.center" timestamp="1591910477299">
+    <state width="1238" height="150" key="GridCell.Tab.0.center" timestamp="1592057788268">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1238" height="154" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1591910477299" />
+    <state width="1238" height="150" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1592057788268" />
     <state width="1238" height="652" key="GridCell.Tab.0.center/0.23.1280.716@0.23.1280.716" timestamp="1590247691021" />
     <state width="1238" height="167" key="GridCell.Tab.0.center/0.23.1280.721@0.23.1280.721" timestamp="1590849367934" />
     <state width="1238" height="167" key="GridCell.Tab.0.center/0.23.1280.728@0.23.1280.728" timestamp="1590510340330" />
-    <state width="1238" height="154" key="GridCell.Tab.0.left" timestamp="1591910477298">
+    <state width="1238" height="150" key="GridCell.Tab.0.left" timestamp="1592057788267">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1238" height="154" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1591910477298" />
+    <state width="1238" height="150" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1592057788267" />
     <state width="1238" height="652" key="GridCell.Tab.0.left/0.23.1280.716@0.23.1280.716" timestamp="1590247691021" />
     <state width="1238" height="167" key="GridCell.Tab.0.left/0.23.1280.721@0.23.1280.721" timestamp="1590849367933" />
     <state width="1238" height="167" key="GridCell.Tab.0.left/0.23.1280.728@0.23.1280.728" timestamp="1590510340329" />
-    <state width="1238" height="154" key="GridCell.Tab.0.right" timestamp="1591910477299">
+    <state width="1238" height="150" key="GridCell.Tab.0.right" timestamp="1592057788269">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1238" height="154" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1591910477299" />
+    <state width="1238" height="150" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1592057788269" />
     <state width="1238" height="652" key="GridCell.Tab.0.right/0.23.1280.716@0.23.1280.716" timestamp="1590247691022" />
     <state width="1238" height="167" key="GridCell.Tab.0.right/0.23.1280.721@0.23.1280.721" timestamp="1590849367935" />
     <state width="1238" height="167" key="GridCell.Tab.0.right/0.23.1280.728@0.23.1280.728" timestamp="1590510340331" />
-    <state x="528" y="274" width="577" height="252" key="MultipleFileMergeDialog" timestamp="1591182774340">
+    <state x="528" y="274" width="577" height="252" key="MultipleFileMergeDialog" timestamp="1591910583354">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="528" y="274" width="577" height="252" key="MultipleFileMergeDialog/0.0.1280.800@0.0.1280.800" timestamp="1591182774340" />
+    <state x="528" y="274" width="577" height="252" key="MultipleFileMergeDialog/0.0.1280.800@0.0.1280.800" timestamp="1591910583354" />
     <state x="240" y="140" key="Vcs.Push.Dialog.v2" timestamp="1590094408376">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
@@ -244,10 +282,10 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="428" y="321" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.800@0.0.1280.800" timestamp="1590165364360" />
-    <state x="246" y="195" key="git4idea.merge.GitPullDialog" timestamp="1591910503309">
+    <state x="246" y="195" key="git4idea.merge.GitPullDialog" timestamp="1591910560399">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="246" y="195" key="git4idea.merge.GitPullDialog/0.0.1280.800@0.0.1280.800" timestamp="1591910503309" />
+    <state x="246" y="195" key="git4idea.merge.GitPullDialog/0.0.1280.800@0.0.1280.800" timestamp="1591910560399" />
     <state x="305" y="124" width="670" height="676" key="search.everywhere.popup" timestamp="1589963507427">
       <screen x="0" y="0" width="1280" height="800" />
     </state>

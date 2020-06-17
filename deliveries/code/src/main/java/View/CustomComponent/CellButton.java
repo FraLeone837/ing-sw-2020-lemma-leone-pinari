@@ -1,6 +1,7 @@
 package View.CustomComponent;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 public class CellButton extends JButton {
@@ -98,5 +99,10 @@ public class CellButton extends JButton {
      */
     public void setSelectable(boolean selectable){
 
+    }
+    public void setSelected(){
+        SwingUtilities.updateComponentTreeUI(this);
+        System.out.println("magariii");
+        setBackground(Color.red);
     }
 }
