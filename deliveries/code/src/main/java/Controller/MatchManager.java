@@ -244,7 +244,7 @@ public class MatchManager implements Runnable{
             }
             playerManager.setGod(god);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
-            CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
+            intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
         }
     }
@@ -317,7 +317,7 @@ public class MatchManager implements Runnable{
             }
             playerManager.setGod(god);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
-            CP.sendMessage(Message.MessageType.YOUR_GOD, CP.godDescription(god));
+            intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
         }
     }

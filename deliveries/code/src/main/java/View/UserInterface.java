@@ -242,10 +242,12 @@ public class UserInterface implements Runnable {
                 break;
             case YOUR_GOD:
                 String[] god = new String[2];
+                String owner;
                 god[0] = ((ArrayList<String>) msg.getObject()).get(0);
                 god[1] = ((ArrayList<String>) msg.getObject()).get(1);
+                owner = ((ArrayList<String>) msg.getObject()).get(2);
                 gameManager.showGod(god);
-                playerManager.showGods(god);
+                playerManager.showGods(god,owner);
                 receivedUiInput(messageOut);
                 break;
             case BUILD_AGAIN:
