@@ -143,6 +143,11 @@ public class Message {
          */
         BUILD_OTHER_WORKER,
         /**
+         * notifies when the other player
+         * loses
+         */
+        OTHERS_LOSS,
+        /**
          * substitutes null value
          * means that we have no msg received in output
          */

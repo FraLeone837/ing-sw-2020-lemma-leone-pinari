@@ -168,6 +168,7 @@ public class MatchManager implements Runnable{
             if(playerManager.getGod().getInGame()==false){
                 thisPlayer.sendMessage(Message.MessageType.PLAYER_LOST, "YOU LOST!");
                 intermediaryClass.removeCommunicationProxy(thisPlayer);
+                intermediaryClass.Broadcast(new Message(Message.MessageType.OTHERS_LOSS, playerManager.getPlayer().getName()));
                 if(playerManagers.size()>2) {
                     match.removeWorker(playerManager.getPlayer().getWorker1());
                     match.removeWorker(playerManager.getPlayer().getWorker2());

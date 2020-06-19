@@ -14,6 +14,7 @@ public class IntermediaryClass {
     private ArrayList<ClientHandler> clientHandlerArrayList = new ArrayList<>();
     //if there are new players online
     private boolean notified;
+    //how many players we have given to matchManager
     private int counter = 0;
     private int maxPlayers = 2;
 
@@ -63,7 +64,7 @@ public class IntermediaryClass {
         for(CommunicationProxy communicationProxy : unusedProxies){
             this.setCommunicationProxy(communicationProxy);
         }
-
+        unusedProxies = new ArrayList<>();
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
@@ -84,7 +85,7 @@ public class IntermediaryClass {
      * @param msg
      */
     public synchronized void Broadcast(Message msg){
-        System.out.println("Broadcasting");
+        System.out.println("Broadcasting " + msg.getType());
         for(CommunicationProxy cp : communicationProxies) {
             if(cp != matchManager.getDisconnectedProxy())
                 cp.sendMessage(msg.getType(), msg.getObject());
@@ -111,7 +112,7 @@ public class IntermediaryClass {
     }
 
     /**
-     * removes a comm proxy from matchManager
+     * removes a comm proxy. Called only by matchManager
      * @param communicationProxy
      */
     public void removeCommunicationProxy(CommunicationProxy communicationProxy) {
@@ -126,6 +127,7 @@ public class IntermediaryClass {
             try{
                 communicationProxies.remove(communicationProxy);
                 removeClientHandlers(communicationProxy);
+//                matchManager has only two players
                 this.counter--;
             } catch (NullPointerException e){
                 e.printStackTrace();
@@ -161,7 +163,6 @@ public class IntermediaryClass {
                     e.printStackTrace();
                 }
             }
-
             this.counter = this.counter+1;
             communicationProxies.get(counter-1).getClientHandler().setName(Integer.toString(counter));
             if(counter == communicationProxies.size())
