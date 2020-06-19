@@ -22,7 +22,7 @@ public class GuiPlayerManager implements PlayerManager {
     private String godName;
     private String godDescription;
 
-    public GuiPlayerManager(UserInterface ui){
+    public GuiPlayerManager(UserInterface ui) {
         panel = new JPanel();
         this.ui = ui;
     }
@@ -41,7 +41,7 @@ public class GuiPlayerManager implements PlayerManager {
         prepareTextInputPanel(LABEL_NUMBER_PLAYERS);
     }
 
-    public void setUpMap(int val[]){
+    public void setUpMap(int val[]) {
         SwingUtilities.updateComponentTreeUI(panel);
         panel.removeAll();
         cells = new CellButton[25];
@@ -49,7 +49,7 @@ public class GuiPlayerManager implements PlayerManager {
         JPanel gridPanel = new JPanel();
         panel.setSize(500, 500);
         gridPanel.setLayout(new GridLayout(5, 5));
-        for(int i=0; i<25; i++){
+        for (int i = 0; i < 25; i++) {
             cells[i] = new CellButton(val[i]);
             /*
             cells[i].addActionListener(new ActionListener() {
@@ -84,7 +84,7 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                for(int i=0; i<possiblePositions.length; i++){
+                for (int i = 0; i < possiblePositions.length; i++) {
                     cells[possiblePositions[i]].addActionListener(new CellListener(possiblePositions[i]));
                 }
             }
@@ -96,11 +96,11 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                if(workers==3){
-                    for(int i=0; i<25; i++){
-                        if(cells[i].idPlayerWorker(idFirstWorker)!=-1)
+                if (workers == 3) {
+                    for (int i = 0; i < 25; i++) {
+                        if (cells[i].idPlayerWorker(idFirstWorker) != -1)
                             cells[i].addActionListener(new CellListener(cells[i].idPlayerWorker(idFirstWorker)));
-                            cells[i].addActionListener(e -> ((CellButton)e.getSource()).setSelected());
+                        cells[i].addActionListener(e -> ((CellButton) e.getSource()).setSelected());
                     }
                 }
             }
@@ -109,14 +109,14 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void chooseMovement(int[] movements) {
-        for(int i=0; i<movements.length; i++){
+        for (int i = 0; i < movements.length; i++) {
             cells[movements[i]].addActionListener(new CellListener(movements[i]));
         }
     }
 
     @Override
     public void chooseBuilding(int[] buildings) {
-        for(int i=0; i<buildings.length; i++){
+        for (int i = 0; i < buildings.length; i++) {
             cells[buildings[i]].addActionListener(new CellListener(buildings[i]));
         }
     }
@@ -156,11 +156,16 @@ public class GuiPlayerManager implements PlayerManager {
 
     }
 
+    @Override
+    public void printLoser(String object) {
+
+    }
+
     public JPanel getPanel() {
         return panel;
     }
 
-    private void prepareTextInputPanel(String labelText){
+    private void prepareTextInputPanel(String labelText) {
         panel.removeAll();
         JLabel label = new JLabel(labelText);
         panel.add(label);
@@ -180,15 +185,15 @@ public class GuiPlayerManager implements PlayerManager {
         panel.add(stampo);*/
     }
 
-    private void removeCellListeners(){
-        for(int i=0; i<25; i++){
-            for(int o=0; o<cells[i].getActionListeners().length; o++) {
+    private void removeCellListeners() {
+        for (int i = 0; i < 25; i++) {
+            for (int o = 0; o < cells[i].getActionListeners().length; o++) {
                 cells[i].removeActionListener(cells[i].getActionListeners()[o]);
             }
         }
     }
 
-    private void textInput(String input){
+    private void textInput(String input) {
         this.input = input;
         ui.receivedUiInput(input);
     }
@@ -204,10 +209,11 @@ public class GuiPlayerManager implements PlayerManager {
         return false;
     }*/
 
-    class TextInputListener implements ActionListener{
+    class TextInputListener implements ActionListener {
 
         JTextField tf;
-        public TextInputListener(JTextField tf){
+
+        public TextInputListener(JTextField tf) {
             this.tf = tf;
         }
 
@@ -217,11 +223,13 @@ public class GuiPlayerManager implements PlayerManager {
         }
     }
 
-    class CellListener implements ActionListener{
+    class CellListener implements ActionListener {
         private int cellNumber;
-        public CellListener(int cellNumber){
+
+        public CellListener(int cellNumber) {
             this.cellNumber = cellNumber;
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             //cellInput(cellNumber);

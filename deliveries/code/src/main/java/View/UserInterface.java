@@ -287,6 +287,10 @@ public class UserInterface implements Runnable {
                  */
                 exit(-1);
                 break;
+            case OTHERS_LOSS:
+                playerManager.printLoser((String)msg.getObject());
+                receivedUiInput(messageOut);
+                break;
             default:
                 receivedUiInput(messageOut);
         }

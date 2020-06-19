@@ -256,6 +256,11 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     }
 
     @Override
+    public void printLoser(String object) {
+        System.out.println(object.toUpperCase() + LABEL_OTHER_PLAYER_LOST);
+    }
+
+    @Override
     public void showGods(String[] god, String name) {
         if(this.name.equals(name.toUpperCase())){
             this.godName = "Your god is " + ANSI_BLUE + god[0] + ANSI_RESET;
