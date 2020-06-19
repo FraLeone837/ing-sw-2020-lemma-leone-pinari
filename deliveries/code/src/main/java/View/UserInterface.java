@@ -61,6 +61,7 @@ public class UserInterface implements Runnable {
                 public void run() {
                     mainFrame = new MainFrame();
                     mainFrame.setPlayerManagerPanel(((GuiPlayerManager)playerManager).getPanel());
+                    mainFrame.setTopGameManagerPanel(((GuiPlayerManager)playerManager).getInfoPanel());
                     mainFrame.setBottomGameManagerPanel(((GuiGameManager)gameManager).getPanel());
                     mainFrame.show();
                 }
@@ -198,6 +199,8 @@ public class UserInterface implements Runnable {
                     ((CliPlayerManager) playerManager).setIdFirstWorker(idFirstWorker);
                     ((CliGameManager) gameManager).printIdWorkers(idFirstWorker);
                 }
+                else
+                    ((GuiPlayerManager) playerManager).setIdFirstWorker(idFirstWorker);
                 receivedUiInput(new Message(Message.MessageType.GAME_START, "Ok!"));
                 break;
             case MOVE_INDEX_REQ:

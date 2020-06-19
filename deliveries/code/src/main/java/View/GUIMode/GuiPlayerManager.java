@@ -9,11 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class GuiPlayerManager implements PlayerManager {
 
     private JPanel panel;
+    private JPanel infoPanel;
+    private JLabel infoLabel;
     private String input;
     private CellButton[] cells;
     //private int[] validCells;
@@ -24,6 +25,9 @@ public class GuiPlayerManager implements PlayerManager {
 
     public GuiPlayerManager(UserInterface ui){
         panel = new JPanel();
+        infoPanel = new JPanel();
+        infoPanel.setSize(500, 60);
+        infoLabel = new JLabel(" ");
         this.ui = ui;
     }
 
@@ -34,6 +38,10 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void getName() {
+    }
+
+    public void setIdFirstWorker(int idFirstWorker) {
+        this.idFirstWorker = idFirstWorker;
     }
 
     @Override
@@ -84,6 +92,7 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                prepareUpperText("PIAZZA LAVORATORI");
                 for(int i=0; i<possiblePositions.length; i++){
                     cells[possiblePositions[i]].addActionListener(new CellListener(possiblePositions[i]));
                 }
@@ -96,11 +105,13 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                prepareUpperText("SCEGLI UN LAVORATORE");
                 if(workers==3){
                     for(int i=0; i<25; i++){
-                        if(cells[i].idPlayerWorker(idFirstWorker)!=-1)
+                        if(cells[i].idPlayerWorker(idFirstWorker)!=-1) {
                             cells[i].addActionListener(new CellListener(cells[i].idPlayerWorker(idFirstWorker)));
-                            cells[i].addActionListener(e -> ((CellButton)e.getSource()).setSelected());
+                            cells[i].addActionListener(e -> ((CellButton) e.getSource()).setSelected());
+                        }
                     }
                 }
             }
@@ -109,16 +120,32 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void chooseMovement(int[] movements) {
-        for(int i=0; i<movements.length; i++){
-            cells[movements[i]].addActionListener(new CellListener(movements[i]));
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                prepareUpperText("SCEGLI DOVE MUOVERLO");
+
+                for(int i=0; i<movements.length; i++){
+                    cells[movements[i]].addActionListener(new CellListener(movements[i]));
+                }
+            }
+        });
+
+
     }
 
     @Override
     public void chooseBuilding(int[] buildings) {
-        for(int i=0; i<buildings.length; i++){
-            cells[buildings[i]].addActionListener(new CellListener(buildings[i]));
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                prepareUpperText("SCEGLI DOVE COSTRUIRE");
+                for(int i=0; i<buildings.length; i++){
+                    System.out.println("building value: " + buildings[i]);
+                    cells[buildings[i]].addActionListener(new CellListener(buildings[i]));
+                }
+            }
+        });
     }
 
     @Override
@@ -159,25 +186,32 @@ public class GuiPlayerManager implements PlayerManager {
     public JPanel getPanel() {
         return panel;
     }
+    public JPanel getInfoPanel() {
+        return infoPanel;
+    }
 
     private void prepareTextInputPanel(String labelText){
-        panel.removeAll();
-        JLabel label = new JLabel(labelText);
-        panel.add(label);
-        JTextField tf = new JTextField(10);
-        panel.add(tf);
-        JButton submit = new JButton("SUBMIT");
-        submit.addActionListener(new TextInputListener(tf));
-        panel.add(submit);
-        SwingUtilities.updateComponentTreeUI(panel);
-        /*JButton stampo = new JButton("STAMPO");
-        stampo.addActionListener(new ActionListener() {
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("EEEEEEE MACARENA");
+            public void run() {
+                panel.removeAll();
+                JLabel label = new JLabel(labelText);
+                panel.add(label);
+                JTextField tf = new JTextField(10);
+                panel.add(tf);
+                JButton submit = new JButton("SUBMIT");
+                submit.addActionListener(new TextInputListener(tf));
+                panel.add(submit);
+                SwingUtilities.updateComponentTreeUI(panel);
             }
         });
-        panel.add(stampo);*/
+    }
+    private void prepareUpperText(String labelText){
+        SwingUtilities.updateComponentTreeUI(infoPanel);
+        infoPanel.removeAll();
+        infoLabel = new JLabel(labelText);
+        infoPanel.add(infoLabel);
+
     }
 
     private void removeCellListeners(){
@@ -226,6 +260,7 @@ public class GuiPlayerManager implements PlayerManager {
         public void actionPerformed(ActionEvent e) {
             //cellInput(cellNumber);
             ui.receivedUiInput(cellNumber);
+            prepareUpperText("");
             System.out.println(cellNumber);
             removeCellListeners();
         }
