@@ -183,6 +183,11 @@ public class GuiPlayerManager implements PlayerManager {
 
     }
 
+    @Override
+    public void printLoser(String object) {
+
+    }
+
     public JPanel getPanel() {
         return panel;
     }
