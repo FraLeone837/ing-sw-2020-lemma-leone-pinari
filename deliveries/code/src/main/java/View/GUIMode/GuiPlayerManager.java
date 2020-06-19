@@ -105,6 +105,7 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                System.out.println("allora ci siamo?");
                 prepareUpperText("SCEGLI UN LAVORATORE");
                 if(workers==3){
                     for(int i=0; i<25; i++){
@@ -150,7 +151,7 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void buildDome() {
-
+        ui.receivedUiInput("BUILDING");
     }
 
     @Override
@@ -160,12 +161,12 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void doItAgain(Message.MessageType moveAgain) {
-
+        ui.receivedUiInput(false);
     }
 
     @Override
     public void buildBefore() {
-
+        ui.receivedUiInput("N");
     }
 
     @Override
