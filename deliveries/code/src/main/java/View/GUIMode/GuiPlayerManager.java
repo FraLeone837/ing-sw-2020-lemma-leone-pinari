@@ -92,7 +92,10 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                prepareUpperText("PIAZZA LAVORATORI");
+                if(firstWorker)
+                    prepareUpperText(LABEL_FIRST_WORKER);
+                else
+                    prepareUpperText(LABEL_SECOND_WORKER);
                 for(int i=0; i<possiblePositions.length; i++){
                     cells[possiblePositions[i]].addActionListener(new CellListener(possiblePositions[i]));
                 }
@@ -105,11 +108,11 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println("allora ci siamo?");
-                prepareUpperText("SCEGLI UN LAVORATORE");
+                prepareUpperText(LABEL_CHOOSE_WORKER_TO_MOVE);
                 if(workers==3){
                     for(int i=0; i<25; i++){
                         if(cells[i].idPlayerWorker(idFirstWorker)!=-1) {
+                            cells[i].setSelectable(true);
                             cells[i].addActionListener(new CellListener(cells[i].idPlayerWorker(idFirstWorker)));
                             cells[i].addActionListener(e -> ((CellButton) e.getSource()).setSelected());
                         }
@@ -121,29 +124,25 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void chooseMovement(int[] movements) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                prepareUpperText("SCEGLI DOVE MUOVERLO");
-
-                for(int i=0; i<movements.length; i++){
-                    cells[movements[i]].addActionListener(new CellListener(movements[i]));
-                }
-            }
-        });
-
-
+        prepareCellInput(LABEL_CHOOSE_WHERE_TO_MOVE, movements);
     }
 
     @Override
     public void chooseBuilding(int[] buildings) {
+        prepareCellInput(LABEL_CHOOSE_WHERE_TO_BUILD, buildings);
+    }
+
+    private void prepareCellInput(String msg, int[] moves){
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                prepareUpperText("SCEGLI DOVE COSTRUIRE");
-                for(int i=0; i<buildings.length; i++){
-                    System.out.println("building value: " + buildings[i]);
-                    cells[buildings[i]].addActionListener(new CellListener(buildings[i]));
+                prepareUpperText(msg);
+                for(int i=0; i<25; i++){
+                    cells[i].setSelectable(false);
+                }
+                for(int i=0; i<moves.length; i++){
+                    cells[moves[i]].setSelectable(true);
+                    cells[moves[i]].addActionListener(new CellListener(moves[i]));
                 }
             }
         });
@@ -151,7 +150,12 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void buildDome() {
-        ui.receivedUiInput("BUILDING");
+        Object[] options = {"Building", "Dome"};
+        int n = JOptionPane.showOptionDialog(panel, LABEL_BUILD_DOME, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null,options,null);
+        if(n==0)
+            ui.receivedUiInput("BUILDING");
+        else
+            ui.receivedUiInput("DOME");
     }
 
     @Override
@@ -161,12 +165,20 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void doItAgain(Message.MessageType moveAgain) {
-        ui.receivedUiInput(false);
+        int n = JOptionPane.showOptionDialog(panel, LABEL_MOVE_AGAIN, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null,null,null);
+        if(n==0)
+            ui.receivedUiInput("YES");
+        else
+            ui.receivedUiInput("NO");
     }
 
     @Override
     public void buildBefore() {
-        ui.receivedUiInput("N");
+        int n = JOptionPane.showOptionDialog(panel, LABEL_BUILD_BEFORE, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null,null,null);
+        if(n==0)
+            ui.receivedUiInput("YES");
+        else
+            ui.receivedUiInput("NO");
     }
 
     @Override

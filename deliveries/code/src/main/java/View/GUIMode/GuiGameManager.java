@@ -4,6 +4,9 @@ import Controller.Gods.God;
 import View.Interfaces.GameManager;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+
+import java.awt.*;
 
 import static View.Interfaces.PlayerManager.LABEL_YOUR_GOD;
 import static View.Interfaces.PlayerManager.LABEL_YOUR_GOD_DESC;
@@ -40,11 +43,19 @@ public class GuiGameManager implements GameManager {
 
     @Override
     public void showGod(String[] god) {
-        System.out.println("AAAAAAAAAA");
         panel.removeAll();
+        panel.setLayout(new GridLayout());
         String godName = god[0];
         String godDescription = god[1];
-        JLabel l = new JLabel(LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription);
+        godDescription = godDescription.replaceAll("\n", "<br>");
+        System.out.println(godDescription);
+        /*JTextArea ta = new JTextArea(LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription);
+        ta.setEditable(false);
+        ta.setLineWrap(true);
+        ta.setOpaque(false);
+        ta.setBorder(BorderFactory.createEmptyBorder());
+        panel.add(ta);*/
+        JLabel l = new JLabel("<html>"+LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription+"</html>");
         panel.add(l);
         SwingUtilities.updateComponentTreeUI(panel);
     }

@@ -33,6 +33,7 @@ public class UserInterface implements Runnable {
     Message messageOut;
 
     String ip;
+    String name;
     int idFirstWorker;
 
     public enum Mode{
@@ -159,7 +160,7 @@ public class UserInterface implements Runnable {
                 case GET_NAME:
                     if(mode == Mode.CLI)
                         ((CliPlayerManager)playerManager).setName((String)input);
-
+                    name = (String)input;
                     break;
                 default:
                     //do nothing
@@ -249,7 +250,8 @@ public class UserInterface implements Runnable {
                 god[0] = ((ArrayList<String>) msg.getObject()).get(0);
                 god[1] = ((ArrayList<String>) msg.getObject()).get(1);
                 owner = ((ArrayList<String>) msg.getObject()).get(2);
-                gameManager.showGod(god);
+                if(owner.equals(name))
+                    gameManager.showGod(god);
                 playerManager.showGods(god,owner);
                 receivedUiInput(messageOut);
                 break;

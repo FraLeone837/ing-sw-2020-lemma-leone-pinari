@@ -98,11 +98,18 @@ public class CellButton extends JButton {
      * @param selectable
      */
     public void setSelectable(boolean selectable){
-
+        if(selectable){
+            SwingUtilities.updateComponentTreeUI(this);
+            setBackground(Color.yellow);
+        }
+        else{
+            setBorder(null);
+            setLayout(null);
+            setBackground(null);
+        }
     }
     public void setSelected(){
         SwingUtilities.updateComponentTreeUI(this);
-        System.out.println("magariii");
         setBackground(Color.red);
     }
 }
