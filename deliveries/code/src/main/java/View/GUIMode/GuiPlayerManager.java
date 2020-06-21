@@ -165,7 +165,13 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void doItAgain(Message.MessageType moveAgain) {
-        int n = JOptionPane.showOptionDialog(panel, LABEL_MOVE_AGAIN, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null,null,null);
+        String msg = LABEL_MOVE_AGAIN;
+        if(moveAgain == Message.MessageType.MOVE_AGAIN){
+            msg += "Move again?";
+        } else if(moveAgain == Message.MessageType.BUILD_AGAIN){
+            msg += "Build again?";
+        }
+        int n = JOptionPane.showOptionDialog(panel, msg, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null,null,null);
         if(n==0)
             ui.receivedUiInput("YES");
         else
@@ -189,10 +195,16 @@ public class GuiPlayerManager implements PlayerManager {
     @Override
     public void getName(String object) {
         prepareTextInputPanel(LABEL_USERNAME);
+
     }
 
     @Override
     public void buildOtherWorker() {
+        int n = JOptionPane.showOptionDialog(panel, LABEL_POSEIDON_POWER, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null,null,null);
+        if(n==0)
+            ui.receivedUiInput("YES");
+        else
+            ui.receivedUiInput("NO");
 
     }
 
