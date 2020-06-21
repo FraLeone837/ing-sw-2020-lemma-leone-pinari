@@ -24,8 +24,7 @@ public class Athena extends God {
 
     @Override
     public void turn(Match match, CommunicationProxy communicationProxy, Worker worker){
-        if(prevIndex.getZ() < worker.getPosition().getZ())
-            resetPower(match, worker);
+        resetPower(match, worker);
         ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
         if(possibleMove.isEmpty()){
             setInGame(false);
