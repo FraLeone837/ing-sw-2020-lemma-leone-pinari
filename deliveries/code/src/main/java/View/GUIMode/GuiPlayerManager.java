@@ -118,6 +118,8 @@ public class GuiPlayerManager implements PlayerManager {
                         }
                     }
                 }
+                else
+                    ui.receivedUiInput(workers);
             }
         });
     }
