@@ -16,6 +16,7 @@ public class CommunicationClass implements Runnable {
     private Message messageToSend;
     private boolean isWaitingToReceive;
     boolean debugging = false;
+    int ID;
 
     private Message.MessageType lastMessageType;
 
@@ -28,6 +29,10 @@ public class CommunicationClass implements Runnable {
         this.server=server;
     }
 
+    public CommunicationClass(Socket server, int ID){
+        this.server=server;
+        this.ID = ID;
+    }
     @Override
     public void run() {
         try{
@@ -81,6 +86,7 @@ public class CommunicationClass implements Runnable {
             /* notify the observers that we got the string */
             for (ServerObserver observer: observersCpy) {
                 observer.didReceiveMessage(msg);
+                observer.didReceiveMessage(msg,this.ID);
             }
             //gets broken only when Client.class calls didReceiveMessage
             //didReceiveMessage calls receivedMessage()

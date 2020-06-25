@@ -27,11 +27,14 @@ public class MatchManager implements Runnable{
      */
     public MatchManager(int id, IntermediaryClass intermediaryClass){
         this.intermediaryClass = intermediaryClass;
-        this.match = new Match(id);
-        this.match.setIntermediaryClass(this.intermediaryClass);
+        match = new Match(id);
+        match.setIntermediaryClass(this.intermediaryClass);
         this.matchInProgress = true;
     }
 
+    public Match getMatch() {
+        return match;
+    }
     @Override
     public void run() {
         setupPlayers();

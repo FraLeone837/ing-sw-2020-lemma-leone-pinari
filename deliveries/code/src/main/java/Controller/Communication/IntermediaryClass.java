@@ -1,6 +1,7 @@
 package Controller.Communication;
 
 import Controller.MatchManager;
+import Model.Match;
 
 import java.util.ArrayList;
 
@@ -179,5 +180,9 @@ public class IntermediaryClass {
             if(clh != clientHandler)
                 clh.getCommProxy().sendMessage(messageType,cause);
         }
+    }
+
+    public Match getMatch() {
+        return MatchManager.getMatch();
     }
 }

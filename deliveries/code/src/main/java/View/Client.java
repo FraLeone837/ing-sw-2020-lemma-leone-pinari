@@ -18,7 +18,7 @@ public class Client implements Runnable, ServerObserver
     private Message messageIn = null;
     private Message messageOut = null;
     private UserInterface ui;
-    private String ip;
+    private String ip = "127.0.0.1";
     public final static int SOCKET_PORT = 7777;
     private ServerAdapter serverAdapter;
 
@@ -108,6 +108,11 @@ public class Client implements Runnable, ServerObserver
         messageIn = msg;
         serverAdapter.receivedMessage();
         notifyAll();
+    }
+
+    @Override
+    public void didReceiveMessage(Message newMsg, int ID) {
+
     }
 
     public synchronized void sendThis(Message msg){

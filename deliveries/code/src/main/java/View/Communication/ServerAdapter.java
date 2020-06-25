@@ -20,10 +20,8 @@ public class ServerAdapter implements Runnable
     }
     private Commands nextCommand;
     private Message messageToSend;
-    //lock
-    private Object toSendLock = new Object();
     private boolean isWaitingToReceive;
-    private Object receivedLock = new Object();
+    private int ID;
 
     private CommunicationClass cc;
 
@@ -36,6 +34,12 @@ public class ServerAdapter implements Runnable
         this.server = server;
         isWaitingToReceive = false;
         cc = new CommunicationClass(server);
+    }
+    public ServerAdapter(Socket server, int ID)
+    {
+        this.server = server;
+        isWaitingToReceive = false;
+        cc = new CommunicationClass(server, ID);
     }
 
 

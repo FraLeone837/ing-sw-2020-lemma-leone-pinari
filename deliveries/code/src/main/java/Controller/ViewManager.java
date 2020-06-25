@@ -3,6 +3,7 @@ package Controller;
 import Controller.Communication.ClientHandler;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
+import Model.Match;
 
 import java.io.IOException;
 import java.net.ServerSocket;

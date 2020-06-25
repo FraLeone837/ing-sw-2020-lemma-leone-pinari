@@ -1,14 +1,12 @@
-package Model.DebuggerToText;
+package ControllerTest.UtilClasses;
 
 import Model.Cell;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 /**
  * class that writes the state of the match on a file in path path
@@ -16,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 public class WriterClass {
     public String LABEL_IGNORE_PATH = "/ignore/logText.txt";
     public String LABEL_IGNORE_PATHINT = "/ignore/logTextInt.txt";
+    //default folder
     public String LABEL_IGNORE_FOLDER = "/ignore";
     private String path;
     private boolean append;
@@ -28,8 +27,9 @@ public class WriterClass {
     }
 
 
+
     public WriterClass(boolean append) throws IOException{
-        this.path = LABEL_IGNORE_PATH;
+        this.path = LABEL_IGNORE_FOLDER;
         this.append = append;
         this.wroteTime = false;
         openFile();
@@ -71,6 +71,38 @@ public class WriterClass {
         printWriter.printf(toPrint + "%n");
         printWriter.flush();
         printWriter.close();
+    }
+
+    public void writeOnFile(String toPrint, String pathName) throws IOException{
+
+        File tmpDir = new File(pathName);
+        boolean exists = tmpDir.exists();
+        if(exists)
+            return;
+
+        FileWriter writer = new FileWriter(pathName, append);
+        PrintWriter printWriter = new PrintWriter(writer);
+
+        printWriter.printf(toPrint + "%n");
+        printWriter.flush();
+        printWriter.close();
+    }
+
+    public String readFromFile(String pathName){
+        File file = new File(pathName);
+        Scanner scanner;
+        try{
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+            return "Error";
+        }
+        //suppose that scanner always has next line
+        return scanner.nextLine();
+    }
+
+    public String returnString(String phrase){
+        return phrase;
     }
 
     public void writeOnFile(int[] toPrint) throws IOException{

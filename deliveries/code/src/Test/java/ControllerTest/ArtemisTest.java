@@ -1,6 +1,7 @@
 package ControllerTest;
 
 import Controller.Gods.Artemis;
+import ControllerTest.UtilClasses.Utils;
 import Model.Index;
 import Model.Match;
 import Model.Player;

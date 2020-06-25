@@ -1,4 +1,4 @@
-package ControllerTest;
+package ControllerTest.UtilClasses;
 
 import Controller.Gods.*;
 import Model.*;
