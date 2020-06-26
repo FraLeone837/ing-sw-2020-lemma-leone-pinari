@@ -188,6 +188,38 @@ public class MatchManager implements Runnable{
         playerManagers = playerManagersCopy;
     }
 
+    private God godID(int id){
+        switch (id){
+            case 0:
+                return new Apollo();
+            case 1:
+                return new Artemis();
+            case 2:
+                return new Athena();
+            case 3:
+                return new Atlas();
+            case 4:
+                return new Demeter();
+            case 5:
+                return new Hephaestus();
+            case 6:
+                return new Minotaur();
+            case 7:
+                return new Pan();
+            case 8:
+                return new Prometheus();
+            case 9:
+                return new Hera();
+            case 10:
+                return new Hestia();
+            case 11:
+                return new Poseidon();
+            case 12:
+                return new Triton();
+            default:
+                return new Zeus();
+        }
+    }
     /**
      * give randomly a god to each player
      */
@@ -202,54 +234,25 @@ public class MatchManager implements Runnable{
                 godCode = godGen.nextInt(numberOfGods);
             }
             given.add(godCode);
-            switch (godCode){
-                case 0:
-                    god = new Apollo();
-                    break;
-                case 1:
-                    god = new Artemis();
-                    break;
-                case 2:
-                    god = new Athena();
-                    break;
-                case 3:
-                    god = new Atlas();
-                    break;
-                case 4:
-                    god = new Demeter();
-                    break;
-                case 5:
-                    god = new Hephaestus();
-                    break;
-                case 6:
-                    god = new Minotaur();
-                    break;
-                case 7:
-                    god = new Pan();
-                    break;
-                case 8:
-                    god = new Prometheus();
-                    break;
-                case 9:
-                    god = new Hera();
-                    break;
-                case 10:
-                    god = new Hestia();
-                    break;
-                case 11:
-                    god = new Poseidon();
-                    break;
-                case 12:
-                    god = new Triton();
-                    break;
-                case 13:
-                    god = new Zeus();
-                    break;
-            }
+            god = godID(godCode);
             playerManager.setGod(god);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
             intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+        }
+    }
+
+    public void giveGods(int id){
+        Random godGen = new Random();
+        God god = new Apollo();
+        for(PlayerManager playerManager : playerManagers){
+            int godCode = id;
+            god = godID(godCode);
+            playerManager.setGod(god);
+            CommunicationProxy CP = playerManager.getCommunicationProxy();
+            intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
+            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+            id++;
         }
     }
 
@@ -268,57 +271,14 @@ public class MatchManager implements Runnable{
      */
     public void giveGodsTest(){
         Scanner scanner = new Scanner(System.in);
-        God god = new Apollo();
-        String godCode = "apollo";
+        God god;
+        String godCode ;
         int i = 0;
         for(PlayerManager playerManager : playerManagers){
             i++;
             System.out.println("Dio per il " + i + "-o giocatore");
             godCode = scanner.nextLine();
-            switch (godCode){
-                case "apollo":
-                    god = new Apollo();
-                    break;
-                case "artemis":
-                    god = new Artemis();
-                    break;
-                case "athena":
-                    god = new Athena();
-                    break;
-                case "atlas":
-                    god = new Atlas();
-                    break;
-                case "demeter":
-                    god = new Demeter();
-                    break;
-                case "hephaestus":
-                    god = new Hephaestus();
-                    break;
-                case "minotaur":
-                    god = new Minotaur();
-                    break;
-                case "pan":
-                    god = new Pan();
-                    break;
-                case "prometheus":
-                    god = new Prometheus();
-                    break;
-                case "hera":
-                    god = new Hera();
-                    break;
-                case "hestia":
-                    god = new Hestia();
-                    break;
-                case "poseidon":
-                    god = new Poseidon();
-                    break;
-                case "triton":
-                    god = new Triton();
-                    break;
-                case "zeus":
-                    god = new Zeus();
-                    break;
-            }
+            god = godID(Integer.parseInt(godCode));
             playerManager.setGod(god);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
             intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
@@ -335,5 +295,9 @@ public class MatchManager implements Runnable{
         if(disconnected)
             return communicationProxies.get(disconnectedPlayer-1);
         return null;
+    }
+
+    public ArrayList<PlayerManager> getPlayerManagers() {
+        return playerManagers;
     }
 }

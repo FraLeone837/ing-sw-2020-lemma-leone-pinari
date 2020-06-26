@@ -71,7 +71,6 @@ public class PlayerManager {
     }
 
 
-
     @Override
     public boolean equals(Object obj) {
         PlayerManager pmg = (PlayerManager) obj;

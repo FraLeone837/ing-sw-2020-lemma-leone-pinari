@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    boolean debugging = false;
+    boolean debugging = true;
 
     private Socket client;
     private Message currentMessage;
@@ -38,8 +38,6 @@ public class ClientHandler implements Runnable
     boolean inGame = true;
 
     private CommunicationProxy personalProxy;
-    //useless
-    private final Object currentLock = new Object();
 
     private String name;
 

@@ -10,12 +10,14 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+
+import static Controller.Communication.ClientHandler.*;
 import static java.lang.System.exit;
 
 public class CommunicationClass implements Runnable {
     private Message messageToSend;
     private boolean isWaitingToReceive;
-    boolean debugging = false;
+    boolean debugging = true;
     int ID;
 
     private Message.MessageType lastMessageType;
@@ -63,7 +65,7 @@ public class CommunicationClass implements Runnable {
             }
             Message copyOut = new Message(messageToSend.getType(),messageToSend.getObject());
             if(debugging)
-            System.out.println("Message to send is: " + messageToSend );
+            System.out.println(ANSI_PURPLE + "Message - communication class - to send is: " + messageToSend + ANSI_RESET );
             String converted = gson.toJson(copyOut);
 
 
@@ -80,9 +82,10 @@ public class CommunicationClass implements Runnable {
             synchronized (observers) {
                 observersCpy = new ArrayList<>(observers);
             }
-
             Message msg = gson.fromJson(response, Message.class);
             lastMessageType = msg.getType();
+            if(debugging)
+                System.out.println(ANSI_PURPLE + "Message - communication class - received is: " + msg + ANSI_RESET);
             /* notify the observers that we got the string */
             for (ServerObserver observer: observersCpy) {
                 observer.didReceiveMessage(msg);

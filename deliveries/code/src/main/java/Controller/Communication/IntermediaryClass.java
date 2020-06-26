@@ -183,6 +183,7 @@ public class IntermediaryClass {
     }
 
     public Match getMatch() {
-        return MatchManager.getMatch();
+        Match m = matchManager.getMatch();
+        return m;
     }
 }
