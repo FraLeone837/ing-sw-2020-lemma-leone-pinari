@@ -1,9 +1,12 @@
 package Controller;
+import Controller.Communication.ClientHandler;
 import Controller.Communication.CommunicationProxy;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
 import Controller.Gods.*;
 import Model.*;
+
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -16,8 +19,10 @@ public class MatchManager implements Runnable{
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
     private Boolean matchInProgress;
     //author Etion
-    private boolean disconnected = false;
-    private int disconnectedPlayer;
+    //number used in test phase, so I can choose which god to test Automatically with JUnit
+    final int RANDOM_GODS = -1;
+    //x is always -1 unless special constructor is used (only in testing phase)
+    private int x = RANDOM_GODS;
 
     /**
      * starts with only the first player who is also the creator of the match
@@ -31,34 +36,28 @@ public class MatchManager implements Runnable{
         match.setIntermediaryClass(this.intermediaryClass);
         this.matchInProgress = true;
     }
+    //testing
+    public MatchManager(int id, IntermediaryClass intermediaryClass, int x){
+        this.intermediaryClass = intermediaryClass;
+        match = new Match(id);
+        match.setIntermediaryClass(this.intermediaryClass);
+        this.matchInProgress = true;
+        this.x = x;
+    }
 
     public Match getMatch() {
         return match;
     }
     @Override
     public void run() {
-        setupPlayers();
+        setupPlayers(x);
         setupGame();
         while(matchInProgress ){
             turn();
         }
-        System.out.println("stacca stacca");
         intermediaryClass.terminateGame();
     }
 
-    /**
-     * if any player is disconnected notifies
-     * all the other players
-     */
-    private void notifyDisconnection() {
-        if(disconnected){
-            for(int i=0; i<communicationProxies.size(); i++){
-                if(i != disconnectedPlayer){
-                    communicationProxies.get(i).sendMessage(Message.MessageType.END_GAME, "One player disconnected");
-                }
-            }
-        }
-    }
 
 
     public boolean isAnyPlayerConnected(){
@@ -77,7 +76,7 @@ public class MatchManager implements Runnable{
     /**
      * connect the players (2 or 3) and give a god to each of them
      */
-    public void setupPlayers(){
+    public void setupPlayers(int z){
         ArrayList<String> names = new ArrayList<String>();
         //the first player connects
         CommunicationProxy firstCP = intermediaryClass.getNewCommunicationProxy();
@@ -106,8 +105,8 @@ public class MatchManager implements Runnable{
         }
 
         //give gods to the players
-//        giveGodsTest();
-        giveGods();
+        //giveGodsTest();
+        giveGods(z);
     }
 
     /**
@@ -154,10 +153,6 @@ public class MatchManager implements Runnable{
             return;
         }
         for(PlayerManager playerManager : playerManagers){
-            if(disconnected){
-                notifyDisconnection();
-                return;
-            }
             CommunicationProxy thisPlayer = playerManager.getCommunicationProxy();
             intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerManager.getPlayer().getName()));
 
@@ -243,8 +238,13 @@ public class MatchManager implements Runnable{
     }
 
     public void giveGods(int id){
+        if(id == RANDOM_GODS){
+            giveGods();
+            return;
+        }
         Random godGen = new Random();
         God god = new Apollo();
+        //gives same god to every single player
         for(PlayerManager playerManager : playerManagers){
             int godCode = id;
             god = godID(godCode);
@@ -286,16 +286,6 @@ public class MatchManager implements Runnable{
         }
     }
 
-    public void setDisconnected(String name) {
-        this.disconnected = true;
-        this.disconnectedPlayer = Integer.parseInt(name);
-    }
-
-    public synchronized CommunicationProxy getDisconnectedProxy(){
-        if(disconnected)
-            return communicationProxies.get(disconnectedPlayer-1);
-        return null;
-    }
 
     public ArrayList<PlayerManager> getPlayerManagers() {
         return playerManagers;

@@ -18,7 +18,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     private static Timer timer;
     private static int timeConstant = 15;
 
-    private boolean debugging = false;
+    private boolean debugging = true;
 
     private ClientHandler clientHandler;
     //serves for methods referring to matchManager
@@ -57,13 +57,19 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         if(!acceptInput)
             received.setType(Message.MessageType.YYY);
     }
+    public synchronized void receivedMessage(Message msg) {
+        received = msg;
+        notifyAll();
+        if(!acceptInput)
+            received.setType(Message.MessageType.YYY);
+    }
 
     /**
      * after having sent a message we wait for x seconds (counted by the timer)
      * or until the
      */
     private synchronized void waitForReceiveMessage(){
-        while(this.received.getType() == Message.MessageType.YYY){
+        while(this.received.getType() == Message.MessageType.YYY && !disconnected){
             try{
                 if(debugging)
                 System.out.println("Waiting for a messg");
@@ -95,6 +101,10 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         handleConnection();
     }
 
+    public synchronized void removeIntermediaryClass(){
+        this.ic = null;
+    }
+
     /**
      * is always asleep, wakes up only when matchManager asks them to wake up
      * or when a message is received and forwards it to matchManager
@@ -102,6 +112,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     private synchronized void handleConnection(){
         Thread t = new Thread(timer);
         t.start();
+        if(ic != null)
         ic.setCommunicationProxy(this);
         received.setType(Message.MessageType.YYY);
         waitForReceiveMessage(JOIN_GAME);
@@ -115,15 +126,17 @@ public class CommunicationProxy implements Runnable, MessageObservers {
              */
             Message.MessageType typeCopy = received.getType();
 
-
             if(typeCopy == END_GAME ||
-                typeCopy == PLAYER_LOST ||
-                typeCopy == PLAYER_WON){
+                    typeCopy == PLAYER_LOST ||
+                    typeCopy == PLAYER_WON ||
+                    disconnected){
+                if(disconnected && ic != null) {
+                    ic.terminateGame();
+                }
                 if(debugging)
-                System.out.println(ANSI_PURPLE + "Exiting from comm proxy " + getClientHandler().getName() + ANSI_RESET);
+                    System.out.println(ANSI_PURPLE + "Exiting from comm proxy " + getClientHandler().getName() + ANSI_RESET);
                 return;
             }
-
             toSend = new Message(Message.MessageType.ZZZ, "Waiting");
             //changes message toSend to ZZZ and waits until gamesidelock.notifyAll() updates toSend
             waitForGameMessage();
@@ -153,7 +166,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
             System.out.println("notified gamesidelock " + this.clientHandler.getName());
 
             notifyAll();
-            while(toSend.getType() == Message.MessageType.ZZZ){
+            while(toSend.getType() == Message.MessageType.ZZZ && !disconnected){
                 try{
                     wait();
                 } catch (InterruptedException e) {
@@ -220,7 +233,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
             copy = new Message(received);
             Object c = convertToSpecificObject(copy);
             //accepts at most 3 players
-            if(copy.getType() == NUMBER_PLAYERS && (int)c == 3){
+            if(copy.getType() == NUMBER_PLAYERS && (int)c == 3 && ic != null){
                 ic.changeNoOfPlayers();
             }
             received = new Message(ZZZ,"waiting");
@@ -230,7 +243,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
     private void canSendMessage() {
         synchronized (this){
-            while(isWaitingToReceive == true){
+            while(isWaitingToReceive == true || disconnected){
                 if(debugging)
                 System.out.println("asking if i can send message");
                 try{
@@ -372,19 +385,18 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     public void interruptGame(Message.MessageType messageType, String cause){
         if(debugging)
         System.out.println(ANSI_RED + "Interrupting Game");
-        synchronized (this) {
-            //inform all other players that they have been disconnected
+//            //inform all other players that they have been disconnected
+        synchronized (this){
+
+            receivedMessage(new Message(toSend.getType(), "...."));
+            if(debugging) {
+                System.out.println("Set disconnected");
+            }
             setDisconnected(true);
         }
-            if(debugging)
-                System.out.println("Set disconnected");
-            receivedMessage();
-            if(debugging)
+        if(debugging)
                 System.out.println("Received fake message, calling terminate game.");
-            ic.terminateGame();
-            if(debugging)
-                System.out.println("Sending message end_game");
-            sendMessage(END_GAME,cause);
+//            ic.terminateGame();
 
         if(debugging)
             System.out.println("Done" + ANSI_RESET);
@@ -393,8 +405,17 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     public IntermediaryClass getIC() {
         return ic;
     }
+
     public void setDisconnected(boolean disconnected){
         this.disconnected = disconnected;
+        synchronized (this){
+            notifyAll();
+        }
+    }
+
+    public void sendMessage(Message.MessageType type, Object object, String disconnected) {
+        this.toSend = new Message(type,"Player disconnected " + disconnected);
+        clientHandler.setToSendMsg(this.toSend);
         synchronized (this){
             notifyAll();
         }

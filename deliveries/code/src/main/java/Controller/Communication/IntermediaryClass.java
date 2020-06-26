@@ -3,6 +3,7 @@ package Controller.Communication;
 import Controller.MatchManager;
 import Model.Match;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static Controller.Communication.ClientHandler.*;
@@ -18,16 +19,27 @@ public class IntermediaryClass {
     //how many players we have given to matchManager
     private int counter = 0;
     private int maxPlayers = 2;
+    //if somebody has been disconnected
+    private boolean disco = false;
 
     // Mm means MatchManager
     private Thread threadOfMm;
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
+    private ArrayList<String> names = new ArrayList<>();
     private ArrayList<CommunicationProxy> unusedProxies = new ArrayList<>();
-    private ClientHandler clCause = null;
+    public final String disconnectedFlag = "--";
+    private String disconnected = disconnectedFlag;
 
     public IntermediaryClass(){
         this.notified = false;
         this.matchManager = new MatchManager(1,this);
+        this.threadOfMm = new Thread(matchManager);
+        this.threadOfMm.start();
+    }
+    //int x is used only to differentiate between testing phase and normal game
+    public IntermediaryClass(int x){
+        this.notified = false;
+        this.matchManager = new MatchManager(1,this,x);
         this.threadOfMm = new Thread(matchManager);
         this.threadOfMm.start();
     }
@@ -52,7 +64,7 @@ public class IntermediaryClass {
      */
     public synchronized void terminateGame(){
         System.out.println("Start method terminate game");
-        Broadcast(new Message(Message.MessageType.END_GAME, "Player has disconnected"));
+        Broadcast(new Message(Message.MessageType.END_GAME, "Player has disconnected"),disconnected);
         counter = 0;
         this.maxPlayers = 2;
         this.notified = false;
@@ -60,56 +72,106 @@ public class IntermediaryClass {
 
         System.out.println("Stopped match manager");
         this.notified = false;
+        for(CommunicationProxy com : communicationProxies){
+            com.removeIntermediaryClass();
+        }
         communicationProxies = new ArrayList<>();
         clientHandlerArrayList = new ArrayList<>();
+        ArrayList<CommunicationProxy> tempList = new ArrayList<>();
         for(CommunicationProxy communicationProxy : unusedProxies){
+            tempList.add(communicationProxy);
+        }
+        for(CommunicationProxy communicationProxy :tempList){
             this.setCommunicationProxy(communicationProxy);
         }
+        disconnected = disconnectedFlag;
         unusedProxies = new ArrayList<>();
+        names = new ArrayList<>();
         System.out.println(ANSI_CYAN + "FINISH method TERMINATE GAME" + ANSI_RESET);
         this.matchManager = new MatchManager(1, this);
         threadOfMm = new Thread(matchManager);
         threadOfMm.start();
     }
-//    /**
-//     * method that finishes game and clears all threads after a 10 second period?
-//     */
-//    public synchronized void terminateGame(ClientHandler clientHandler){
-//        for(CommunicationProxy cp : communicationProxies){
-//
-//        }
-//    }
 
+    private boolean isDisconnected(CommunicationProxy communicationProxy){
+        System.out.println("is" + communicationProxy.getClientHandler().getName() + "disconnected? ");
+        if(disconnected.equals(communicationProxy.getClientHandler().getName())){
+                System.out.println("Yuh");
+                return true;
+            }
+        System.out.println("Nah");
+        return false;
+    }
 
     /**
      * used to communicate with all 2/3 players of a game
+     * only after game has started <==> communication proxies is constant
      * @param msg
      */
-    public synchronized void Broadcast(Message msg){
-        System.out.println("Broadcasting " + msg.getType());
+    public void Broadcast(Message msg){
+        System.out.println("Broadcasting" + msg);
         for(CommunicationProxy cp : communicationProxies) {
-            if(cp != matchManager.getDisconnectedProxy())
-                cp.sendMessage(msg.getType(), msg.getObject());
+            if(!isDisconnected(cp))
+            cp.sendMessage(msg.getType(), msg.getObject());
         }
+    }
+
+    /**
+     * used to communicate with all 2/3 players of a game
+     * only after game has started <==> communication proxies is constant
+     * @param msg
+     */
+    public void Broadcast(Message msg, String disconnected){
+        System.out.println("Broadcasting" + msg);
+        for(CommunicationProxy cp : communicationProxies) {
+            if(isDisconnected(cp)){
+                continue;
+            }
+            else{
+                cp.getClientHandler().setOtherDisconnected(true);
+                System.out.println("Broadcasting to : " + cp.getClientHandler().getName());
+                cp.sendMessage(msg.getType(), msg.getObject(),disconnected);
+            }
+        }
+    }
+
+    public String getDisconnected() {
+        return disconnected;
+    }
+
+    public synchronized void setDisconnected(String disconnected){
+        int num = 0;
+        int numberToRemove = -1;
+        for(num=0; num<names.size();num++){
+            System.out.println("Checking" + names.get(num));
+            if(disconnected.equals(names.get(num))){
+                System.out.println("FOUND!!!!!!!!!!!");
+                numberToRemove = num;
+            }
+        }
+        if(numberToRemove == -1){
+            return;
+        }
+        disconnected = names.remove(numberToRemove);
+        System.out.println("Disconnected is " + disconnected);
     }
 
     /**
      * adds a new comm proxy for matchManager to use
      * @param communicationProxy
      */
-    public void setCommunicationProxy(CommunicationProxy communicationProxy) {
+    public synchronized void setCommunicationProxy(CommunicationProxy communicationProxy) {
 
-        synchronized (this){
             // do not accept more than maxPlayers clients
             if(maxPlayers > communicationProxies.size()){
                 this.communicationProxies.add(communicationProxy);
                 setClientHandlers(communicationProxy.getClientHandler());
+                names.add("Player" + communicationProxies.size());
             } else {
                 this.unusedProxies.add(communicationProxy);
             }
             notified = true;
             notifyAll();
-        }
     }
 
     /**
@@ -118,17 +180,9 @@ public class IntermediaryClass {
      */
     public void removeCommunicationProxy(CommunicationProxy communicationProxy) {
         synchronized (this){
-            // do not accept more than maxPlayers clients
-            if(maxPlayers > communicationProxies.size()){
-                this.communicationProxies.add(communicationProxy);
-                setClientHandlers(communicationProxy.getClientHandler());
-            } else {
-                this.unusedProxies.add(communicationProxy);
-            }
             try{
                 communicationProxies.remove(communicationProxy);
                 removeClientHandlers(communicationProxy);
-//                matchManager has only two players
                 this.counter--;
             } catch (NullPointerException e){
                 e.printStackTrace();
@@ -172,15 +226,6 @@ public class IntermediaryClass {
         }
     }
 
-    public synchronized void Broadcast(Message.MessageType messageType, String cause, ClientHandler clientHandler) {
-        System.out.println(ANSI_RED + "aboutta broadcast " + cause +ANSI_RESET);
-        this.clCause = clientHandler;
-        for(ClientHandler clh : clientHandlerArrayList) {
-            //notify every other player except for the one that caused the error
-            if(clh != clientHandler)
-                clh.getCommProxy().sendMessage(messageType,cause);
-        }
-    }
 
     public Match getMatch() {
         Match m = matchManager.getMatch();

@@ -13,6 +13,8 @@ public class ServerAdapter implements Runnable
 {
 
 
+    private boolean debugging = false;
+
     private enum Commands {
         SEND_MESSAGE,
         STOP;
@@ -34,12 +36,18 @@ public class ServerAdapter implements Runnable
         this.server = server;
         isWaitingToReceive = false;
         cc = new CommunicationClass(server);
+        Thread t2 = new Thread(cc);
+        t2.start();
     }
     public ServerAdapter(Socket server, int ID)
     {
         this.server = server;
         isWaitingToReceive = false;
         cc = new CommunicationClass(server, ID);
+        Thread t2 = new Thread(cc);
+        t2.start();
+        if(debugging)
+        System.out.println("Created server adapter player " + ID);
     }
 
 
@@ -71,6 +79,8 @@ public class ServerAdapter implements Runnable
 
     public synchronized void requestSending(Message msg)
     {
+        if(debugging)
+        System.out.println("Sending object " + msg + " - " + msg.getObject());
         messageToSend = msg;
         nextCommand = Commands.SEND_MESSAGE;
         notifyAll();
@@ -81,8 +91,6 @@ public class ServerAdapter implements Runnable
     public void run()
     {
         try {
-            Thread t2 = new Thread(cc);
-            t2.start();
             handleServerConnection();
         } catch (IOException e) {
             System.out.println("server has died");
@@ -125,6 +133,8 @@ public class ServerAdapter implements Runnable
      * takes lock of if we can send message and sends message, afterwards stands in wait
      */
     private synchronized void canSendMessage()  throws IOException, ClassNotFoundException{
+        if(debugging)
+        System.out.println("Can send message? " + messageToSend);
         cc.notifyToSendMessage(messageToSend);
     }
 
