@@ -44,9 +44,9 @@ public class CommunicationClass implements Runnable {
             inputStm = new ObjectInputStream(server.getInputStream());
             openConnection();
         } catch (IOException e) {
-            System.out.println("server has died -- exiting");
+            System.out.println("server has died -- exiting -- comclass");
             //close all other threads
-            exit(-1);
+            return;
         } catch (ClassCastException | ClassNotFoundException e) {
             System.out.println("protocol violation");
         }

@@ -67,7 +67,7 @@ public class GameCreator {
 
 
 
-    public static int SOCKET_PORT = 7777;
+    public static int SOCKET_PORT = 7777-1;
     static boolean serverAck = false;
     int playerCounter = 1;
     int requestedPlayer = 0;
@@ -88,15 +88,13 @@ public class GameCreator {
     }
 
 
-    private static boolean serverOpen = false;
+    private boolean serverOpen = false;
     int god = -1;
     //creates game and two players
     public GameCreator(int god){
         this.god = god;
-        if(!serverOpen){
-            this.server = new Thread(new Runnable() {public void run() {waitForPlayers();}});
-            server.start();
-        }
+        this.server = new Thread(new Runnable() {public void run() {waitForPlayers();}});
+        server.start();
         synchronized (this){
             while(!serverOpen){
                 try{
@@ -144,7 +142,9 @@ public class GameCreator {
     }
 
     public synchronized Match startGame(){
+        System.out.println("connect players");
         connectPlayers();
+        System.out.println("Waiting for ic to not be null");
         synchronized (this){
             while(iC == null){
                 try{
@@ -186,6 +186,7 @@ public class GameCreator {
     private void waitForPlayers() {
         ServerSocket socket;
         System.out.println("Opening server in socket port: "+ SOCKET_PORT);
+        SOCKET_PORT++;
         try {
             socket = new ServerSocket(SOCKET_PORT);
         } catch (IOException e) {

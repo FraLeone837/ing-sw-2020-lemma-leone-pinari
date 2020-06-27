@@ -18,7 +18,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     private static Timer timer;
     private static int timeConstant = 15;
 
-    private boolean debugging = true;
+    private boolean debugging = false;
 
     private ClientHandler clientHandler;
     //serves for methods referring to matchManager

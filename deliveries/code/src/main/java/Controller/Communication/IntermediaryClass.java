@@ -94,12 +94,9 @@ public class IntermediaryClass {
     }
 
     private boolean isDisconnected(CommunicationProxy communicationProxy){
-        System.out.println("is" + communicationProxy.getClientHandler().getName() + "disconnected? ");
         if(disconnected.equals(communicationProxy.getClientHandler().getName())){
-                System.out.println("Yuh");
                 return true;
             }
-        System.out.println("Nah");
         return false;
     }
 
@@ -129,7 +126,6 @@ public class IntermediaryClass {
             }
             else{
                 cp.getClientHandler().setOtherDisconnected(true);
-                System.out.println("Broadcasting to : " + cp.getClientHandler().getName());
                 cp.sendMessage(msg.getType(), msg.getObject(),disconnected);
             }
         }
@@ -143,9 +139,7 @@ public class IntermediaryClass {
         int num = 0;
         int numberToRemove = -1;
         for(num=0; num<names.size();num++){
-            System.out.println("Checking" + names.get(num));
             if(disconnected.equals(names.get(num))){
-                System.out.println("FOUND!!!!!!!!!!!");
                 numberToRemove = num;
             }
         }
@@ -153,7 +147,6 @@ public class IntermediaryClass {
             return;
         }
         disconnected = names.remove(numberToRemove);
-        System.out.println("Disconnected is " + disconnected);
     }
 
     /**

@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    boolean debugging = true;
+    boolean debugging = false;
 
     private Socket client;
     private Message currentMessage;

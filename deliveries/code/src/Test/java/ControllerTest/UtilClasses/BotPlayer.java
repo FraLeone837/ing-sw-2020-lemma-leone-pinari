@@ -109,6 +109,13 @@ public class BotPlayer implements Runnable, ServerObserver {
 
             switch (lastType){
                 case TURN_START:
+                    while(testGod == null){
+                        try{
+                            wait();
+                        } catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
+                    }
                     testGod.notifyMessage(this);
                     player.requestSending(new Message(lastType,"Ok!" ));
                     newMsg = null;

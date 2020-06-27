@@ -42,21 +42,41 @@ public class ApolloTest implements TestGod{
     @org.junit.Before
     public void setUp(){
         askingInput = false;
+        System.out.println("Getting game");
         game = new GameCreator(GameCreator.Apollo);
+        System.out.println("Getting players");
         match = game.startGame();
+        System.out.println("Setting gods");
         playerOne = game.getPlayerOne();
         playerTwo = game.getPlayerTwo();
         playerOne.setTestGod(this);
         playerTwo.setTestGod(this);
+
+        /**
+         * TO ADD TWO PLAYER MANAGERS WHO WILL THEN HAVE THE REFERENCES
+         * OFF THE TWO WORKERS WHICH WILL BE CHECKED IF THEY HAVE BEEN MOVED
+         * AND IF THEY HAVE BUILT BUILDINGS
+         */
+
     }
 
     @org.junit.After
     public void tearDown(){
         playerTwo.stop();
 
+        synchronized (this){
+            try{
+                wait(3500);
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+
     }
     @org.junit.Test
     public void testTurn_SwitchPlaces_ExpectedSwitchedPlaces(){
+        PlayerManager tempPlayerOne = game.getFirstPlayer();
+        PlayerManager tempPlayerTwo = game.getSecondPlayer();
         System.out.println("test. 1");
         cellWhereToMove = game.CELL_D4;
         cellWhereToBuild = game.CELL_C3;
@@ -66,11 +86,11 @@ public class ApolloTest implements TestGod{
         assertTrue(
                 match.selectCell(new Index(game.CELL_D4)).getWorker().getIdWorker()
                         ==
-                        game.getFirstPlayer().getPlayer().getWorker1().getIdWorker());
+                        tempPlayerOne.getPlayer().getWorker1().getIdWorker());
         assertTrue(
                 match.selectCell(new Index(game.CELL_C4)).getWorker().getIdWorker()
                         ==
-                        game.getSecondPlayer().getPlayer().getWorker1().getIdWorker());
+                        tempPlayerTwo.getPlayer().getWorker1().getIdWorker());
         System.out.println("Passed tests?");
 
 
