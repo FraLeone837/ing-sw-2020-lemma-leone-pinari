@@ -1,7 +1,11 @@
 package ControllerTest;
 
+import Controller.Communication.Message;
 import Controller.Gods.Apollo;
 import Controller.Gods.Athena;
+import Controller.PlayerManager;
+import ControllerTest.UtilClasses.BotPlayer;
+import ControllerTest.UtilClasses.GameCreator;
 import ControllerTest.UtilClasses.Utils;
 import Model.*;
 import org.junit.After;
@@ -14,133 +18,113 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-public class AthenaTest {
-    private Match match;
-    private Worker myWorker;
-    private Athena athena;
-    private Worker enemyWorker;
-    private Worker enemyWorker2;
-    private Player me;
-    private Player enemy;
-    private Apollo apollo;
+public class AthenaTest extends GodTest implements TestGod {
+
+    public int counter = 1;
+    public int enemyMove;
+    public Message whereToMove = null;
+    public int enemyWorkerId = 3;
 
     @Before
-    public void setUp(){
-        match = new Match(1);
-        athena = new Athena();
-        athena.getDescription();
-        athena.getName();
-        me = new Player("Me",1);
-        enemy = new Player("Enemy",2);
-        apollo = new Apollo();
-
-        me.setWorker1Id(1);
-        enemy.setWorker1Id(3);
-        enemy.setWorker2Id(4);
-        myWorker = me.getWorker1();
-        enemyWorker = enemy.getWorker1();
-        enemyWorker2 = enemy.getWorker2();
-
-        Utils utils = new Utils();
-
-        match.initPlayers(me);
-        match.initPlayers(enemy);
-        Index ix;
-        do{
-            ix = utils.generateRandomIndex();
-        } while(ix.getZ() == 4);
-        match.initWorker(myWorker,utils.generateRandomIndex());
-        match.initWorker(enemyWorker,utils.generateRandomIndex());
-        match.initWorker(enemyWorker2,utils.generateRandomIndex());
-        athena.setup(match,me);
+    public void setUp() {
+        chosenGod = GameCreator.Athena;
+        super.setUp();
+        // puts building where enemy will move next turn
+        enemyMove = game.CELL_D3;
+        match.selectCell(new Index(enemyMove)).setBuilding();
 
 
     }
 
-    @After
-    public void TearDown(){
-        match = null;
-        myWorker = null;
-        athena = null;
-        enemyWorker = null;
-        enemyWorker2 = null;
-        me = null;
-        enemy = null;
-        apollo = null;
-    }
 
     @Test
-    public void testTurn_NoUp_NoForbiddensExist(){
-        Index moveIndex;
-        Utils utils = new Utils();
-        do{
-            moveIndex = utils.getPseudoAdjacent(myWorker.getPosition());
-        } while( moveIndex.getZ() > myWorker.getPosition().getZ() || enemyWorker.getPosition().equals(moveIndex) || enemyWorker2.getPosition().equals(moveIndex));
+    public void testTurn_NoUp_NoForbiddensExist() {
+        boolean isIndexInList = false;
+        play();
+        assertEquals(match.selectCell(new Index(cellWhereToMove%5,cellWhereToMove/5,0)).getWorker().getIdWorker(),
+                playerManagerOne.getPlayer().getWorker1().getIdWorker());
+        assertTrue(match.selectCell(new Index(cellWhereToBuild)).isBuilding());
+        isIndexInList = checkIsInside();
+        assertTrue(isIndexInList);
 
-        Index buildIndex = utils.getPseudoAdjacent(moveIndex);
-        athena.turn(match,myWorker,moveIndex,buildIndex);
-        assertTrue(match.selectCell(buildIndex).isBuilding());
-        assertEquals(moveIndex, myWorker.getPosition());
-
-        do{
-            moveIndex = utils.getPseudoAdjacent(enemyWorker.getPosition());
-        }while(moveIndex.getZ() != enemyWorker.getPosition().getZ() || moveIndex.equals(myWorker.getPosition()));
-
-        buildIndex = utils.getPseudoAdjacent(moveIndex);
-        apollo.turn(match,enemyWorker,moveIndex,buildIndex);
-
-        assertEquals(moveIndex,enemyWorker.getPosition());
-        assertTrue(match.selectCell(buildIndex).isBuilding());
-
-        ArrayList<Index> inxArray = utils.getAllLevelsAbove(enemyWorker);
-        for(Index inx : inxArray) {
-            ArrayList<Invisible> invisibles = match.selectCell(inx).getForbidden();
-            for(Invisible inv : invisibles)
-                assertFalse(inv.isIn(enemyWorker));
-        }
-        inxArray = utils.getAllLevelsAbove(enemyWorker2);
-        for(Index inx : inxArray) {
-            ArrayList<Invisible> invisibles = match.selectCell(inx).getForbidden();
-            for(Invisible inv : invisibles)
-                assertFalse(inv.isIn(enemyWorker2));
-        }
     }
 
+    /**
+     * checks if enemyMove (cell) is a possible move
+     * @return
+     */
+    private boolean checkIsInside() {
+        ArrayList<Double> positions = (ArrayList<Double>)this.whereToMove.getObject();
+
+        Index possiblePosition;
+        for(Double position : positions){
+            possiblePosition = new Index(position.intValue());
+            if(possiblePosition.equals(new Index(enemyMove))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void play(){
+        controller();
+        waitForTurnStart();
+        waitForMoveIndexReq();
+
+    }
     @Test
-    public void testTurn_GoUp_ForbiddensExist(){
+    public void testTurn_GoUp_ForbiddensExist() {
+        match.selectCell(new Index(cellWhereToMove)).setBuilding();
+        boolean isIndexInList;
+        play();
+        assertEquals(match.selectCell(new Index(cellWhereToMove%5,cellWhereToMove/5,1)).getWorker().getIdWorker(),
+                playerManagerOne.getPlayer().getWorker1().getIdWorker());
+        assertTrue(match.selectCell(new Index(cellWhereToBuild)).isBuilding());
+        isIndexInList = checkIsInside();
+        assertFalse(isIndexInList);
 
-        Index moveIndex;
-        Utils utils = new Utils();
-        match.moveWorker(myWorker,new Index(2,3,1));
-        do{
-            moveIndex = utils.getPseudoAdjacent(myWorker.getPosition());
-            if(enemyWorker2.getPosition().equals(myWorker.getPosition())){
-                match.moveWorker(enemyWorker2, new Index(1,2,0));
-            }
-            if(enemyWorker.getPosition().equals(myWorker.getPosition())){
-                match.moveWorker(enemyWorker, new Index(3,1,0));
-            }
-        }while(myWorker.getPosition().getZ()+1 != moveIndex.getZ() || enemyWorker2.getPosition().equals(moveIndex) || enemyWorker.getPosition().equals(moveIndex));
 
-        Index buildIndex = utils.getPseudoAdjacent(moveIndex);
 
-        athena.turn(match,myWorker,moveIndex,buildIndex);
-
-        assertTrue(match.selectCell(buildIndex).isBuilding());
-        assertEquals(moveIndex,myWorker.getPosition());
-
-        ArrayList<Index> inxArray = utils.getAllLevelsAbove(enemyWorker);
-        for(Index inx : inxArray) {
-            ArrayList<Invisible> invisibles = match.selectCell(inx).getForbidden();
-            for(Invisible inv : invisibles)
-                assertTrue(inv.isIn(enemyWorker));
-        }
-        inxArray = utils.getAllLevelsAbove(enemyWorker2);
-        for(Index inx : inxArray) {
-            ArrayList<Invisible> invisibles = match.selectCell(inx).getForbidden();
-            for(Invisible inv : invisibles)
-                assertTrue(inv.isIn(enemyWorker2));
-        }
     }
 
+    private synchronized void waitForMoveIndexReq() {
+        while(this.whereToMove == null){
+            try{
+                wait();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+        return;
+    }
+
+    @Override
+    public void controller() {
+        super.controller();
+        playerTwo.addInput(enemyWorkerId);
+    }
+
+
+
+    @Override
+    public synchronized void notifyMessage(BotPlayer player) {
+
+        Message temp = player.getLastMessage();
+        //discards island info but asks to keep a copy of the match
+        if (temp.getType() != Message.MessageType.ISLAND_INFO)
+            this.message = temp;
+        else {
+            this.match = game.matchManager().getMatch();
+        }
+        notifyAll();
+        //accepts only the second move_index_request which will be used to check if the cell where is one level above is in the list of move_index_req
+        if (temp.getType() == Message.MessageType.MOVE_INDEX_REQ) {
+            if (counter > 0) {
+                counter--;
+            } else {
+                this.whereToMove = temp;
+            }
+        }
+
+    }
 }

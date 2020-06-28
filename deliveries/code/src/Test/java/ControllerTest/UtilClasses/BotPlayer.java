@@ -24,9 +24,9 @@ public class BotPlayer implements Runnable, ServerObserver {
     final int SECOND_PLAYER = 2;
 
     int ID;
-    static int index = 13;
-    static int index2 = 18;
     GameCreator gameCreator;
+    int index ;
+    int index2 ;
     TestGod testGod = null;
 
     ArrayList<Integer> input = new ArrayList<>();
@@ -68,6 +68,8 @@ public class BotPlayer implements Runnable, ServerObserver {
 
 
     public BotPlayer(int ID, GameCreator gameCreator){
+        index = gameCreator.CELL_C4;
+        index2 = gameCreator.CELL_D4;
         try{
             this.server = new Socket("127.0.0.1", gameCreator.SOCKET_PORT);
         } catch (IOException e){
@@ -109,6 +111,7 @@ public class BotPlayer implements Runnable, ServerObserver {
 
             switch (lastType){
                 case TURN_START:
+                case ISLAND_INFO:
                     while(testGod == null){
                         try{
                             wait();
@@ -121,7 +124,6 @@ public class BotPlayer implements Runnable, ServerObserver {
                     newMsg = null;
                     break;
                 case GAME_START:
-                case ISLAND_INFO:
                 case WAIT_START:
                 case YOUR_GOD:
                 case OTHERS_LOSS:
@@ -160,6 +162,7 @@ public class BotPlayer implements Runnable, ServerObserver {
                     newMsg = null;
                     break;
                 case MOVE_INDEX_REQ:
+                    testGod.notifyMessage(this);
                 case MOVEMENT:
                 case BUILD_INDEX_REQ:
                     player.requestSending(new Message(lastType,getInput(0)));
@@ -170,7 +173,7 @@ public class BotPlayer implements Runnable, ServerObserver {
                 case BUILD_BEFORE:
                 case BUILD_DOME:
                 case BUILD_OTHER_WORKER:
-                    player.requestSending(new Message(lastType,getInput("Yes or no?")));
+                    player.requestSending(new Message(lastType,getInput("Yes or no?").toUpperCase().equals("YES")));
                     newMsg = null;
                     break;
                 case END_GAME:
@@ -186,7 +189,7 @@ public class BotPlayer implements Runnable, ServerObserver {
     private synchronized void connect() {
         synchronized (this){
             try{
-                wait(1500);
+                wait(1000);
             } catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -219,13 +222,13 @@ public class BotPlayer implements Runnable, ServerObserver {
         int temp;
         if(ID == 1){
             temp = index;
-            if(index == 13)
-                index = 14;
+            if(index == gameCreator.CELL_C4)
+                index = gameCreator.CELL_C5;
         }
         else{
             temp = index2;
-            if(index2 ==18){
-                index2 = 19;
+            if(index2 ==gameCreator.CELL_D4){
+                index2 = gameCreator.CELL_D5;
             }
         }
         return temp;
@@ -244,32 +247,32 @@ public class BotPlayer implements Runnable, ServerObserver {
         if(debugging)
         System.out.println("Getting last message");
         Message temp = newMsg;
-        if(!inAutomaticList(newMsg)){
-            copiedMessage = newMsg;
-            newMsg = null;
-            notifyAll();
-        }
+//        if(!inAutomaticList(newMsg)){
+//            copiedMessage = newMsg;
+//            newMsg = null;
+//            notifyAll();
+//        }
         return temp;
     }
 
-    private synchronized boolean inAutomaticList(Message Msg) {
-        switch (Msg.getType()){
-            case GAME_START:
-            case WAIT_START:
-            case YOUR_GOD:
-            case ISLAND_INFO:
-            case PLAYER_WON:
-            case PLAYER_LOST:
-            case TURN_START:
-            case OTHERS_LOSS:
-            case GET_NAME:
-            case NUMBER_PLAYERS:
-            case CHOOSE_INDEX_FIRST_WORKER:
-            case CHOOSE_INDEX_SEC_WORKER:
-            return true;
-        }
-        return false;
-    }
+//    private synchronized boolean inAutomaticList(Message Msg) {
+//        switch (Msg.getType()){
+//            case GAME_START:
+//            case WAIT_START:
+//            case YOUR_GOD:
+//            case ISLAND_INFO:
+//            case PLAYER_WON:
+//            case PLAYER_LOST:
+//            case TURN_START:
+//            case OTHERS_LOSS:
+//            case GET_NAME:
+//            case NUMBER_PLAYERS:
+//            case CHOOSE_INDEX_FIRST_WORKER:
+//            case CHOOSE_INDEX_SEC_WORKER:
+//            return true;
+//        }
+//        return false;
+//    }
 
     public int getID(){
         return this.ID;

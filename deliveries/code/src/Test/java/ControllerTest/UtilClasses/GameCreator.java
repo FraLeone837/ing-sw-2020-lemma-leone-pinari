@@ -163,6 +163,15 @@ public class GameCreator {
     }
 
     public synchronized PlayerManager getFirstPlayer(){
+        int playerMngSize = matchManager().getPlayerManagers().size();
+        while( requestedPlayer%2 >= playerMngSize){
+            try{
+                wait(1000);
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            playerMngSize = matchManager().getPlayerManagers().size();
+        }
         PlayerManager temp = matchManager().getPlayerManagers().get(requestedPlayer%2);
         requestedPlayer++;
         return temp;

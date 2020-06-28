@@ -17,7 +17,7 @@ import static java.lang.System.exit;
 public class CommunicationClass implements Runnable {
     private Message messageToSend;
     private boolean isWaitingToReceive;
-    boolean debugging = false;
+    boolean debugging = true;
     int ID;
 
     private Message.MessageType lastMessageType;

@@ -19,133 +19,57 @@ import static Controller.Communication.ClientHandler.*;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
-public class ApolloTest implements TestGod{
-
-
-    private Match match;
-    private GameCreator game;
-    private BotPlayer playerOne;
-    private BotPlayer playerTwo;
-    private Message message = new Message(Message.MessageType.ZZZ,"...");
-
-    private boolean askingInput;
-
-    int cellWhereToMove;
-    int cellWhereToBuild;
-
-    int WORKER_ONE = 1;
-    //worker default
-    private int workerId = 1;
-    private int numberTurns = 2;
-
+public class ApolloTest extends GodTest implements TestGod{
 
     @org.junit.Before
+    @Override
     public void setUp(){
-        askingInput = false;
-        System.out.println("Getting game");
-        game = new GameCreator(GameCreator.Apollo);
-        System.out.println("Getting players");
-        match = game.startGame();
-        System.out.println("Setting gods");
-        playerOne = game.getPlayerOne();
-        playerTwo = game.getPlayerTwo();
-        playerOne.setTestGod(this);
-        playerTwo.setTestGod(this);
-
-        /**
-         * TO ADD TWO PLAYER MANAGERS WHO WILL THEN HAVE THE REFERENCES
-         * OFF THE TWO WORKERS WHICH WILL BE CHECKED IF THEY HAVE BEEN MOVED
-         * AND IF THEY HAVE BUILT BUILDINGS
-         */
-
+        this.chosenGod = GameCreator.Apollo;
+        super.setUp();
     }
 
-    @org.junit.After
-    public void tearDown(){
-        playerTwo.stop();
 
-        synchronized (this){
-            try{
-                wait(3500);
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-
-    }
     @org.junit.Test
     public void testTurn_SwitchPlaces_ExpectedSwitchedPlaces(){
-        PlayerManager tempPlayerOne = game.getFirstPlayer();
-        PlayerManager tempPlayerTwo = game.getSecondPlayer();
-        System.out.println("test. 1");
         cellWhereToMove = game.CELL_D4;
         cellWhereToBuild = game.CELL_C3;
+        Cell cellWhereWas = match.selectCell(playerManagerOne.getPlayer().getWorker1().getPosition());
         controller();
         waitForTurnStart();
-        assertTrue(match.selectCell(new Index(game.CELL_C3)).isBuilding());
+        Cell cellWhereMoved = match.selectCell(new Index(cellWhereToMove));
+        Cell cellWhereBuilt = match.selectCell(new Index(cellWhereToBuild));
+        assertTrue(cellWhereBuilt.isBuilding());
         assertTrue(
-                match.selectCell(new Index(game.CELL_D4)).getWorker().getIdWorker()
+                cellWhereMoved.getWorker().getIdWorker()
                         ==
-                        tempPlayerOne.getPlayer().getWorker1().getIdWorker());
+                        playerManagerOne.getPlayer().getWorker1().getIdWorker());
         assertTrue(
-                match.selectCell(new Index(game.CELL_C4)).getWorker().getIdWorker()
+                cellWhereWas.getWorker().getIdWorker()
                         ==
-                        tempPlayerTwo.getPlayer().getWorker1().getIdWorker());
+                        playerManagerTwo.getPlayer().getWorker1().getIdWorker());
         System.out.println("Passed tests?");
 
 
     }
 
-    private synchronized void waitForTurnStart() {
-        String name = game.getFirstName();
-        while(this.message.getType() != Message.MessageType.TURN_START){
-            try{
-                wait();
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
-            // se e' l'inizio del turno del primo giocatore, allora continuo ad aspettare
-            if(message.getObject().equals(name)){
-                this.message = new Message(Message.MessageType.ZZZ, "Wait...");
-            }
-            if(numberTurns>0 && message.getType() != Message.MessageType.ZZZ){
-                this.message = new Message(Message.MessageType.ZZZ, "Wait...");
-                numberTurns--;
-            }
-        }
-    }
 
 
     @org.junit.Test
     public void testTurn_NormalMovement_CorrectOutput(){
-        cellWhereToBuild = game.CELL_B2;
-        cellWhereToMove = game.CELL_C3;
 
         controller();
         waitForTurnStart();
-
-        assertEquals(match.selectCell(new Index(cellWhereToMove)).getWorker().getIdWorker()
+        Cell cellWhereMoved = match.selectCell(new Index(cellWhereToMove));
+        Cell cellWhereBuilt = match.selectCell(new Index(cellWhereToBuild));
+        assertEquals(cellWhereMoved.getWorker().getIdWorker()
                 ,
-                game.getFirstPlayer().getPlayer().getWorker1().getIdWorker());
+                playerManagerOne.getPlayer().getWorker1().getIdWorker());
+        assertTrue(cellWhereBuilt.isBuilding());
 
-        assertTrue(match.selectCell(new Index(cellWhereToBuild)).isBuilding());
-
-    }
-
-
-    /**
-     * controls if message is asking for movement.
-     * if yes gives cells to move. Moves only on cellWhereToMove and builds on cellWhereToBuild
-     */
-    public synchronized void controller() {
-        playerOne.addInput(workerId);
-        playerOne.addInput(cellWhereToMove);
-        playerOne.addInput(cellWhereToBuild);
     }
 
     public synchronized void notifyMessage(BotPlayer player){
-        this.message = player.getLastMessage();
-        notifyAll();
+        super.notifyMessage(player);
     }
 
 }
