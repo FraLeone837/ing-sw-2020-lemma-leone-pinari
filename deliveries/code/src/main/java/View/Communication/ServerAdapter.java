@@ -2,11 +2,17 @@ package View.Communication;
 
 import Controller.Communication.Message;
 import View.Interfaces.ServerObserver;
+import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+
+import static Controller.Communication.ClientHandler.ANSI_PURPLE;
+import static Controller.Communication.ClientHandler.ANSI_RESET;
 
 
 public class ServerAdapter implements Runnable
@@ -15,39 +21,29 @@ public class ServerAdapter implements Runnable
 
     private boolean debugging = false;
 
-    private enum Commands {
-        SEND_MESSAGE,
-        STOP;
-
-    }
-    private Commands nextCommand;
     private Message messageToSend;
     private boolean isWaitingToReceive;
-    private int ID;
+    int ID;
 
-    private CommunicationClass cc;
+    private Message.MessageType lastMessageType;
 
     private Socket server;
+    private ObjectOutputStream outputStm;
+    private ObjectInputStream inputStm;
     private List<ServerObserver> observers = new ArrayList<>();
+
+
 
 
     public ServerAdapter(Socket server)
     {
         this.server = server;
         isWaitingToReceive = false;
-        cc = new CommunicationClass(server);
-        Thread t2 = new Thread(cc);
-        t2.start();
     }
     public ServerAdapter(Socket server, int ID)
     {
         this.server = server;
         isWaitingToReceive = false;
-        cc = new CommunicationClass(server, ID);
-        Thread t2 = new Thread(cc);
-        t2.start();
-        if(debugging)
-        System.out.println("Created server adapter player " + ID);
     }
 
 
@@ -55,24 +51,20 @@ public class ServerAdapter implements Runnable
     {
         synchronized (observers) {
             observers.add(observer);
-            cc.addObserver(observer);
         }
 
     }
 
-
-    public void removeObserver(ServerObserver observer)
-    {
-        synchronized (observers) {
-            observers.remove(observer);
-            cc.removeObserver(observer);
-        }
-    }
 
 
     public synchronized void stop()
     {
-        nextCommand = Commands.STOP;
+        try{
+            server.close();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
         notifyAll();
     }
 
@@ -82,69 +74,133 @@ public class ServerAdapter implements Runnable
         if(debugging)
         System.out.println("Sending object " + msg + " - " + msg.getObject());
         messageToSend = msg;
-        nextCommand = Commands.SEND_MESSAGE;
+        canSendMessage();
         notifyAll();
     }
 
 
-    @Override
-    public void run()
-    {
-        try {
-            handleServerConnection();
-        } catch (IOException e) {
-            System.out.println("server has died");
-        } catch (ClassCastException | ClassNotFoundException e) {
-            System.out.println("protocol violation");
-        }
-
-        try {
-            server.close();
-            return;
-        } catch (IOException e) { }
-        return;
-    }
 
 
-    private synchronized void handleServerConnection() throws IOException, ClassNotFoundException
-    {
-        /* wait for commands */
-        while (true) {
-            nextCommand = null;
-            try {
-                wait();
-            } catch (InterruptedException e) { }
 
-            if (nextCommand == null)
-                continue;
-
-            switch (nextCommand) {
-                case SEND_MESSAGE:
-                    canSendMessage();
-                    break;
-
-                case STOP:
-                    return;
-            }
-        }
-    }
 
     /**
      * takes lock of if we can send message and sends message, afterwards stands in wait
      */
-    private synchronized void canSendMessage()  throws IOException, ClassNotFoundException{
+    private synchronized void canSendMessage(){
         if(debugging)
         System.out.println("Can send message? " + messageToSend);
-        cc.notifyToSendMessage(messageToSend);
+        notifyToSendMessage(messageToSend);
     }
 
 
+    @Override
+    public void run() {
+        try{
+            outputStm = new ObjectOutputStream(server.getOutputStream());
+            inputStm = new ObjectInputStream(server.getInputStream());
+            openConnection();
+        } catch (IOException e) {
+            System.out.println("server has died -- exiting -- comclass");
+            //close all other threads
+            return;
+        } catch (ClassCastException | ClassNotFoundException e) {
+            System.out.println("protocol violation");
+        }
+    }
+
+    private synchronized void openConnection() throws IOException,ClassNotFoundException{
+        Gson gson = new Gson();
+        while(this.messageToSend == null){
+            try {
+                wait();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+        while(true){
+
+
+            while(this.messageToSend.getType() != lastMessageType && messageToSend.getType() != Message.MessageType.JOIN_GAME){
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            Message copyOut = new Message(messageToSend.getType(),messageToSend.getObject());
+            //for as long as our message is "null" (a.k.a we have no message to send/have already sent a message, we wait
+            reset();
+            if(debugging)
+                System.out.println(ANSI_PURPLE + "Message - communication class - to send is: " + messageToSend + ANSI_RESET );
+            String converted = gson.toJson(copyOut);
+
+
+            /* send the string to the server and get the new string back */
+            outputStm.writeObject(converted);
+            System.out.println("Wrote");
+
+            String response = (String)inputStm.readObject();
+            System.out.println("Got back respones");
+
+
+
+            /* copy the list of observers in case some observers changes it from inside
+             * the notification method */
+            List<ServerObserver> observersCpy;
+            synchronized (observers) {
+                observersCpy = new ArrayList<>(observers);
+            }
+            Message msg = gson.fromJson(response, Message.class);
+            lastMessageType = msg.getType();
+            if(debugging)
+                System.out.println(ANSI_PURPLE + "Message - communication class - received is: " + msg + " with object " + msg.getObject() + ANSI_RESET);
+            /* notify the observers that we got the string */
+            for (ServerObserver observer: observersCpy) {
+                observer.didReceiveMessage(msg);
+                observer.didReceiveMessage(msg,this.ID);
+            }
+            //gets broken only when Client.class calls didReceiveMessage
+            //didReceiveMessage calls receivedMessage()
+
+            while(isWaitingToReceive){
+                try {
+                    System.out.println("Waiting for waiting to receive.");
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
     /**
+     * called by observer.didReceiveMessage(msg)--
      * notifies that client received a message
      * so we can send an ack
      */
     public synchronized void receivedMessage() {
-        cc.receivedMessage();
+        isWaitingToReceive = false;
+        notifyAll();
+    }
+
+    //while isWaitingToReceive no one can send a message
+    public synchronized void notifyToSendMessage(Message msg){
+        while(isWaitingToReceive == true){
+            try{
+                wait();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+
+        }
+        isWaitingToReceive = true;
+        messageToSend = msg;
+        notifyAll();
+    }
+
+    private synchronized void reset() {
+        this.messageToSend = new Message(Message.MessageType.YYY, "Waiting to send a message");
     }
 
 
