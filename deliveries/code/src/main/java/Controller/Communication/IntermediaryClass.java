@@ -189,13 +189,6 @@ public class IntermediaryClass {
     }
 
 
-    /**
-     * Helps in asking the first player to be connected, how many players want to play
-     * @return
-     */
-    public boolean isAnyPlayerConnected(){
-        return matchManager.isAnyPlayerConnected();
-    }
 
     /**
      *

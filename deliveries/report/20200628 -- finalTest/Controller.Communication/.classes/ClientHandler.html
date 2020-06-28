@@ -1,0 +1,279 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClientHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">Controller.Communication</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClientHandler (Controller.Communication)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClientHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (11/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.5%
+  </span>
+  <span class="absValue">
+    (71/ 83)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package Controller.Communication;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.google.gson.Gson;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.io.IOException;
+<i>6</i>&nbsp;import java.io.ObjectInputStream;
+<i>7</i>&nbsp;import java.io.ObjectOutputStream;
+<i>8</i>&nbsp;import java.net.Socket;
+<i>9</i>&nbsp;import java.util.ArrayList;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;import static Controller.Communication.Message.MessageType.END_GAME;
+<i>12</i>&nbsp;import static Controller.Communication.Message.MessageType.ZZZ;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;public class ClientHandler implements Runnable
+<i>16</i>&nbsp;{
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    public static final String ANSI_RESET = &quot;\u001B[0m&quot;;
+<i>19</i>&nbsp;    public static final String ANSI_BLACK = &quot;\u001B[30m&quot;;
+<i>20</i>&nbsp;    public static final String ANSI_RED = &quot;\u001B[31m&quot;;
+<i>21</i>&nbsp;    public static final String ANSI_GREEN = &quot;\u001B[32m&quot;;
+<i>22</i>&nbsp;    public static final String ANSI_YELLOW = &quot;\u001B[33m&quot;;
+<i>23</i>&nbsp;    public static final String ANSI_BLUE = &quot;\u001B[34m&quot;;
+<i>24</i>&nbsp;    public static final String ANSI_PURPLE = &quot;\u001B[35m&quot;;
+<i>25</i>&nbsp;    public static final String ANSI_CYAN = &quot;\u001B[36m&quot;;
+<i>26</i>&nbsp;    public static final String ANSI_WHITE = &quot;\u001B[37m&quot;;
+<i>27</i>&nbsp;
+<b class="fc"><i>28</i>&nbsp;    boolean debugging = false;</b>
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    private Socket client;
+<i>31</i>&nbsp;    private Message currentMessage;
+<i>32</i>&nbsp;    private Message toSendMsg;
+<i>33</i>&nbsp;    //Parameter that shows if we can get the input from the other client
+<i>34</i>&nbsp;    private boolean writes;
+<b class="fc"><i>35</i>&nbsp;    private ArrayList&lt;MessageObservers&gt; observers = new ArrayList&lt;&gt;();</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;
+<b class="fc"><i>38</i>&nbsp;    boolean inGame = true;</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private CommunicationProxy personalProxy;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private String name;
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;    private final Object sendLock = new Object();</b>
+<b class="fc"><i>45</i>&nbsp;    private boolean otherDisconnected = false;</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public void setName(String name) {
+<b class="fc"><i>48</i>&nbsp;        this.name = name;</b>
+<b class="fc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    @Override
+<i>52</i>&nbsp;    public String toString() {
+<b class="nc"><i>53</i>&nbsp;        return &quot;Player &quot; + name;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public void addObserver(MessageObservers obs){
+<b class="fc"><i>57</i>&nbsp;        observers.add(obs);</b>
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * changes message to be sent and then notifies the main of client handler
+<i>62</i>&nbsp;     * which in turn writes the object in stream
+<i>63</i>&nbsp;     * @param message
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    public void setToSendMsg(Message message){
+<b class="fc"><i>66</i>&nbsp;        synchronized (this){</b>
+<b class="fc"><i>67</i>&nbsp;            this.toSendMsg = message;</b>
+<b class="fc"><i>68</i>&nbsp;            notifyAll();</b>
+<b class="fc"><i>69</i>&nbsp;        }</b>
+<b class="fc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public ClientHandler(Socket client, IntermediaryClass ic, int counter)
+<b class="fc"><i>74</i>&nbsp;    {</b>
+<b class="fc"><i>75</i>&nbsp;        this.client = client;</b>
+<b class="fc"><i>76</i>&nbsp;        toSendMsg = new Message(ZZZ, &quot;Waiting&quot;);</b>
+<b class="fc"><i>77</i>&nbsp;        this.writes = true;</b>
+<b class="fc"><i>78</i>&nbsp;        currentMessage = null;</b>
+<b class="fc"><i>79</i>&nbsp;        personalProxy = new CommunicationProxy(this,ic);</b>
+<b class="fc"><i>80</i>&nbsp;        name = (Integer.toString(counter));</b>
+<b class="fc"><i>81</i>&nbsp;        Thread t = new Thread(personalProxy);</b>
+<b class="fc"><i>82</i>&nbsp;        t.start();</b>
+<b class="fc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public void setOtherDisconnected(boolean didDisconnect){
+<b class="fc"><i>86</i>&nbsp;        this.otherDisconnected = didDisconnect;</b>
+<b class="fc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    @Override
+<i>91</i>&nbsp;    public void run()
+<i>92</i>&nbsp;    {
+<i>93</i>&nbsp;        try {
+<b class="fc"><i>94</i>&nbsp;            handleClientConnection();</b>
+<b class="fc"><i>95</i>&nbsp;        } catch (IOException e) {</b>
+<b class="fc"><i>96</i>&nbsp;            System.out.println(&quot;client &quot; + client.getInetAddress() + &quot; connection dropped -- clh&quot; + this.getName());</b>
+<b class="fc"><i>97</i>&nbsp;            terminateGame();</b>
+<b class="fc"><i>98</i>&nbsp;            IntermediaryClass iC = personalProxy.getIC();</b>
+<i>99</i>&nbsp;
+<b class="fc"><i>100</i>&nbsp;            if(!otherDisconnected){</b>
+<b class="fc"><i>101</i>&nbsp;                System.out.println();</b>
+<b class="fc"><i>102</i>&nbsp;                this.personalProxy.getIC().setDisconnected(&quot;Player&quot;+this.name);</b>
+<i>103</i>&nbsp;            }
+<i>104</i>&nbsp;            //calls every client and this.personalProxy to close their connections
+<i>105</i>&nbsp;            //closes thread
+<b class="fc"><i>106</i>&nbsp;            System.out.println(&quot;Exiting from thread &quot; + this.getName());</b>
+<b class="fc"><i>107</i>&nbsp;            return;</b>
+<b class="nc"><i>108</i>&nbsp;        }</b>
+<b class="nc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    /** Reads a message of type Message and based on the (enum) MessageType calls private methods to give/require information,
+<i>112</i>&nbsp;     *  then sends the information required back. Waits until the player loses/quits/wins.
+<i>113</i>&nbsp;     * @throws IOException if not correct messageType/Object
+<i>114</i>&nbsp;     * @throws NullPointerException if messageType has been lost
+<i>115</i>&nbsp;     */
+<i>116</i>&nbsp;    private void handleClientConnection() throws IOException, NullPointerException
+<i>117</i>&nbsp;    {
+<b class="fc"><i>118</i>&nbsp;        System.out.println(&quot;Connected to &quot; + client.getInetAddress());</b>
+<b class="fc"><i>119</i>&nbsp;        ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());</b>
+<b class="fc"><i>120</i>&nbsp;        ObjectInputStream input = new ObjectInputStream(client.getInputStream());</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;        /**
+<i>123</i>&nbsp;         * Read first object afterwards reply.
+<i>124</i>&nbsp;         * After that go into a while loop in which the client responds only to my requests
+<i>125</i>&nbsp;         */
+<b class="fc"><i>126</i>&nbsp;        while(inGame){</b>
+<i>127</i>&nbsp;            try{
+<b class="fc"><i>128</i>&nbsp;                Object in = input.readObject();</b>
+<b class="fc"><i>129</i>&nbsp;                String inText = (String)in;</b>
+<b class="fc"><i>130</i>&nbsp;                Gson gson = new Gson();</b>
+<b class="fc"><i>131</i>&nbsp;                this.currentMessage = gson.fromJson(inText,Message.class);</b>
+<b class="fc"><i>132</i>&nbsp;                if(debugging)</b>
+<b class="nc"><i>133</i>&nbsp;                System.out.println(&quot;Message received cl.handler: &quot; + currentMessage +&quot; &quot; + this);</b>
+<b class="fc"><i>134</i>&nbsp;                notifyObservers();</b>
+<i>135</i>&nbsp;
+<b class="fc"><i>136</i>&nbsp;                synchronized (this){</b>
+<b class="fc"><i>137</i>&nbsp;                    while(toSendMsg.getType() == ZZZ){</b>
+<i>138</i>&nbsp;                        try{
+<b class="fc"><i>139</i>&nbsp;                            if(debugging)</b>
+<b class="nc"><i>140</i>&nbsp;                           System.out.println(&quot;WAITING ON A SEND MESSAGE cl.handler &quot; + this);</b>
+<b class="fc"><i>141</i>&nbsp;                            wait();</b>
+<b class="nc"><i>142</i>&nbsp;                        } catch (InterruptedException e){</b>
+<b class="nc"><i>143</i>&nbsp;                            e.printStackTrace();</b>
+<b class="fc"><i>144</i>&nbsp;                        }</b>
+<i>145</i>&nbsp;                    }
+<b class="fc"><i>146</i>&nbsp;                    if(debugging)</b>
+<b class="nc"><i>147</i>&nbsp;                    System.out.println(ANSI_BLUE+ &quot;We have a new toSendMsg which is: &quot; + toSendMsg + ANSI_RESET + &quot; &quot; + this);</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;
+<b class="fc"><i>150</i>&nbsp;                    output.writeObject(gson.toJson(toSendMsg));</b>
+<i>151</i>&nbsp;
+<b class="fc"><i>152</i>&nbsp;                    if(toSendMsg.getType() == Message.MessageType.END_GAME) {</b>
+<b class="fc"><i>153</i>&nbsp;                        if(debugging)</b>
+<b class="nc"><i>154</i>&nbsp;                        System.out.println(ANSI_BLUE + &quot;Closing client&quot; + ANSI_RESET);</b>
+<b class="fc"><i>155</i>&nbsp;                        client.close();</b>
+<i>156</i>&nbsp;                    }
+<b class="fc"><i>157</i>&nbsp;                }</b>
+<b class="nc"><i>158</i>&nbsp;            } catch (ClassNotFoundException e ){</b>
+<i>159</i>&nbsp;
+<b class="fc"><i>160</i>&nbsp;            }</b>
+<b class="fc"><i>161</i>&nbsp;            toSendMsg = new Message(ZZZ,&quot;Waiting&quot;);</b>
+<i>162</i>&nbsp;        }
+<i>163</i>&nbsp;
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    private void notifyObservers() {
+<b class="fc"><i>167</i>&nbsp;        synchronized (this){</b>
+<b class="fc"><i>168</i>&nbsp;            ArrayList&lt;MessageObservers&gt; copy = new ArrayList&lt;&gt;(observers);</b>
+<b class="fc"><i>169</i>&nbsp;        }</b>
+<b class="fc"><i>170</i>&nbsp;        for(MessageObservers obs : observers)</b>
+<b class="fc"><i>171</i>&nbsp;            obs.receivedMessage();</b>
+<b class="fc"><i>172</i>&nbsp;    }</b>
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    public Message getCurrentMessage() {
+<b class="fc"><i>176</i>&nbsp;        return currentMessage;</b>
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    /**
+<i>180</i>&nbsp;     * receives a local message that allows the game to terminate
+<i>181</i>&nbsp;     */
+<i>182</i>&nbsp;    public synchronized void terminateGame(){
+<b class="fc"><i>183</i>&nbsp;        this.toSendMsg = new Message(END_GAME,&quot;One player disconnected, game has been interrupted.&quot;);</b>
+<b class="fc"><i>184</i>&nbsp;        notifyAll();</b>
+<b class="fc"><i>185</i>&nbsp;        this.personalProxy.interruptGame(Message.MessageType.END_GAME,&quot;One player disconnected, game has been interrupted.&quot;);</b>
+<b class="fc"><i>186</i>&nbsp;    }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    public String getName() {
+<b class="fc"><i>189</i>&nbsp;        return &quot;Player&quot; + name;</b>
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public CommunicationProxy getCommProxy(){
+<b class="nc"><i>193</i>&nbsp;        return personalProxy;</b>
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;}
+<i>196</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-06-28 19:14</div>
+</div>
+</body>
+</html>

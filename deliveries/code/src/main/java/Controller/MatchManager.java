@@ -60,18 +60,6 @@ public class MatchManager implements Runnable{
 
 
 
-    public boolean isAnyPlayerConnected(){
-
-        if(playerManagers.size() == 0) return false;
-        try{
-            playerManagers.get(0).getPlayer().getName();
-            return true;
-        } catch (NullPointerException ne){
-            ne.printStackTrace();
-        }
-        return false;
-    }
-
 
     /**
      * connect the players (2 or 3) and give a god to each of them
@@ -265,26 +253,26 @@ public class MatchManager implements Runnable{
         playerManagers.clear();
     }
 
-    /**
-     * give a god to each player, asking to the server with cli
-     * useful for testing gods
-     */
-    public void giveGodsTest(){
-        Scanner scanner = new Scanner(System.in);
-        God god;
-        String godCode ;
-        int i = 0;
-        for(PlayerManager playerManager : playerManagers){
-            i++;
-            System.out.println("Dio per il " + i + "-o giocatore");
-            godCode = scanner.nextLine();
-            god = godID(Integer.parseInt(godCode));
-            playerManager.setGod(god);
-            CommunicationProxy CP = playerManager.getCommunicationProxy();
-            intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
-            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
-        }
-    }
+//    /**
+//     * give a god to each player, asking to the server with cli
+//     * useful for testing gods
+//     */
+//    public void giveGodsTest(){
+//        Scanner scanner = new Scanner(System.in);
+//        God god;
+//        String godCode ;
+//        int i = 0;
+//        for(PlayerManager playerManager : playerManagers){
+//            i++;
+//            System.out.println("Dio per il " + i + "-o giocatore");
+//            godCode = scanner.nextLine();
+//            god = godID(Integer.parseInt(godCode));
+//            playerManager.setGod(god);
+//            CommunicationProxy CP = playerManager.getCommunicationProxy();
+//            intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
+//            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+//        }
+//    }
 
 
     public ArrayList<PlayerManager> getPlayerManagers() {

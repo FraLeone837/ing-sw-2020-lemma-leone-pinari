@@ -227,10 +227,6 @@ public class GameCreator {
                 System.out.println("Server status open?:" + serverOpen);
             } catch (IOException e) {
                 System.out.println("connection dropped");
-                if (iC.isAnyPlayerConnected()) {
-                    iC.Broadcast(new Message(Message.MessageType.END_GAME, "Connection dropped from one player, game interrupted and finished"));
-                    iC.terminateGame();
-                }
             }
         }
     }
