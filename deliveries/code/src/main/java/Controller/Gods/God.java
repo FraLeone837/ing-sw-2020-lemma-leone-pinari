@@ -81,17 +81,6 @@ public abstract class God {
         match.build(worker, actualBuildIndex);
     }
 
-    public void turn(Match match, Worker worker,Index index1,Index index2) {
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move from view
-        Index tempMoveIndex = index1;
-        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
-        match.moveWorker(worker,actualMoveIndex);
-        checkWin(match, worker);
-        //take index2 where to build from view
-        Index actualBuildIndex = index2;
-        match.build(worker, actualBuildIndex);
-    }
 
     /**
      * helps using powers in general, for example putting invisible block in the cells when there are to many to put

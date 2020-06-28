@@ -1,5 +1,7 @@
 package Model;
 
+import Controller.Communication.IntermediaryClass;
+
 import java.util.ArrayList;
 
 /**

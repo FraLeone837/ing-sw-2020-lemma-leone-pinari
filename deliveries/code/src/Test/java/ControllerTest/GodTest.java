@@ -58,16 +58,13 @@ public class GodTest implements TestGod {
     @org.junit.After
     public void tearDown(){
         System.out.println("Starting tear down");
-        synchronized (this){
-            try{
-                wait(1500);
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
-        }
         playerTwo.stop();
     }
 
+    /**
+     * waits for the model to update,
+     * which happens before the start of the turn of the adversary
+     */
     public synchronized void waitForTurnStart() {
         String name = game.getFirstName();
         if(this.message.getObject().equals(name))

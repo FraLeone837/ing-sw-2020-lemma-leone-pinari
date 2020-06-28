@@ -34,10 +34,12 @@ public class BotPlayer implements Runnable, ServerObserver {
     private boolean debugging = true;
 
     public synchronized void addInput(int input){
+        System.out.println("Adding input "  +input);
         this.input.add(input);
         notifyAll();
     }
     public synchronized void addInput(String input){
+        System.out.println("Adding input "  + input);
         this.literalInput.add(input);
         notifyAll();
     }
@@ -162,9 +164,9 @@ public class BotPlayer implements Runnable, ServerObserver {
                     newMsg = null;
                     break;
                 case MOVE_INDEX_REQ:
+                case BUILD_INDEX_REQ:
                     testGod.notifyMessage(this);
                 case MOVEMENT:
-                case BUILD_INDEX_REQ:
                     player.requestSending(new Message(lastType,getInput(0)));
                     newMsg = null;
                     break;
@@ -176,10 +178,12 @@ public class BotPlayer implements Runnable, ServerObserver {
                     player.requestSending(new Message(lastType,getInput("Yes or no?").toUpperCase().equals("YES")));
                     newMsg = null;
                     break;
-                case END_GAME:
                 case PLAYER_WON:
+                    testGod.notifyMessage(this);
+                case END_GAME:
                 case PLAYER_LOST:
                     player.requestSending(new Message(lastType,"Ok!"));
+                    newMsg = null;
                     return;
             }
         }
@@ -247,32 +251,9 @@ public class BotPlayer implements Runnable, ServerObserver {
         if(debugging)
         System.out.println("Getting last message");
         Message temp = newMsg;
-//        if(!inAutomaticList(newMsg)){
-//            copiedMessage = newMsg;
-//            newMsg = null;
-//            notifyAll();
-//        }
         return temp;
     }
 
-//    private synchronized boolean inAutomaticList(Message Msg) {
-//        switch (Msg.getType()){
-//            case GAME_START:
-//            case WAIT_START:
-//            case YOUR_GOD:
-//            case ISLAND_INFO:
-//            case PLAYER_WON:
-//            case PLAYER_LOST:
-//            case TURN_START:
-//            case OTHERS_LOSS:
-//            case GET_NAME:
-//            case NUMBER_PLAYERS:
-//            case CHOOSE_INDEX_FIRST_WORKER:
-//            case CHOOSE_INDEX_SEC_WORKER:
-//            return true;
-//        }
-//        return false;
-//    }
 
     public int getID(){
         return this.ID;

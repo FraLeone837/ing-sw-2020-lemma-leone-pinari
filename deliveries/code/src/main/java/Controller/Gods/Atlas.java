@@ -62,16 +62,4 @@ public class Atlas extends God {
         setBuildDome(false);
     }
 
-    public void turn(Match match, Worker worker, Index index1, Index index2) {
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move from view
-        match.moveWorker(worker, index1);
-        checkWin(match, worker);
-        //take index2 where to build from view
-        //ask to build a building or a dome
-        if(buildDome)
-            match.buildDome(worker, index2);
-        else
-            match.build(worker, index2);
-    }
 }
