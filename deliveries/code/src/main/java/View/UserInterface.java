@@ -117,6 +117,7 @@ public class UserInterface implements Runnable {
      */
     public synchronized void receivedUiInput(Object input){
         if(messageOut.getType().equals(Message.MessageType.JOIN_GAME)){
+            ip = (String)input;
             client = new Client(this, ip);
             Thread t = new Thread(client);
             t.start();
