@@ -101,10 +101,14 @@ public class ServerAdapter implements Runnable
             openConnection();
         } catch (IOException e) {
             System.out.println("server has died -- exiting -- comclass");
+            for(ServerObserver observer : observers){
+                observer.didReceiveMessage(new Message(Message.MessageType.END_GAME, ""));
+            }
             //close all other threads
             return;
         } catch (ClassCastException | ClassNotFoundException e) {
             System.out.println("protocol violation");
+            return;
         }
     }
 
@@ -137,10 +141,8 @@ public class ServerAdapter implements Runnable
 
             /* send the string to the server and get the new string back */
             outputStm.writeObject(converted);
-            System.out.println("Wrote");
 
             String response = (String)inputStm.readObject();
-            System.out.println("Got back respones");
 
 
 
@@ -164,7 +166,6 @@ public class ServerAdapter implements Runnable
 
             while(isWaitingToReceive){
                 try {
-                    System.out.println("Waiting for waiting to receive.");
                     wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();

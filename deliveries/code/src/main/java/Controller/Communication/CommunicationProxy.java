@@ -16,9 +16,9 @@ import static Controller.Communication.Message.MessageType.*;
 public class CommunicationProxy implements Runnable, MessageObservers {
     //counts the time since last message
     private static Timer timer;
-    private static int timeConstant = 15;
+    private static int timeConstant = 10;
 
-    private boolean debugging = false;
+    private boolean debugging = true;
 
     private ClientHandler clientHandler;
     //serves for methods referring to matchManager
@@ -146,7 +146,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
             clientHandler.setToSendMsg(toSend);
             timer.notifyWait();
 
-
+            received.setType(YYY);
             waitForReceiveMessage();
             timer.notifyReceived(timeConstant);
 

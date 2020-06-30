@@ -178,7 +178,6 @@ public class UserInterface implements Runnable {
      */
     private synchronized void identificationMessage(Message msg){
         messageOut = new Message(msg.getType(), "Ok!");
-        System.out.println("RICEVUTO: " + msg.getType());
 
         switch(msg.getType()){
             case ISLAND_INFO:

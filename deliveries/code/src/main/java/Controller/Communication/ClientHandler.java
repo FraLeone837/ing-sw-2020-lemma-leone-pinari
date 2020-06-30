@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    boolean debugging = false;
+    boolean debugging = true;
 
     private Socket client;
     private Message currentMessage;
@@ -189,8 +189,5 @@ public class ClientHandler implements Runnable
         return "Player" + name;
     }
 
-    public CommunicationProxy getCommProxy(){
-        return personalProxy;
-    }
 }
 
