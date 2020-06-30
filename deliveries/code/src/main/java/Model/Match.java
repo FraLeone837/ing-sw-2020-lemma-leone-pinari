@@ -185,7 +185,7 @@ public class Match {
     /**
      * give to the view all the information it need to draw the game board of the screen
      */
-    public void notifyView(){
+    public synchronized void notifyView(){
         if(intermediaryClass == null){
             return;
         }

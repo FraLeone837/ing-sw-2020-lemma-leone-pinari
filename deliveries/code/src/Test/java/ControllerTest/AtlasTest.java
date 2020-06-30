@@ -1,6 +1,8 @@
 package ControllerTest;
 
 import Controller.Gods.Atlas;
+import ControllerTest.UtilClasses.GameCreator;
+import ControllerTest.UtilClasses.Utils;
 import Model.Index;
 import Model.Match;
 import Model.Player;
@@ -9,63 +11,44 @@ import Model.Worker;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
-public class AtlasTest {
+public class AtlasTest extends GodTest implements TestGod {
 
-    private Match match;
-    private Worker myWorker;
-    private Atlas atlas;
+    public String yesOrNo;
 
     @org.junit.Before
+    @Override
     public void setUp(){
-        this.match = new Match(1);
-        this.myWorker = new Worker();
-        this.atlas = new Atlas();
-        atlas.getDescription();
-        atlas.getName();
-        Utils utils = new Utils();
-        match.initWorker(myWorker, utils.generateRandomIndex());
-
-        atlas.setup(match, new Player("nome", 1));
+        chosenGod = GameCreator.Atlas;
+        super.setUp();
     }
 
     @org.junit.Test
     public void turnTest_buildNormalLevel_CorrectInput(){
-        Utils utils = new Utils();
-        atlas.setBuildDome(false);
-        Index oldPosition = myWorker.getPosition();
+        yesOrNo = "no";
+        controller();
+        waitForTurnStart();
+        assertEquals(match.selectCell(new Index(cellWhereToMove)).getWorker().getIdWorker(),
+                     playerManagerOne.getPlayer().getWorker1().getIdWorker());
+        assertTrue(match.selectCell(new Index(cellWhereToBuild)).isBuilding());
+        assertFalse(match.selectCell(new Index(cellWhereToBuild)).isDome());
+    }
 
-
-        Index moveIndex = utils.getPseudoAdjacent(myWorker);
-        Index buildIndex = utils.getPseudoAdjacent(moveIndex);
-        atlas.turn(match, myWorker, moveIndex, buildIndex);
-
-        assertEquals(myWorker, match.selectCell(moveIndex).getWorker());
-
-        assertTrue(match.selectCell(buildIndex).isBuilding());
-        if(buildIndex.getZ() != 3) {
-            assertFalse(match.selectCell(buildIndex).isDome());
-        }
-        assertNull(match.selectCell(oldPosition).getWorker());
-
+    @Override
+    public synchronized void controller(){
+        super.controller();
+        playerOne.addInput(yesOrNo);
     }
 
     @org.junit.Test
     public void turnTest_buildDome_CorrectInput(){
-        Utils utils = new Utils();
-        Index oldPosition = myWorker.getPosition();
+        yesOrNo = "yes";
+        controller();
+        waitForTurnStart();
+        assertEquals(match.selectCell(new Index(cellWhereToMove)).getWorker().getIdWorker(),
+                playerManagerOne.getPlayer().getWorker1().getIdWorker());
 
-
-        atlas.setBuildDome(true);
-        Index moveIndex = utils.getPseudoAdjacent(myWorker);
-        Index buildIndex = utils.getPseudoAdjacent(moveIndex);
-        atlas.turn(match, myWorker, moveIndex, buildIndex);
-
-        assertEquals(myWorker, match.selectCell(moveIndex).getWorker());
-
-        assertTrue(match.selectCell(buildIndex).isBuilding());
-        assertTrue(match.selectCell(buildIndex).isDome());
-
-        assertNull(match.selectCell(oldPosition).getWorker());
+        assertTrue(match.selectCell(new Index(cellWhereToBuild)).isBuilding());
+        assertTrue(match.selectCell(new Index(cellWhereToBuild)).isDome());
     }
 
 

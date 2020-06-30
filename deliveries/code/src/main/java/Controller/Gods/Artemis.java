@@ -95,53 +95,6 @@ public class Artemis extends God {
         match.build(worker, actualBuildIndex);
     }
 
-    public void turn(Match match, Worker worker,Index index1,Index index2,Index index3) {
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move the first time
-        match.moveWorker(worker, index1);
-        checkWin(match, worker);
-        //ask to move another time
-        if(moveAgain) {
-            Cell cell = match.selectCell(prevIndex);
-            ArrayList<Invisible> invisibles = cell.getForbidden();
-            for (Invisible inv : invisibles) {
-                if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
-                    inv.addWorker(worker);
-            }
-            setPrevIndex(worker.getPosition());
-            //take index2 where to move a second time
-            match.moveWorker(worker, index2);
-            checkWin(match, worker);
-            resetPower(match, worker);
-        }
-        //take index3 where to build
-        match.build(worker, index3);
-    }
-
-//    @Override
-//    public void setup(Match match, Player player) {
-//        for(int x=0; x<5; x++){
-//            for(int y=0; y<5; y++){
-//                for(int z=0; z<4; z++){
-//                    Index index = new Index(x,y,z);
-//                    Invisible invisible = new ForbiddenMove(player);
-//                    match.buildInvisible(invisible, index);
-//                }
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void resetPower(Match match, Worker worker) {
-//        setMoveAgain(false);
-//        Cell cell = match.selectCell(prevMoveIndex);
-//        ArrayList<Invisible> invisibles = cell.getForbidden();
-//        for(Invisible inv : invisibles){
-//            if(inv instanceof ForbiddenMove && worker.getOwner()==inv.getCreator())
-//                inv.removeWorkers();
-//        }
-//    }
-
     /**
      * allows you to know if you can end the turn with the selected worker by moving once
      *

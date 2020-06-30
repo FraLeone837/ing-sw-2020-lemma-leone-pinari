@@ -1,97 +1,102 @@
 package ControllerTest;
 
+import Controller.Communication.Message;
 import Controller.Gods.Artemis;
+import ControllerTest.UtilClasses.BotPlayer;
+import ControllerTest.UtilClasses.GameCreator;
+import ControllerTest.UtilClasses.Utils;
 import Model.Index;
 import Model.Match;
 import Model.Player;
 import Model.Worker;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
-public class ArtemisTest {
+public class ArtemisTest extends GodTest implements TestGod {
 
+    public int secondCellToMove;
+    public String yesOrNo;
+    public Message whereToMove;
+    public int counter = 1;
 
-    private Artemis artemis;
-    private Worker myWorker;
-    private Match match;
+    /**
+     * checks if CELL_C4 is given as possible index to move
+     * moves to CELL_C3 and CELL_C2 builds CELL_B2
+     */
 
     @org.junit.Before
     public void setUp(){
-        Utils utils = new Utils();
-        this.artemis = new Artemis();
-        artemis.getDescription();
-        artemis.getName();
+        this.chosenGod = GameCreator.Artemis;
+        super.setUp();
+        secondCellToMove = game.CELL_C2;
 
-
-
-        this.myWorker = new Worker();
-        this.match = new Match(1);
-        Index index = utils.generateRandomIndex();
-        match.initWorker(myWorker,index);
-        artemis.setup(match, new Player("nome", 1));
     }
 
     @org.junit.Test
     public void turnTest_MovesTwice_ChecksPosition(){
-        artemis.setMoveAgain(true);
+        yesOrNo = "yes";
+        boolean flag = false;
+        Index oldPosition = playerManagerOne.getPlayer().getWorker1().getPosition();
+        controller();
+        waitForTurnStart();
+        assertEquals(match.selectCell(new Index(secondCellToMove)).getWorker().getIdWorker(),
+                playerManagerOne.getPlayer().getWorker1().getIdWorker());
+        assertTrue(match.selectCell(new Index(cellWhereToBuild)).isBuilding());
 
-        Utils util = new Utils();
-        Index oldPosition = myWorker.getPosition();
+        ArrayList<Double> positions = (ArrayList<Double>)this.whereToMove.getObject();
 
-        /*if(artemis.canMoveTwice(match,myWorker)){
-            Index firstMove = util.generateRandomIndex();
-            Index secondMove = util.generateRandomIndex();
-            Index firstBuild = util.generateRandomIndex();
-            while (firstMove.equals(secondMove)) {
-                secondMove = util.generateRandomIndex();
+        Index possiblePosition;
+        for(Double position : positions){
+            possiblePosition = new Index(position.intValue());
+            if(possiblePosition.equals(oldPosition)){
+                flag = true;
             }
-            artemis.turn(match, myWorker, firstMove, secondMove, firstBuild);
-
-            assertEquals(myWorker,match.selectCell(secondMove).getWorker());
-
-            assertFalse(match.selectCell(firstBuild).isEmpty());
-            assertNull(match.selectCell(oldPosition).getWorker());
-
-        }*/
+        }
+        assertFalse(flag);
     }
-
     @org.junit.Test
     public void turnTest_MovesOnce_ChecksPosition(){
-        artemis.setMoveAgain(false);
-        Utils util = new Utils();
-        Index oldPosition = myWorker.getPosition();
-
-
-        Index firstMove = util.generateRandomIndex();
-        Index secondMove = util.generateRandomIndex();
-        Index firstBuild = util.generateRandomIndex();
-        while (firstMove.equals(secondMove)) {
-            secondMove = util.generateRandomIndex();
-        }
-        artemis.turn(match, myWorker, firstMove, secondMove, firstBuild);
-
-        assertEquals(myWorker,match.selectCell(firstMove).getWorker());
-
-        assertTrue(match.selectCell(firstBuild).isBuilding());
-
-        assertNull(match.selectCell(oldPosition).getWorker());
+        yesOrNo = "no";
+        controller();
+        waitForTurnStart();
+        assertEquals(match.selectCell(new Index(cellWhereToMove)).getWorker().getIdWorker(),
+                    playerManagerOne.getPlayer().getWorker1().getIdWorker());
+        assertTrue(match.selectCell(new Index(cellWhereToBuild)).isBuilding());
     }
 
 
-    //Not yet implemented but there should be a test in which the God checks if I'm moving in the same position
-//    @org.junit.Test
-//    public void turnTest_MovesTwiceSamePosition_GivesError(){
-//        artemis.setMoveAgain(true);
-//        Utils util = new Utils();
-//        Index firstMove = util.generateRandomIndex();
-//        Index firstBuild = util.generateRandomIndex();
-//        try{
-//            artemis.turn(match, myWorker, firstMove, firstMove, firstBuild);
-//
-//        } catch (IOException Io){
-//            assertTrue(true);
-//        }
-//
-//    }
+    @Override
+    public synchronized void controller(){
+        playerOne.addInput(workerId);
+        playerOne.addInput(cellWhereToMove);
+        if(yesOrNo.equals("yes"))
+        playerOne.addInput(secondCellToMove);
+        playerOne.addInput(cellWhereToBuild);
+        playerOne.addInput(yesOrNo);
+    }
 
+    @Override
+    public synchronized void notifyMessage(BotPlayer player) {
+
+        Message temp = player.getLastMessage();
+        //discards island info but asks to keep a copy of the match
+        if(temp.getType() != Message.MessageType.ISLAND_INFO)
+            this.message = temp;
+        else{
+            this.match = game.matchManager().getMatch();
+        }
+        notifyAll();
+        //accepts only the second move_index_request which will be used to check if the initial cell is in the list of move_index_req
+        if(temp.getType() == Message.MessageType.MOVE_INDEX_REQ){
+            if(counter>0){
+                counter--;
+            }
+            else{
+                this.whereToMove = temp;
+            }
+        }
+
+    }
 }

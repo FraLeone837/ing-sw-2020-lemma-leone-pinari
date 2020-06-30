@@ -9,7 +9,6 @@ public class PlayerMngTest {
     Player player;
     @Before
     public void setUp(){
-        player = new Player("Bonby", 1);
 
     }
 }

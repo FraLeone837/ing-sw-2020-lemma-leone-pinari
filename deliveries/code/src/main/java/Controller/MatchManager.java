@@ -1,9 +1,12 @@
 package Controller;
+import Controller.Communication.ClientHandler;
 import Controller.Communication.CommunicationProxy;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
 import Controller.Gods.*;
 import Model.*;
+
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -16,8 +19,10 @@ public class MatchManager implements Runnable{
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
     private Boolean matchInProgress;
     //author Etion
-    private boolean disconnected = false;
-    private int disconnectedPlayer;
+    //number used in test phase, so I can choose which god to test Automatically with JUnit
+    final int RANDOM_GODS = -1;
+    //x is always -1 unless special constructor is used (only in testing phase)
+    private int x = RANDOM_GODS;
 
     /**
      * starts with only the first player who is also the creator of the match
@@ -27,54 +32,39 @@ public class MatchManager implements Runnable{
      */
     public MatchManager(int id, IntermediaryClass intermediaryClass){
         this.intermediaryClass = intermediaryClass;
-        this.match = new Match(id);
-        this.match.setIntermediaryClass(this.intermediaryClass);
+        match = new Match(id);
+        match.setIntermediaryClass(this.intermediaryClass);
         this.matchInProgress = true;
     }
+    //testing
+    public MatchManager(int id, IntermediaryClass intermediaryClass, int x){
+        this.intermediaryClass = intermediaryClass;
+        match = new Match(id);
+        match.setIntermediaryClass(this.intermediaryClass);
+        this.matchInProgress = true;
+        this.x = x;
+    }
 
+    public Match getMatch() {
+        return match;
+    }
     @Override
     public void run() {
-        setupPlayers();
+        setupPlayers(x);
         setupGame();
         while(matchInProgress ){
             turn();
         }
-        System.out.println("stacca stacca");
         intermediaryClass.terminateGame();
     }
 
-    /**
-     * if any player is disconnected notifies
-     * all the other players
-     */
-    private void notifyDisconnection() {
-        if(disconnected){
-            for(int i=0; i<communicationProxies.size(); i++){
-                if(i != disconnectedPlayer){
-                    communicationProxies.get(i).sendMessage(Message.MessageType.END_GAME, "One player disconnected");
-                }
-            }
-        }
-    }
 
-
-    public boolean isAnyPlayerConnected(){
-
-        if(playerManagers.size() == 0) return false;
-        try{
-            playerManagers.get(0).getPlayer().getName();
-            return true;
-        } catch (NullPointerException ne){
-            ne.printStackTrace();
-        }
-        return false;
-    }
 
 
     /**
      * connect the players (2 or 3) and give a god to each of them
      */
-    public void setupPlayers(){
+    public void setupPlayers(int z){
         ArrayList<String> names = new ArrayList<String>();
         //the first player connects
         CommunicationProxy firstCP = intermediaryClass.getNewCommunicationProxy();
@@ -103,8 +93,8 @@ public class MatchManager implements Runnable{
         }
 
         //give gods to the players
-//        giveGodsTest();
-        giveGods();
+        //giveGodsTest();
+        giveGods(z);
     }
 
     /**
@@ -151,10 +141,6 @@ public class MatchManager implements Runnable{
             return;
         }
         for(PlayerManager playerManager : playerManagers){
-            if(disconnected){
-                notifyDisconnection();
-                return;
-            }
             CommunicationProxy thisPlayer = playerManager.getCommunicationProxy();
             intermediaryClass.Broadcast(new Message(Message.MessageType.TURN_START, playerManager.getPlayer().getName()));
 
@@ -185,6 +171,38 @@ public class MatchManager implements Runnable{
         playerManagers = playerManagersCopy;
     }
 
+    private God godID(int id){
+        switch (id){
+            case 0:
+                return new Apollo();
+            case 1:
+                return new Artemis();
+            case 2:
+                return new Athena();
+            case 3:
+                return new Atlas();
+            case 4:
+                return new Demeter();
+            case 5:
+                return new Hephaestus();
+            case 6:
+                return new Minotaur();
+            case 7:
+                return new Pan();
+            case 8:
+                return new Prometheus();
+            case 9:
+                return new Hera();
+            case 10:
+                return new Hestia();
+            case 11:
+                return new Poseidon();
+            case 12:
+                return new Triton();
+            default:
+                return new Zeus();
+        }
+    }
     /**
      * give randomly a god to each player
      */
@@ -199,54 +217,30 @@ public class MatchManager implements Runnable{
                 godCode = godGen.nextInt(numberOfGods);
             }
             given.add(godCode);
-            switch (godCode){
-                case 0:
-                    god = new Apollo();
-                    break;
-                case 1:
-                    god = new Artemis();
-                    break;
-                case 2:
-                    god = new Athena();
-                    break;
-                case 3:
-                    god = new Atlas();
-                    break;
-                case 4:
-                    god = new Demeter();
-                    break;
-                case 5:
-                    god = new Hephaestus();
-                    break;
-                case 6:
-                    god = new Minotaur();
-                    break;
-                case 7:
-                    god = new Pan();
-                    break;
-                case 8:
-                    god = new Prometheus();
-                    break;
-                case 9:
-                    god = new Hera();
-                    break;
-                case 10:
-                    god = new Hestia();
-                    break;
-                case 11:
-                    god = new Poseidon();
-                    break;
-                case 12:
-                    god = new Triton();
-                    break;
-                case 13:
-                    god = new Zeus();
-                    break;
-            }
+            god = godID(godCode);
             playerManager.setGod(god);
             CommunicationProxy CP = playerManager.getCommunicationProxy();
             intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
             CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+        }
+    }
+
+    public void giveGods(int id){
+        if(id == RANDOM_GODS){
+            giveGods();
+            return;
+        }
+        Random godGen = new Random();
+        God god = new Apollo();
+        //gives same god to every single player
+        for(PlayerManager playerManager : playerManagers){
+            int godCode = id;
+            god = godID(godCode);
+            playerManager.setGod(god);
+            CommunicationProxy CP = playerManager.getCommunicationProxy();
+            intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
+            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+            id++;
         }
     }
 
@@ -259,78 +253,29 @@ public class MatchManager implements Runnable{
         playerManagers.clear();
     }
 
-    /**
-     * give a god to each player, asking to the server with cli
-     * useful for testing gods
-     */
-    public void giveGodsTest(){
-        Scanner scanner = new Scanner(System.in);
-        God god = new Apollo();
-        String godCode = "apollo";
-        int i = 0;
-        for(PlayerManager playerManager : playerManagers){
-            i++;
-            System.out.println("Dio per il " + i + "-o giocatore");
-            godCode = scanner.nextLine();
-            switch (godCode){
-                case "apollo":
-                    god = new Apollo();
-                    break;
-                case "artemis":
-                    god = new Artemis();
-                    break;
-                case "athena":
-                    god = new Athena();
-                    break;
-                case "atlas":
-                    god = new Atlas();
-                    break;
-                case "demeter":
-                    god = new Demeter();
-                    break;
-                case "hephaestus":
-                    god = new Hephaestus();
-                    break;
-                case "minotaur":
-                    god = new Minotaur();
-                    break;
-                case "pan":
-                    god = new Pan();
-                    break;
-                case "prometheus":
-                    god = new Prometheus();
-                    break;
-                case "hera":
-                    god = new Hera();
-                    break;
-                case "hestia":
-                    god = new Hestia();
-                    break;
-                case "poseidon":
-                    god = new Poseidon();
-                    break;
-                case "triton":
-                    god = new Triton();
-                    break;
-                case "zeus":
-                    god = new Zeus();
-                    break;
-            }
-            playerManager.setGod(god);
-            CommunicationProxy CP = playerManager.getCommunicationProxy();
-            intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
-            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
-        }
-    }
+//    /**
+//     * give a god to each player, asking to the server with cli
+//     * useful for testing gods
+//     */
+//    public void giveGodsTest(){
+//        Scanner scanner = new Scanner(System.in);
+//        God god;
+//        String godCode ;
+//        int i = 0;
+//        for(PlayerManager playerManager : playerManagers){
+//            i++;
+//            System.out.println("Dio per il " + i + "-o giocatore");
+//            godCode = scanner.nextLine();
+//            god = godID(Integer.parseInt(godCode));
+//            playerManager.setGod(god);
+//            CommunicationProxy CP = playerManager.getCommunicationProxy();
+//            intermediaryClass.Broadcast(new Message(Message.MessageType.YOUR_GOD, CP.godDescription(god, playerManager.getPlayer().getName())));
+//            CP.sendMessage(Message.MessageType.GAME_START, playerManager.getPlayer().getIdPlayer());
+//        }
+//    }
 
-    public void setDisconnected(String name) {
-        this.disconnected = true;
-        this.disconnectedPlayer = Integer.parseInt(name);
-    }
 
-    public synchronized CommunicationProxy getDisconnectedProxy(){
-        if(disconnected)
-            return communicationProxies.get(disconnectedPlayer-1);
-        return null;
+    public ArrayList<PlayerManager> getPlayerManagers() {
+        return playerManagers;
     }
 }

@@ -8,12 +8,10 @@ import java.util.List;
  */
 public class Island {
     private Cell[][][] cells;
-    private ArrayList<Worker> workers;
 
     public Island()
     {
         cells= new Cell[5][5][4];
-        workers= new ArrayList<Worker>();
         for(int x=0; x<5; x++)
         {
             for(int y=0; y<5; y++)

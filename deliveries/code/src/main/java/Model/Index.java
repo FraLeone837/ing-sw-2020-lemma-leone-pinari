@@ -14,6 +14,11 @@ public class Index {
         this.y = y;
         this.z = z;
     }
+    public Index(int number){
+        this.x = number%5;
+        this.y = number/5;
+        this.z = 0;
+    }
 
     public int getX() {
         return x;

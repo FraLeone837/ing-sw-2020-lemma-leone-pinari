@@ -71,13 +71,12 @@ public class PlayerManager {
     }
 
 
-
     @Override
     public boolean equals(Object obj) {
         PlayerManager pmg = (PlayerManager) obj;
         Player thisOne = this.getPlayer();
         Player other = pmg.getPlayer();
-        if(thisOne.getName() == other.getName()) {
+        if(thisOne.getName() == other.getName()){
             return true;
         }
         return false;

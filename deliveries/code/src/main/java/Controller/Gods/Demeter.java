@@ -66,12 +66,6 @@ public class Demeter extends God {
         Index actualBuildIndex = correctIndex(match,tempBuildIndex);
         setPrevBuildIndex(new Index(actualBuildIndex.getX(), actualBuildIndex.getY(), actualBuildIndex.getZ()+1));
         match.build(worker, actualBuildIndex);
-//        Cell cell = match.selectCell(prevBuildIndex);
-//        ArrayList<Invisible> invisibles = cell.getForbidden();
-//        for (Invisible inv : invisibles) {
-//            if (inv instanceof ForbiddenConstruction && worker.getOwner() == inv.getCreator())
-//                inv.addWorker(worker);
-//        }
         possibleBuild = whereToBuild(match, worker, worker.getPosition());
         if(possibleBuild.contains(prevBuildIndex))
             possibleBuild.remove(prevBuildIndex);
@@ -90,52 +84,5 @@ public class Demeter extends God {
     }
 
 
-    public void turn(Match match, Worker worker,Index index1,Index index2,Index index3) {
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move the first time
-        match.moveWorker(worker, index1);
-        checkWin(match, worker);
-        //take index2 where to build
-        setPrevBuildIndex(index2);
-        match.build(worker, index2);
-        //ask to build another time
-        if(buildAgain){
-            Cell cell = match.selectCell(prevBuildIndex);
-            ArrayList<Invisible> invisibles = cell.getForbidden();
-            for (Invisible inv : invisibles) {
-                if (inv instanceof ForbiddenConstruction && worker.getOwner() == inv.getCreator())
-                    inv.addWorker(worker);
-            }
-            //take index3 where to build a second time
-            match.build(worker, index3);
-            setBuildAgain(false);
-//            resetPower(match,worker);
-        }
-    }
 
-
-
-//    @Override
-//    public void setup(Match match, Player player) {
-//        for(int x=0; x<5; x++){
-//            for(int y=0; y<5; y++){
-//                for(int z=0; z<4; z++){
-//                    Index index = new Index(x,y,z);
-//                    Invisible invisible = new ForbiddenConstruction(player);
-//                    match.buildInvisible(invisible, index);
-//                }
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void resetPower(Match match, Worker worker) {
-//        setBuildAgain(false);
-//        Cell cell = match.selectCell(prevBuildIndex);
-//        ArrayList<Invisible> invisibles = cell.getForbidden();
-//        for(Invisible inv : invisibles){
-//            if(inv instanceof ForbiddenConstruction && worker.getOwner()==inv.getCreator())
-//                inv.removeWorkers();
-//        }
-//    }
 }

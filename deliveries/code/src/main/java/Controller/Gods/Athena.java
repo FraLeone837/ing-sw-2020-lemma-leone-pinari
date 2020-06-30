@@ -52,16 +52,6 @@ public class Athena extends God {
             usePower(match, worker);
     }
 
-    public void turn(Match match, Worker worker, Index index1, Index index2) {
-        resetPower(match, worker);
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move from view
-        match.moveWorker(worker, index1);
-        checkWin(match, worker);
-        //take index2 where to build from view
-        match.build(worker, index2);
-        usePower(match, worker);
-    }
 
     @Override
     public void usePower(Match match, Worker worker){

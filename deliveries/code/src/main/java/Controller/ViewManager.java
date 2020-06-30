@@ -3,6 +3,7 @@ package Controller;
 import Controller.Communication.ClientHandler;
 import Controller.Communication.IntermediaryClass;
 import Controller.Communication.Message;
+import Model.Match;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -42,10 +43,6 @@ public class ViewManager
                 counter = counter + 1;
             } catch (IOException e) {
                 System.out.println("connection dropped");
-                if(iC.isAnyPlayerConnected()){
-                    iC.Broadcast(new Message(Message.MessageType.END_GAME, "Connection dropped from one player, game interrupted and finished"));
-                    iC.terminateGame();
-                }
             }
         }
     }

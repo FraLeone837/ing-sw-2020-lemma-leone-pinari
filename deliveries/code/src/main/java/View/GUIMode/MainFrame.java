@@ -23,7 +23,7 @@ public class MainFrame {
 
     public void show(){
         //frame.pack();
-        frame.setSize(500, 500);
+        frame.setSize(500, 650);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);

@@ -38,12 +38,11 @@ public class ClientHandler implements Runnable
     boolean inGame = true;
 
     private CommunicationProxy personalProxy;
-    //useless
-    private final Object currentLock = new Object();
 
     private String name;
 
     private final Object sendLock = new Object();
+    private boolean otherDisconnected = false;
 
     public void setName(String name) {
         this.name = name;
@@ -83,6 +82,10 @@ public class ClientHandler implements Runnable
         t.start();
     }
 
+    public void setOtherDisconnected(boolean didDisconnect){
+        this.otherDisconnected = didDisconnect;
+    }
+
 
     @Override
     public void run()
@@ -91,9 +94,14 @@ public class ClientHandler implements Runnable
             handleClientConnection();
         } catch (IOException e) {
             System.out.println("client " + client.getInetAddress() + " connection dropped -- clh" + this.getName());
-            this.personalProxy.getIC().getMatchManager().setDisconnected(this.name);
-            //calls every client and this.personalProxy to close their connections
             terminateGame();
+            IntermediaryClass iC = personalProxy.getIC();
+
+            if(!otherDisconnected){
+                System.out.println();
+                this.personalProxy.getIC().setDisconnected("Player"+this.name);
+            }
+            //calls every client and this.personalProxy to close their connections
             //closes thread
             System.out.println("Exiting from thread " + this.getName());
             return;
@@ -142,6 +150,8 @@ public class ClientHandler implements Runnable
                     output.writeObject(gson.toJson(toSendMsg));
 
                     if(toSendMsg.getType() == Message.MessageType.END_GAME) {
+                        if(debugging)
+                        System.out.println(ANSI_BLUE + "Closing client" + ANSI_RESET);
                         client.close();
                     }
                 }
@@ -170,16 +180,9 @@ public class ClientHandler implements Runnable
      * receives a local message that allows the game to terminate
      */
     public synchronized void terminateGame(){
-        this.currentMessage = new Message(END_GAME,"One player disconnected, game has been interrupted.");
+        this.toSendMsg = new Message(END_GAME,"One player disconnected, game has been interrupted.");
+        notifyAll();
         this.personalProxy.interruptGame(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
-    }
-
-    /**
-     * terminates game in case there has been a disconnection
-     * of one of the players
-     */
-    public void terminateGame(String cause){
-        this.personalProxy.interruptGame(Message.MessageType.END_GAME,"Player has been disconnected");
     }
 
     public String getName() {

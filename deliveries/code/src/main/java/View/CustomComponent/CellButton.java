@@ -10,9 +10,13 @@ public class CellButton extends JButton {
     private int worker;
 
     public CellButton(int val){
+        setBorderPainted(false);
+        setContentAreaFilled(false);
+        setFocusPainted(false);
         setBorder(null);
         setLayout(null);
         setBackground(null);
+        setOpaque(false);
 
         level = val % 10;
         worker = val / 10;
@@ -101,11 +105,16 @@ public class CellButton extends JButton {
         if(selectable){
             SwingUtilities.updateComponentTreeUI(this);
             setBackground(Color.yellow);
+            setOpaque(true);
         }
         else{
+            setBorderPainted(false);
+            setContentAreaFilled(false);
+            setFocusPainted(false);
             setBorder(null);
             setLayout(null);
             setBackground(null);
+            setOpaque(false);
         }
     }
     public void setSelected(){
