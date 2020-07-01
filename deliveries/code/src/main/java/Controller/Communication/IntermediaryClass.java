@@ -102,8 +102,8 @@ public class IntermediaryClass {
 
     /**
      * used to communicate with all 2/3 players of a game
-     * only after game has started <==> communication proxies is constant
-     * @param msg
+     * only after game has started which means that communication proxies is constant
+     * @param msg the message to be sent (no error messages)
      */
     public void Broadcast(Message msg){
         System.out.println("Broadcasting" + msg);
@@ -114,9 +114,9 @@ public class IntermediaryClass {
     }
 
     /**
-     * used to communicate with all 2/3 players of a game
-     * only after game has started <==> communication proxies is constant
-     * @param msg
+     * Used to send error messages to different players
+     * @param msg message to be communicated to every other communication proxy except the one disconnected
+     * @param disconnected is the reason of the game being interrupted (time-out/ disconnected user)
      */
     public void Broadcast(Message msg, String disconnected){
         System.out.println("Broadcasting" + msg);
@@ -151,7 +151,8 @@ public class IntermediaryClass {
 
     /**
      * adds a new comm proxy for matchManager to use
-     * @param communicationProxy
+     * @param communicationProxy the object to be added as new channel for the game to communicate with
+     *                           (or to be put into a waiting list so it is first in line to play the next game)
      */
     public synchronized void setCommunicationProxy(CommunicationProxy communicationProxy) {
 
@@ -169,7 +170,7 @@ public class IntermediaryClass {
 
     /**
      * removes a comm proxy. Called only by matchManager
-     * @param communicationProxy
+     * @param communicationProxy the communication proxy to be removed from the list (in case of loss/disconnection)
      */
     public void removeCommunicationProxy(CommunicationProxy communicationProxy) {
         synchronized (this){
@@ -192,7 +193,7 @@ public class IntermediaryClass {
 
     /**
      *
-     * @returns the communication proxy from which to call
+     * @return the communication proxy from which to call
      * and send messages to the client
      */
     public CommunicationProxy getNewCommunicationProxy(){

@@ -33,12 +33,15 @@ public class Timer implements Runnable {
     public synchronized void notifyWait(){
         myTurn = true;
         notifyAll();
+        System.out.println("called notify wait");
     }
 
     /**
      * notify that we received the message for which we were waiting
+     * @param currentSecond is the duration of the new time to wait before interrupting game
      */
     public synchronized void notifyReceived(int currentSecond){
+        System.out.println("Called notify received");
         myTurn = false;
         setCurrentSecond(currentSecond);
         notifyAll();
@@ -77,7 +80,13 @@ public class Timer implements Runnable {
 
 
     public void terminateGame(){
-        if(communicationProxy != null)
-        this.communicationProxy.interruptGame(Message.MessageType.END_GAME,"Connection timed-out");
+        if(communicationProxy != null){
+            System.out.println("No interrupt game");
+            this.communicationProxy.interruptGame(Message.MessageType.END_GAME,"Connection timed-out");
+            System.out.println("No send message");
+            this.communicationProxy.sendMessage(Message.MessageType.END_GAME, new Object(), "Connection timed-out");
+            System.out.println("No terminate game");
+            this.intermediaryClass.terminateGame();
+        }
     }
 }

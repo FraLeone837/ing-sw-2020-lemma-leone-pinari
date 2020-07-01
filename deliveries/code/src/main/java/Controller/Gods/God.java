@@ -51,7 +51,7 @@ public abstract class God {
 
     /**
      * this method manages the entire turn, from the movement of the worker to the building, taking into account god's power
-     *
+     * @param communicationProxy is the class (not null) with which the game interfaces with the other player and sends messages to
      * @param match the match that the server is managing
      * @param worker the worker selected by the player
      */
@@ -240,7 +240,9 @@ public abstract class God {
         return false;
     }
 
-    /**
+    /** checks win condition of the worker which has just been moved
+     * @param match not null
+     * @param worker not null
      * @return true if a winning condition is verified, taking the power of god into account
      */
     public Boolean checkWin(Match match, Worker worker){

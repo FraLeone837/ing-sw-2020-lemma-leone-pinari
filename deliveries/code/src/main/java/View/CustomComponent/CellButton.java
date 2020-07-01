@@ -110,7 +110,7 @@ public class CellButton extends JButton {
 
     /**
      * Add a border to the cell if there is a listener on it
-     * @param selectable
+     * @param selectable used to decide whether the cell can be clicked or not (so you can move/build on it)
      */
     public void setSelectable(boolean selectable){
         if(selectable){

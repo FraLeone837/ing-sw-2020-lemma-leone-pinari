@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    boolean debugging = false;
+    boolean debugging = true;
 
     private Socket client;
     private Message currentMessage;
@@ -60,7 +60,7 @@ public class ClientHandler implements Runnable
     /**
      * changes message to be sent and then notifies the main of client handler
      * which in turn writes the object in stream
-     * @param message
+     * @param message to be sent
      */
     public void setToSendMsg(Message message){
         synchronized (this){
@@ -182,15 +182,12 @@ public class ClientHandler implements Runnable
     public synchronized void terminateGame(){
         this.toSendMsg = new Message(END_GAME,"One player disconnected, game has been interrupted.");
         notifyAll();
-        this.personalProxy.interruptGame(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
+        this.personalProxy.interruptGame();
     }
 
     public String getName() {
         return "Player" + name;
     }
 
-    public CommunicationProxy getCommProxy(){
-        return personalProxy;
-    }
 }
 
