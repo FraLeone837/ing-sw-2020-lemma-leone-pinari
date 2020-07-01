@@ -1,10 +1,50 @@
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Player.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Cell.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\ForbiddenConstruction.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\ForbiddenWin.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Island.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Invisible.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\TEST.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\ForbiddenMove.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Match.java
-D:\Proggetti in Java\Thesis_Test\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Worker.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Invisible.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Demeter.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Apollo.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\Interfaces\ServerObserver.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Communication\Message.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Prometheus.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\UserInterface.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Atlas.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\ForbiddenConstruction.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\GUIMode\GuiPlayerManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\Interfaces\GameManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Communication\ClientHandler.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\Interfaces\PlayerManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\GUIMode\GuiMain.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Communication\MessageObservers.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Island.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\Client.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Player.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Athena.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Pan.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Cell.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\ForbiddenMove.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Hestia.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\MatchManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Communication\IntermediaryClass.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Minotaur.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\ViewManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\GUIMode\GameFrame.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Triton.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\GUIMode\MainFrame.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Zeus.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\CliMode\CliPlayerManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\ForbiddenWin.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\Communication\ServerAdapter.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\God.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\CustomComponent\TextInputPanel.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\PlayerManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Worker.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Hephaestus.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Communication\CommunicationProxy.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\CustomComponent\CellButton.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\CliMode\CliGameManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Hera.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Index.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Poseidon.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\GUIMode\GuiGameManager.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Model\Match.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Communication\Timer.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\View\CliMode\CliMain.java
+C:\Users\lioni\IdeaProjects\ing-sw-2020-lemma-leone-pinari\deliveries\code\src\main\java\Controller\Gods\Artemis.java
