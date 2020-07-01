@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="7" failures="0" name="ModelTest.PlayerTest" time="0" errors="0" skipped="0">
+<testsuite tests="7" failures="0" name="ModelTest.PlayerTest" time="0.004" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="java.vm.version" value="13.0.2+8"/>
@@ -64,8 +64,8 @@
   <testcase classname="ModelTest.PlayerTest" name="testGetIdPlayer_sameId_expectedEquals" time="0"/>
   <testcase classname="ModelTest.PlayerTest" name="testIdWorker2_sameId_expectedSame" time="0"/>
   <testcase classname="ModelTest.PlayerTest" name="testGetName_sameName_expectedEquals" time="0"/>
-  <testcase classname="ModelTest.PlayerTest" name="testIdWorker1_sameId_expectedEquals" time="0"/>
-  <testcase classname="ModelTest.PlayerTest" name="testIdWorker1_differentId_expectedNotEquals" time="0"/>
+  <testcase classname="ModelTest.PlayerTest" name="testIdWorker1_sameId_expectedEquals" time="0.001"/>
+  <testcase classname="ModelTest.PlayerTest" name="testIdWorker1_differentId_expectedNotEquals" time="0.001"/>
   <testcase classname="ModelTest.PlayerTest" name="testIdWorker2_differentId_expectedNotEquals" time="0"/>
-  <testcase classname="ModelTest.PlayerTest" name="testGetName_differentName_expectedNotEquals" time="0"/>
+  <testcase classname="ModelTest.PlayerTest" name="testGetName_differentName_expectedNotEquals" time="0.002"/>
 </testsuite>

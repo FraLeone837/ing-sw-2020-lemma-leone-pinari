@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="10" failures="0" name="ModelTest.WorkerTest" time="0" errors="0" skipped="0">
+<testsuite tests="10" failures="0" name="ModelTest.WorkerTest" time="0.002" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="java.vm.version" value="13.0.2+8"/>
@@ -65,10 +65,10 @@
   <testcase classname="ModelTest.WorkerTest" name="testBuild" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testMove" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testSetIdWorker_correctId_expectedEquals" time="0"/>
-  <testcase classname="ModelTest.WorkerTest" name="testSetPosition_differentPosition_expectedEquals" time="0"/>
+  <testcase classname="ModelTest.WorkerTest" name="testSetPosition_differentPosition_expectedEquals" time="0.001"/>
   <testcase classname="ModelTest.WorkerTest" name="testBuildDome" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testSetPosition_correctPosition_expectedEquals" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testSetOwner_incorrectOwner_expectedNotEquals" time="0"/>
-  <testcase classname="ModelTest.WorkerTest" name="testDelete" time="0"/>
+  <testcase classname="ModelTest.WorkerTest" name="testDelete" time="0.001"/>
   <testcase classname="ModelTest.WorkerTest" name="testSetIdWorker_incorrectId_expectedNotEquals" time="0"/>
 </testsuite>

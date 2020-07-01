@@ -82,7 +82,7 @@ public class Timer implements Runnable {
     public void terminateGame(){
         if(communicationProxy != null){
             System.out.println("No interrupt game");
-            this.communicationProxy.interruptGame(Message.MessageType.END_GAME,"Connection timed-out");
+            this.communicationProxy.interruptGame();
             System.out.println("No send message");
             this.communicationProxy.sendMessage(Message.MessageType.END_GAME, new Object(), "Connection timed-out");
             System.out.println("No terminate game");

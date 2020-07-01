@@ -61,14 +61,14 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="ModelTest.IndexTest" name="testGetY_sameY_expectedEquals" time="0"/>
-  <testcase classname="ModelTest.IndexTest" name="testToString" time="0.005"/>
+  <testcase classname="ModelTest.IndexTest" name="testGetY_sameY_expectedEquals" time="0.001"/>
+  <testcase classname="ModelTest.IndexTest" name="testToString" time="0.002"/>
   <testcase classname="ModelTest.IndexTest" name="testEquals_sameIndexes_expectedTrue" time="0"/>
   <testcase classname="ModelTest.IndexTest" name="testGetZ_sameZ_expectedEquals" time="0"/>
   <testcase classname="ModelTest.IndexTest" name="testEquals_differentClasses_expectedFalse" time="0"/>
   <testcase classname="ModelTest.IndexTest" name="testGetZ_differentZ_expectedNotEquals" time="0"/>
-  <testcase classname="ModelTest.IndexTest" name="testGetX_sameX_expectedEquals" time="0"/>
-  <testcase classname="ModelTest.IndexTest" name="testGetY_differentY_expectedNotEquals" time="0"/>
+  <testcase classname="ModelTest.IndexTest" name="testGetX_sameX_expectedEquals" time="0.001"/>
+  <testcase classname="ModelTest.IndexTest" name="testGetY_differentY_expectedNotEquals" time="0.001"/>
   <testcase classname="ModelTest.IndexTest" name="testEquals_differentIndexes_expectedFalse" time="0"/>
   <testcase classname="ModelTest.IndexTest" name="testGetX_differentX_expectedNotEquals" time="0"/>
 </testsuite>
