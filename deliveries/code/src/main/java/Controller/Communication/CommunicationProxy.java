@@ -117,7 +117,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         received.setType(Message.MessageType.YYY);
         waitForReceiveMessage(JOIN_GAME);
 
-        timer.notifyReceived(timeConstant);
+  //      timer.notifyReceived(timeConstant);
 
         while(true){
 
@@ -144,11 +144,11 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
             //sets msg toSend and notifies client handler
             clientHandler.setToSendMsg(toSend);
-            timer.notifyWait();
+//            timer.notifyWait();
 
             received.setType(YYY);
             waitForReceiveMessage();
-            timer.notifyReceived(timeConstant);
+          // timer.notifyReceived(timeConstant);
 
         }
 

@@ -27,6 +27,7 @@ public class UserInterface implements Runnable {
     private PlayerManager playerManager;
     Client client;
 
+    private boolean connected = false;
     private boolean inputUi = false;
     private boolean inputServer = false;
     Message messageIn;
@@ -107,9 +108,14 @@ public class UserInterface implements Runnable {
      * @param msg the messaged received
      */
     public synchronized void receivedServerInput(Message msg){
-        inputServer = true;
-        messageIn = msg;
-        notifyAll();
+        if(msg == null && !connected)
+            playerManager.getServerIp();
+        else {
+            connected = true;
+            inputServer = true;
+            messageIn = msg;
+            notifyAll();
+        }
     }
     /**
      * Method called by the PlayerManager when a new input is received

@@ -37,6 +37,7 @@ public class Client implements Runnable, ServerObserver
             server = new Socket(ip, SOCKET_PORT);
         } catch (IOException e) {
             System.out.println("server unreachable");
+            ui.receivedServerInput(null);
             return;
         }
         System.out.println("Connected");
