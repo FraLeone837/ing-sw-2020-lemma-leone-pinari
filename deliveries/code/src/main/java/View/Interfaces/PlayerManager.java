@@ -72,6 +72,7 @@ public interface PlayerManager {
     /**
      * Ask the player where to place his workers at the start of the game
      * @param firstWorker true if the player hasn't place any worker before
+     * @param possiblePositions all the possible positions enumerated from 0 to 24 (A0 is 0, A1 is 1, ... , E4 is 23, E5 is 24)
      */
     void placeWorker(boolean firstWorker, int[] possiblePositions);
 
@@ -102,6 +103,8 @@ public interface PlayerManager {
 
     /**
      * show the god's description and name
+     * @param god first index contains name of God, second index contains Its description
+     * @param owner is the name of the owner of the God.
      */
     void showGods(String[] god, String owner);
 
@@ -119,17 +122,26 @@ public interface PlayerManager {
 
     /**
      * shows whose turn it is
-     * @param object
+     * @param object the name of the player whose turn it is
      */
     void showTurn(String object);
 
     /**
      * shows request of get name
-     * @param object
+     * @param object is the question asked by the server
+     *               "what is your name"/"name is already being used"
      */
     void getName(String object);
 
+    /**
+     * asks if player wants to build with
+     * the other worker in certain conditions (Poseidon God power)
+     */
     void buildOtherWorker();
 
+    /**
+     * shows who just lost the game
+     * @param object loser of the game
+     */
     void printLoser(String object);
 }

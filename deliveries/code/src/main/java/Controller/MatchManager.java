@@ -63,8 +63,11 @@ public class MatchManager implements Runnable{
 
     /**
      * connect the players (2 or 3) and give a god to each of them
+     * @param godToChoose is used for tests, in which if godToChoose is equal to -1
+     *                    it will choose a random god (set by default for normal games) otherwise
+     *                    we can change it to a value from 0 to 14 to choose one god we decide.
      */
-    public void setupPlayers(int z){
+    public void setupPlayers(int godToChoose){
         ArrayList<String> names = new ArrayList<String>();
         //the first player connects
         CommunicationProxy firstCP = intermediaryClass.getNewCommunicationProxy();
@@ -94,7 +97,7 @@ public class MatchManager implements Runnable{
 
         //give gods to the players
         //giveGodsTest();
-        giveGods(z);
+        giveGods(godToChoose);
     }
 
     /**

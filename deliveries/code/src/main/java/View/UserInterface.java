@@ -44,7 +44,7 @@ public class UserInterface implements Runnable {
     /**
      * Initialize the Manager objects according to the Mode params
      * Make the client thread start
-     * @param mode
+     * @param mode (CLI - for cli mode or GUI-for graphical user interface mode)
      */
     public UserInterface(Mode mode){
         this.mode = mode;
@@ -114,6 +114,7 @@ public class UserInterface implements Runnable {
     /**
      * Method called by the PlayerManager when a new input is received
      * It notifies the thread of UserInterface to wake it up from the previous wait
+     * @param input what is received (never null)
      */
     public synchronized void receivedUiInput(Object input){
         if(messageOut.getType().equals(Message.MessageType.JOIN_GAME)){

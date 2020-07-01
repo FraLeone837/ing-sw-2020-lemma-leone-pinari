@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class Message {
     /**
      * creates copy
-     * @param received
+     * @param received is the message to be deep copied
      */
     public Message(Message received) {
         this.object = received.getObject();

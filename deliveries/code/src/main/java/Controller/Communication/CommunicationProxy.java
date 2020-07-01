@@ -11,12 +11,12 @@ import static Controller.Communication.Message.MessageType.*;
 /**
  * to be called from every matchManager as a way to send and successively receive messages
  * from client-side
- * uses observer & observable design pattern
+ * uses observer and observable design pattern
  */
 public class CommunicationProxy implements Runnable, MessageObservers {
     //counts the time since last message
     private static Timer timer;
-    private static int timeConstant = 10;
+    private static int timeConstant = 120;
 
     private boolean debugging = true;
 
@@ -97,7 +97,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
     @Override
     public void run() {
-        this.timer = new Timer(timeConstant, ic, this);
+//        this.timer = new Timer(timeConstant, ic, this);
         handleConnection();
     }
 
@@ -110,8 +110,8 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      * or when a message is received and forwards it to matchManager
      */
     private synchronized void handleConnection(){
-        Thread t = new Thread(timer);
-        t.start();
+//        Thread t = new Thread(timer);
+//        t.start();
         if(ic != null)
         ic.setCommunicationProxy(this);
         received.setType(Message.MessageType.YYY);
@@ -361,6 +361,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     /**
      * return the NAME in first cell and GOD DESCRIPTION in second cell
      * @param god not null, god of this player
+     * @param name is the name of the owner of the God
      * @return not null
      */
     public String[] godDescription(God god, String name){
@@ -379,10 +380,10 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
 
     /**
-     * method called when timeconstant seconds have
+     * method called when this.timeconstant seconds have
      * passed or connection has been dropped
      */
-    public void interruptGame(Message.MessageType messageType, String cause){
+    public void interruptGame(){
         if(debugging)
         System.out.println(ANSI_RED + "Interrupting Game");
 //            //inform all other players that they have been disconnected

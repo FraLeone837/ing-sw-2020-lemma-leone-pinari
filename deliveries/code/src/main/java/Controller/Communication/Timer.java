@@ -38,6 +38,7 @@ public class Timer implements Runnable {
 
     /**
      * notify that we received the message for which we were waiting
+     * @param currentSecond is the duration of the new time to wait before interrupting game
      */
     public synchronized void notifyReceived(int currentSecond){
         System.out.println("Called notify received");

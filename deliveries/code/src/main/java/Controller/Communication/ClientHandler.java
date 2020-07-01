@@ -60,7 +60,7 @@ public class ClientHandler implements Runnable
     /**
      * changes message to be sent and then notifies the main of client handler
      * which in turn writes the object in stream
-     * @param message
+     * @param message to be sent
      */
     public void setToSendMsg(Message message){
         synchronized (this){
@@ -182,7 +182,7 @@ public class ClientHandler implements Runnable
     public synchronized void terminateGame(){
         this.toSendMsg = new Message(END_GAME,"One player disconnected, game has been interrupted.");
         notifyAll();
-        this.personalProxy.interruptGame(Message.MessageType.END_GAME,"One player disconnected, game has been interrupted.");
+        this.personalProxy.interruptGame();
     }
 
     public String getName() {
