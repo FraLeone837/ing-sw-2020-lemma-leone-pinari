@@ -57,6 +57,11 @@ public interface PlayerManager {
     void getName();
 
     /**
+     * Once the name is validated by the server, it is stored in the player manager
+     * @param name the name given and validated
+     */
+    void setName(String name);
+    /**
      * Print the list of all the matches that the player can join
      * @param ids the ArrayList with the ids of all the matches
      * @return the id of the match that the player has choosen to join
