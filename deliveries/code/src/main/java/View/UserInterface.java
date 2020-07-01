@@ -65,6 +65,7 @@ public class UserInterface implements Runnable {
                     mainFrame.setPlayerManagerPanel(((GuiPlayerManager)playerManager).getPanel());
                     mainFrame.setTopGameManagerPanel(((GuiPlayerManager)playerManager).getInfoPanel());
                     mainFrame.setBottomGameManagerPanel(((GuiGameManager)gameManager).getPanel());
+                    mainFrame.setGodLayout(((GuiPlayerManager)playerManager).getGodPanel());
                     mainFrame.show();
                 }
             });
@@ -166,8 +167,7 @@ public class UserInterface implements Runnable {
                     break;
                 /* THESE RETURN A SIGNAL */
                 case GET_NAME:
-                    if(mode == Mode.CLI)
-                        ((CliPlayerManager)playerManager).setName((String)input);
+                    playerManager.setName((String)input);
                     name = (String)input;
                     break;
                 default:
@@ -257,8 +257,7 @@ public class UserInterface implements Runnable {
                 god[0] = ((ArrayList<String>) msg.getObject()).get(0);
                 god[1] = ((ArrayList<String>) msg.getObject()).get(1);
                 owner = ((ArrayList<String>) msg.getObject()).get(2);
-                if(owner.equals(name))
-                    gameManager.showGod(god);
+                gameManager.showGod(god);
                 playerManager.showGods(god,owner);
                 receivedUiInput(messageOut);
                 break;

@@ -15,6 +15,8 @@ public class GuiPlayerManager implements PlayerManager {
 
     private JPanel panel;
     private JPanel infoPanel;
+    private JPanel godPanel;
+
     private JLabel infoLabel;
     private String input;
     private CellButton[] cells;
@@ -23,10 +25,16 @@ public class GuiPlayerManager implements PlayerManager {
     private int idFirstWorker;
     private String godName;
     private String godDescription;
+    private int howManyGodsShown = 0;
+    private boolean isEveryInputValid = true;
+
+    private String name;
 
     public GuiPlayerManager(UserInterface ui){
         panel = new JPanel();
         infoPanel = new JPanel();
+        godPanel = new JPanel();
+        godPanel.setLayout(new GridLayout(3,2));
         infoPanel.setSize(500, 60);
         infoLabel = new JLabel(" ");
         this.ui = ui;
@@ -41,12 +49,16 @@ public class GuiPlayerManager implements PlayerManager {
     public void getName() {
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
     public void setIdFirstWorker(int idFirstWorker) {
         this.idFirstWorker = idFirstWorker;
     }
 
     @Override
     public void chooseNumberPlayers() {
+        isEveryInputValid = false;
         prepareTextInputPanel(LABEL_NUMBER_PLAYERS);
     }
 
@@ -151,6 +163,37 @@ public class GuiPlayerManager implements PlayerManager {
     @Override
     public void showGods(String[] god, String owner) {
 
+        String godName = god[0];
+
+        ImageIcon image = new ImageIcon(getClass().getResource("/godCards/"+godName+".png"));
+        Image scaledImg = image.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        JLabel godLabel = new JLabel(new ImageIcon(scaledImg));
+        godPanel.add(godLabel);
+
+        String godDescription = god[1];
+        godDescription = godDescription.replaceAll("\n", "<br>");
+        System.out.println(godDescription);
+        JLabel l;
+        if(this.name.equals(owner.toUpperCase()))
+            l = new JLabel("<html>"+LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription+"</html>");
+        else
+            l = new JLabel("<html>"+owner+"'s God is:" + godName + LABEL_YOUR_GOD_DESC + godDescription+"</html>");
+        switch(howManyGodsShown){
+            case 0:
+                l.setForeground(Color.blue);
+                break;
+            case 1:
+                l.setForeground(Color.green);
+                break;
+            case 2:
+                l.setForeground(Color.red);
+                break;
+        }
+        godPanel.add(l);
+
+
+        howManyGodsShown++;
+        SwingUtilities.updateComponentTreeUI(godPanel);
     }
 
     @Override
@@ -210,6 +253,9 @@ public class GuiPlayerManager implements PlayerManager {
     }
     public JPanel getInfoPanel() {
         return infoPanel;
+    }
+    public JPanel getGodPanel() {
+        return godPanel;
     }
 
     private void prepareTextInputPanel(String labelText){
@@ -285,7 +331,9 @@ public class GuiPlayerManager implements PlayerManager {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            textInput(tf.getText());
+            String input = tf.getText();
+            if(isEveryInputValid || Integer.parseInt(input)==2 || Integer.parseInt(input)==3)
+                textInput(tf.getText());
 
         }
     }

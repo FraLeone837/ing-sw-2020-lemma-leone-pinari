@@ -2,72 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f9499d06-4555-4b26-a23e-da8653dd9100" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Aphrodite.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Apollo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Ares.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Artemis.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Athena.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Atlas.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Bia.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Chaos.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Charon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Chronus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Circe.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Demeter.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Dionysus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Eros.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Hephaestus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Hera.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Hermes.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Hestia.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Hypnus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Limus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Medusa.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Minotaur.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Morpheus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Pan.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Persephone.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Poseidon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Prometheus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Selene.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Triton.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/Zeus.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/Controller/Communication/CommunicationProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/Controller/Communication/CommunicationProxy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/Controller/Communication/Timer.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/Controller/Communication/Timer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/GameFrame.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/GuiGameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/GuiGameManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/GuiPlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/GuiPlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/GUIMode/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/Interfaces/PlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/Interfaces/PlayerManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/deliveries/code/src/main/java/View/UserInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/01.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/02.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/03.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/04.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/05.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/06.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/07.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/08.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/09.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/11.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/12.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/13.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/14.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/15.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/16.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/17.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/18.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/19.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/20.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/21.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/23.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/24.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/25.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/26.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/27.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/28.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/29.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deliveries/code/src/main/resources/godCards/30.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,7 +131,7 @@
       <workItem from="1593469557250" duration="662000" />
       <workItem from="1593551789347" duration="1882000" />
       <workItem from="1593596237482" duration="16012000" />
-      <workItem from="1593635268783" duration="3044000" />
+      <workItem from="1593635268783" duration="7040000" />
     </task>
     <task id="LOCAL-00001" summary="Build dome added client side">
       <created>1589540064104</created>
@@ -297,7 +238,14 @@
       <option name="project" value="LOCAL" />
       <updated>1593636719442</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Refused invalid ip&#10;Added player god image">
+      <created>1593638599401</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1593638599401</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -328,7 +276,8 @@
     <MESSAGE value="Fixed gods description&#10;JOptionPanes added&#10;Fixed labels&#10;Buttons borders added" />
     <MESSAGE value="Fixed movement of one worker&#10;Fixed background on Windows" />
     <MESSAGE value="Waiting messages&#10;Updated GUI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Waiting messages&#10;Updated GUI" />
+    <MESSAGE value="Refused invalid ip&#10;Added player god image" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refused invalid ip&#10;Added player god image" />
   </component>
   <component name="WindowStateProjectService">
     <state x="523" y="270" key="#Notifications" timestamp="1590165390345">
@@ -343,44 +292,48 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="453" y="113" key="#com.intellij.ide.util.MemberChooser/0.0.1280.800@0.0.1280.800" timestamp="1592600548051" />
-    <state x="147" y="0" key="CommitChangelistDialog2" timestamp="1593636718264">
+    <state x="691" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1593641520815">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="691" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593641520815" />
+    <state x="147" y="0" key="CommitChangelistDialog2" timestamp="1593638597791">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="98" y="0" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1592693532246" />
-    <state x="147" y="0" key="CommitChangelistDialog2/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593636718264" />
+    <state x="147" y="0" key="CommitChangelistDialog2/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593638597791" />
     <state x="655" y="299" key="FileChooserDialogImpl" timestamp="1593033485225">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="655" y="299" key="FileChooserDialogImpl/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593033485225" />
-    <state width="1878" height="269" key="GridCell.Tab.0.bottom" timestamp="1593638485602">
+    <state width="1878" height="269" key="GridCell.Tab.0.bottom" timestamp="1593642227568">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1238" height="164" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1592734154076" />
-    <state width="1878" height="269" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593638485602" />
+    <state width="1878" height="269" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593642227568" />
     <state width="1238" height="652" key="GridCell.Tab.0.bottom/0.23.1280.716@0.23.1280.716" timestamp="1590247691022" />
     <state width="1238" height="167" key="GridCell.Tab.0.bottom/0.23.1280.721@0.23.1280.721" timestamp="1590849367935" />
     <state width="1238" height="167" key="GridCell.Tab.0.bottom/0.23.1280.728@0.23.1280.728" timestamp="1590510340332" />
-    <state width="1878" height="269" key="GridCell.Tab.0.center" timestamp="1593638485602">
+    <state width="1878" height="269" key="GridCell.Tab.0.center" timestamp="1593642227568">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1238" height="164" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1592734154075" />
-    <state width="1878" height="269" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593638485602" />
+    <state width="1878" height="269" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593642227568" />
     <state width="1238" height="652" key="GridCell.Tab.0.center/0.23.1280.716@0.23.1280.716" timestamp="1590247691021" />
     <state width="1238" height="167" key="GridCell.Tab.0.center/0.23.1280.721@0.23.1280.721" timestamp="1590849367934" />
     <state width="1238" height="167" key="GridCell.Tab.0.center/0.23.1280.728@0.23.1280.728" timestamp="1590510340330" />
-    <state width="1878" height="269" key="GridCell.Tab.0.left" timestamp="1593638485602">
+    <state width="1878" height="269" key="GridCell.Tab.0.left" timestamp="1593642227568">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1238" height="164" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1592734154074" />
-    <state width="1878" height="269" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593638485602" />
+    <state width="1878" height="269" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593642227568" />
     <state width="1238" height="652" key="GridCell.Tab.0.left/0.23.1280.716@0.23.1280.716" timestamp="1590247691021" />
     <state width="1238" height="167" key="GridCell.Tab.0.left/0.23.1280.721@0.23.1280.721" timestamp="1590849367933" />
     <state width="1238" height="167" key="GridCell.Tab.0.left/0.23.1280.728@0.23.1280.728" timestamp="1590510340329" />
-    <state width="1878" height="269" key="GridCell.Tab.0.right" timestamp="1593638485602">
+    <state width="1878" height="269" key="GridCell.Tab.0.right" timestamp="1593642227568">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1238" height="164" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1592734154076" />
-    <state width="1878" height="269" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593638485602" />
+    <state width="1878" height="269" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593642227568" />
     <state width="1238" height="652" key="GridCell.Tab.0.right/0.23.1280.716@0.23.1280.716" timestamp="1590247691022" />
     <state width="1238" height="167" key="GridCell.Tab.0.right/0.23.1280.721@0.23.1280.721" timestamp="1590849367935" />
     <state width="1238" height="167" key="GridCell.Tab.0.right/0.23.1280.728@0.23.1280.728" timestamp="1590510340331" />
@@ -412,11 +365,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="462" y="163" key="SettingsEditor/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593635348773" />
-    <state x="360" y="182" key="Vcs.Push.Dialog.v2" timestamp="1593636721552">
+    <state x="360" y="182" key="Vcs.Push.Dialog.v2" timestamp="1593638603470">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="240" y="140" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1592693534297" />
-    <state x="360" y="182" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593636721552" />
+    <state x="360" y="182" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593638603470" />
     <state x="705" y="483" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1592736403989">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -434,6 +387,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="385" y="141" key="new project wizard/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593423141871" />
+    <state x="619" y="242" key="run.anything.popup" timestamp="1593642026309">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="619" y="242" key="run.anything.popup/0.0.1920.1040/-1920.240.1920.1040@0.0.1920.1040" timestamp="1593642026309" />
     <state x="305" y="124" width="670" height="676" key="search.everywhere.popup" timestamp="1592598733651">
       <screen x="0" y="0" width="1280" height="800" />
     </state>

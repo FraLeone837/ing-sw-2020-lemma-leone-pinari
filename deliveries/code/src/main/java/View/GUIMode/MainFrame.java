@@ -20,10 +20,13 @@ public class MainFrame {
     public void setBottomGameManagerPanel(JPanel panel){
         frame.add(panel, BorderLayout.SOUTH);
     }
+    public void setGodLayout(JPanel panel){
+        frame.add(panel, BorderLayout.EAST);
+    }
 
     public void show(){
         //frame.pack();
-        frame.setSize(500, 650);
+        frame.setSize(1100, 650);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
