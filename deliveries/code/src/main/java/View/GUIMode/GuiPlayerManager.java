@@ -60,19 +60,6 @@ public class GuiPlayerManager implements PlayerManager {
         gridPanel.setLayout(new GridLayout(5, 5));
         for(int i=0; i<25; i++){
             cells[i] = new CellButton(val[i]);
-            /*
-            cells[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            System.out.println("lol");
-                            setUpMap(val);
-                        }
-                    });
-                }
-            });*/
             gridPanel.add(cells[i]);
         }
         gridPanel.setLocation(0, 0);
