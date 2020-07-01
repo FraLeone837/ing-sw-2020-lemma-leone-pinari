@@ -29,6 +29,7 @@ public class GuiGameManager implements GameManager {
         panel.removeAll();
         JLabel l = new JLabel("Corrispondere iniziare");
         panel.add(l);
+        SwingUtilities.updateComponentTreeUI(panel);
     }
 
     @Override
@@ -44,17 +45,11 @@ public class GuiGameManager implements GameManager {
     @Override
     public void showGod(String[] god) {
         panel.removeAll();
-        panel.setLayout(new GridLayout());
+        //panel.setLayout(new GridLayout());
         String godName = god[0];
         String godDescription = god[1];
         godDescription = godDescription.replaceAll("\n", "<br>");
         System.out.println(godDescription);
-        /*JTextArea ta = new JTextArea(LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription);
-        ta.setEditable(false);
-        ta.setLineWrap(true);
-        ta.setOpaque(false);
-        ta.setBorder(BorderFactory.createEmptyBorder());
-        panel.add(ta);*/
         JLabel l = new JLabel("<html>"+LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription+"</html>");
         panel.add(l);
         SwingUtilities.updateComponentTreeUI(panel);

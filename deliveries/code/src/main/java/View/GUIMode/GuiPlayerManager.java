@@ -310,10 +310,8 @@ public class GuiPlayerManager implements PlayerManager {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            //cellInput(cellNumber);
             ui.receivedUiInput(cellNumber);
-            prepareUpperText("");
-            System.out.println(cellNumber);
+            prepareUpperText("Waiting...");
             removeCellListeners();
         }
     }
