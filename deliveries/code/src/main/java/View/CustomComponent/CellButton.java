@@ -3,6 +3,7 @@ package View.CustomComponent;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.io.IOException;
 
 public class CellButton extends JButton {
 
@@ -37,7 +38,7 @@ public class CellButton extends JButton {
     private void setDome(){
         ImageIcon image;
         Image scaledImg;
-        image = new ImageIcon(getClass().getResource("/Placeholder/dome.png"));
+        image = new ImageIcon(getClass().getResource("/Buildings/Dome.png"));
         scaledImg = image.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         JLabel dome = new JLabel(new ImageIcon(scaledImg));
         dome.setBounds(40, 40, 20, 20);
@@ -52,14 +53,24 @@ public class CellButton extends JButton {
     private void setWorker(){
         ImageIcon image;
         Image scaledImg;
-        JLabel workerIdLabel = new JLabel(Integer.toString(worker));
+        /*JLabel workerIdLabel = new JLabel(Integer.toString(worker));
+        Font font = null;
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LillyBelle.ttf"));
+            Font biggerFont = font.deriveFont(Font.BOLD, 20f);
+            workerIdLabel.setFont(biggerFont);
+        } catch (FontFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         workerIdLabel.setForeground(Color.white);
-        workerIdLabel.setBounds(40, 40, 20, 20);
-        add(workerIdLabel);
-        image = new ImageIcon(getClass().getResource("/Placeholder/worker.png"));
-        scaledImg = image.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        workerIdLabel.setBounds(45, 40, 20, 20);
+        add(workerIdLabel);*/
+        image = new ImageIcon(getClass().getResource("/Worker/player"+((worker-1)/2)+".png"));
+        scaledImg = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         JLabel workerLabel = new JLabel(new ImageIcon(scaledImg));
-        workerLabel.setBounds(40, 40, 20, 20);
+        workerLabel.setBounds(20, 20, 60, 60);
         add(workerLabel);
     }
 
@@ -68,19 +79,19 @@ public class CellButton extends JButton {
         Image scaledImg;
         switch (level){
             case 3:
-                image = new ImageIcon(getClass().getResource("/Placeholder/building3.png"));
+                image = new ImageIcon(getClass().getResource("/Buildings/BuildingBlock03.png"));
                 scaledImg = image.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
                 JLabel buildingThirdLevel = new JLabel(new ImageIcon(scaledImg));
                 buildingThirdLevel.setBounds(30, 30, 40, 40);
                 add(buildingThirdLevel);
             case 2:
-                image = new ImageIcon(getClass().getResource("/Placeholder/building2.png"));
+                image = new ImageIcon(getClass().getResource("/Buildings/BuildingBlock02.png"));
                 scaledImg = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
                 JLabel buildingSecondLevel = new JLabel(new ImageIcon(scaledImg));
                 buildingSecondLevel.setBounds(20, 20, 60, 60);
                 add(buildingSecondLevel);
             case 1:
-                image = new ImageIcon(getClass().getResource("/Placeholder/building1.png"));
+                image = new ImageIcon(getClass().getResource("/Buildings/BuildingBlock01.png"));
                 scaledImg = image.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
                 JLabel buildingFirstLevel = new JLabel(new ImageIcon(scaledImg));
                 buildingFirstLevel.setBounds(10, 10, 80, 80);

@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class GuiPlayerManager implements PlayerManager {
 
@@ -196,7 +197,7 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void getName(String object) {
-        prepareTextInputPanel(LABEL_USERNAME);
+        prepareTextInputPanel(object);
 
     }
 
@@ -212,7 +213,9 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void printLoser(String object) {
-
+        SwingUtilities.invokeLater(() -> {
+            prepareUpperText(object.toUpperCase() + LABEL_OTHER_PLAYER_LOST);
+        });
     }
 
     public JPanel getPanel() {
@@ -228,6 +231,16 @@ public class GuiPlayerManager implements PlayerManager {
             public void run() {
                 panel.removeAll();
                 JLabel label = new JLabel(labelText);
+                Font font = null;
+                try {
+                    font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LillyBelle.ttf"));
+                    Font biggerFont = font.deriveFont(Font.BOLD, 12f);
+                    label.setFont(biggerFont);
+                } catch (FontFormatException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 panel.add(label);
                 JTextField tf = new JTextField(10);
                 panel.add(tf);
@@ -256,6 +269,12 @@ public class GuiPlayerManager implements PlayerManager {
 
     private void textInput(String input){
         this.input = input;
+        SwingUtilities.invokeLater(() -> {
+            panel.removeAll();
+            JLabel label = new JLabel("Waiting...");
+            panel.add(label);
+            SwingUtilities.updateComponentTreeUI(panel);
+        });
         ui.receivedUiInput(input);
     }
 /*
@@ -280,6 +299,7 @@ public class GuiPlayerManager implements PlayerManager {
         @Override
         public void actionPerformed(ActionEvent e) {
             textInput(tf.getText());
+
         }
     }
 
