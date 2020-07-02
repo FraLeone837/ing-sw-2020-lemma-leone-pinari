@@ -51,6 +51,10 @@ public interface PlayerManager {
      */
     void getServerIp();
 
+    /**
+     * Ask the user the username it wants to use
+     */
+    void getName();
 
     /**
      * Once the name is validated by the server, it is stored in the player manager

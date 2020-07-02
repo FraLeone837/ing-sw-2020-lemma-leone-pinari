@@ -136,6 +136,12 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         isEveryInputValid = true;
     }
 
+    @Override
+    public void getName() {
+        System.out.println(LABEL_USERNAME);
+        isEveryInputValid = true;
+    }
+
 
     @Override
     public void chooseNumberPlayers() {
