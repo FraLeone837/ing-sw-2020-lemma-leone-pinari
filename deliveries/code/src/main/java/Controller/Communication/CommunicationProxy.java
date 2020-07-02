@@ -57,7 +57,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         if(!acceptInput)
             received.setType(Message.MessageType.YYY);
     }
-    public synchronized void receivedMessage(Message msg) {
+    private synchronized void receivedMessage(Message msg) {
         received = msg;
         notifyAll();
         if(!acceptInput)
@@ -101,7 +101,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         handleConnection();
     }
 
-    public synchronized void removeIntermediaryClass(){
+    synchronized void removeIntermediaryClass(){
         this.ic = null;
     }
 
@@ -186,15 +186,14 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      * @return right value of the answer (index/int for the worker/string for the name)
      */
     public Object sendMessage(Message.MessageType messageType, Object toSend){
-        /**
-         * stops execution while
-         * we have not yet received a message
-         * sets waiting to receive to true and gets lock
+        /*
+          stops execution while
+          we have not yet received a message
+          sets waiting to receive to true and gets lock
          */
         canSendMessage();
-        /**
-         * prepare to send a message
-         */
+
+        //prepare to send a message
         synchronized (this){
 
             //converts gameSideMessage a.k.a toSend into a certain message type
@@ -204,7 +203,6 @@ public class CommunicationProxy implements Runnable, MessageObservers {
             notifyAll();
             if(debugging)
                 System.out.println("What Comm proxy sent: "+ messageType + "  " + this.clientHandler);
-//        }
 
         Message copy;
         if(messageType == END_GAME){
@@ -213,10 +211,8 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         }
 
 
-        /**
-         * prepare to receive message
-         */
-//        synchronized (this){
+
+            //prepare to receive message
             if(debugging)
                 System.out.println("Comm proxy waiting for response for " + messageType);
             while(received.getType() != messageType){
@@ -243,7 +239,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
     private void canSendMessage() {
         synchronized (this){
-            while(isWaitingToReceive == true || disconnected){
+            while(isWaitingToReceive || disconnected){
                 if(debugging)
                 System.out.println("asking if i can send message");
                 try{
@@ -275,11 +271,9 @@ public class CommunicationProxy implements Runnable, MessageObservers {
                 int toReturnx = ((Double)copy.getObject()).intValue();
                 return convertFromIntToIndex(toReturnx);
             case NUMBER_PLAYERS:
-                int toReturn = ((Double)copy.getObject()).intValue();
-                return toReturn;
+                return ((Double)copy.getObject()).intValue();
             case MOVEMENT:
-                int toReturny = ((Double)copy.getObject()).intValue() % 2;
-                return toReturny;
+                return ((Double)copy.getObject()).intValue() % 2;
             default:
                 return copy.getObject();
 
@@ -324,8 +318,8 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
     /**
      * orders any index into a number of 0-24
-     * @param number
-     * @return
+     * @param number from 0-24
+     * @return an index converted to the right width and length (x,y)
      */
     private Object convertFromIntToIndex(int number) {
         int x = number % 5;
@@ -347,6 +341,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
     /**
      * converts all indexes to an array of ints from 0-24 which are the cells
      * @param toSend not null, might contain null
+     * @return list of integers
      */
     private int[] convertFromIndexToInts(Index[] toSend) {
         int[] zzz = new int[toSend.length];
@@ -374,7 +369,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
 
 
-    public ClientHandler getClientHandler() {
+    ClientHandler getClientHandler() {
         return clientHandler;
     }
 
@@ -383,7 +378,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      * method called when this.timeconstant seconds have
      * passed or connection has been dropped
      */
-    public void interruptGame(){
+    void interruptGame(){
         if(debugging)
         System.out.println(ANSI_RED + "Interrupting Game");
 //            //inform all other players that they have been disconnected
@@ -403,11 +398,11 @@ public class CommunicationProxy implements Runnable, MessageObservers {
             System.out.println("Done" + ANSI_RESET);
     }
 
-    public IntermediaryClass getIC() {
+    IntermediaryClass getIC() {
         return ic;
     }
 
-    public void setDisconnected(boolean disconnected){
+    private void setDisconnected(boolean disconnected){
         this.disconnected = disconnected;
         synchronized (this){
             notifyAll();

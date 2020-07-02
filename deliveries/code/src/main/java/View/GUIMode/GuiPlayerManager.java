@@ -18,9 +18,7 @@ public class GuiPlayerManager implements PlayerManager {
     private JPanel godPanel;
 
     private JLabel infoLabel;
-    private String input;
     private CellButton[] cells;
-    //private int[] validCells;
     private UserInterface ui;
     private int idFirstWorker;
     private String godName;
@@ -34,7 +32,7 @@ public class GuiPlayerManager implements PlayerManager {
         panel = new JPanel();
         infoPanel = new JPanel();
         godPanel = new JPanel();
-        godPanel.setLayout(new GridLayout(3,2));
+        godPanel.setLayout(new GridLayout(3,1));
         infoPanel.setSize(500, 60);
         infoLabel = new JLabel(" ");
         this.ui = ui;
@@ -46,12 +44,10 @@ public class GuiPlayerManager implements PlayerManager {
     }
 
     @Override
-    public void getName() {
-    }
-
     public void setName(String name) {
         this.name = name;
     }
+    @Override
     public void setIdFirstWorker(int idFirstWorker) {
         this.idFirstWorker = idFirstWorker;
     }
@@ -62,6 +58,10 @@ public class GuiPlayerManager implements PlayerManager {
         prepareTextInputPanel(LABEL_NUMBER_PLAYERS);
     }
 
+    /**
+     * Set up the map on the GUI
+     * @param val the island state given by the server
+     */
     public void setUpMap(int val[]){
         SwingUtilities.updateComponentTreeUI(panel);
         panel.removeAll();
@@ -96,8 +96,8 @@ public class GuiPlayerManager implements PlayerManager {
                     prepareUpperText(LABEL_FIRST_WORKER);
                 else
                     prepareUpperText(LABEL_SECOND_WORKER);
-                for(int i=0; i<possiblePositions.length; i++){
-                    cells[possiblePositions[i]].addActionListener(new CellListener(possiblePositions[i]));
+                for (int possiblePosition : possiblePositions) {
+                    cells[possiblePosition].addActionListener(new CellListener(possiblePosition));
                 }
             }
         });
@@ -134,6 +134,11 @@ public class GuiPlayerManager implements PlayerManager {
         prepareCellInput(LABEL_CHOOSE_WHERE_TO_BUILD, buildings);
     }
 
+    /**
+     * Method that prepares the map for an input on the cell (selecting a worker, moving, building)
+     * @param msg the string to print on screen to tell the player what to do
+     * @param moves the consented cells that can be clicked
+     */
     private void prepareCellInput(String msg, int[] moves){
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -142,9 +147,9 @@ public class GuiPlayerManager implements PlayerManager {
                 for(int i=0; i<25; i++){
                     cells[i].setSelectable(false);
                 }
-                for(int i=0; i<moves.length; i++){
-                    cells[moves[i]].setSelectable(true);
-                    cells[moves[i]].addActionListener(new CellListener(moves[i]));
+                for (int move : moves) {
+                    cells[move].setSelectable(true);
+                    cells[move].addActionListener(new CellListener(move));
                 }
             }
         });
@@ -163,16 +168,17 @@ public class GuiPlayerManager implements PlayerManager {
     @Override
     public void showGods(String[] god, String owner) {
 
+        JPanel thisGod = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
         String godName = god[0];
 
         ImageIcon image = new ImageIcon(getClass().getResource("/godCards/"+godName+".png"));
         Image scaledImg = image.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         JLabel godLabel = new JLabel(new ImageIcon(scaledImg));
-        godPanel.add(godLabel);
+        thisGod.add(godLabel);
 
         String godDescription = god[1];
         godDescription = godDescription.replaceAll("\n", "<br>");
-        System.out.println(godDescription);
         JLabel l;
         if(this.name.equals(owner.toUpperCase()))
             l = new JLabel("<html>"+LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription+"</html>");
@@ -189,7 +195,8 @@ public class GuiPlayerManager implements PlayerManager {
                 l.setForeground(Color.red);
                 break;
         }
-        godPanel.add(l);
+        thisGod.add(l);
+        godPanel.add(thisGod);
 
 
         howManyGodsShown++;
@@ -220,6 +227,10 @@ public class GuiPlayerManager implements PlayerManager {
             ui.receivedUiInput("NO");
     }
 
+    /**
+     * UNUSED ON GUI
+     * @param object the name of the player whose turn it is
+     */
     @Override
     public void showTurn(String object) {
 
@@ -248,42 +259,53 @@ public class GuiPlayerManager implements PlayerManager {
         });
     }
 
+    /**
+     * Getter for the main panel (contening either the text input panel or the island)
+     * @return the main panel
+     */
     public JPanel getPanel() {
         return panel;
     }
+
+    /**
+     * Getter for the upper panel that gives to the player infos on what's happening/what it has to do
+     * @return the info panel
+     */
     public JPanel getInfoPanel() {
         return infoPanel;
     }
+
+    /**
+     * Getter for the right panel that shows the gods of the players
+     * @return the god panel
+     */
     public JPanel getGodPanel() {
         return godPanel;
     }
 
+    /**
+     * Method that prepares a GUI with just a text to tell the player what to write, a text field to write it, a submit button
+     * Used before starting a match to connect to the server, give the username, tell how many players there will be
+     * @param labelText the text displayed on the label to tell the player what to write
+     */
     private void prepareTextInputPanel(String labelText){
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                panel.removeAll();
-                JLabel label = new JLabel(labelText);
-                Font font = null;
-                try {
-                    font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LillyBelle.ttf"));
-                    Font biggerFont = font.deriveFont(Font.BOLD, 12f);
-                    label.setFont(biggerFont);
-                } catch (FontFormatException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                panel.add(label);
-                JTextField tf = new JTextField(10);
-                panel.add(tf);
-                JButton submit = new JButton("SUBMIT");
-                submit.addActionListener(new TextInputListener(tf));
-                panel.add(submit);
-                SwingUtilities.updateComponentTreeUI(panel);
-            }
+        SwingUtilities.invokeLater(() -> {
+            panel.removeAll();
+            JLabel label = new JLabel(labelText);
+            panel.add(label);
+            JTextField tf = new JTextField(10);
+            panel.add(tf);
+            JButton submit = new JButton("SUBMIT");
+            submit.addActionListener(new TextInputListener(tf));
+            panel.add(submit);
+            SwingUtilities.updateComponentTreeUI(panel);
         });
     }
+
+    /**
+     * Method that displays a text on the upper panel
+     * @param labelText the text to display
+     */
     private void prepareUpperText(String labelText){
         SwingUtilities.updateComponentTreeUI(infoPanel);
         infoPanel.removeAll();
@@ -292,6 +314,9 @@ public class GuiPlayerManager implements PlayerManager {
 
     }
 
+    /**
+     * Method that removes the listeners on every cell after one of them is pressed
+     */
     private void removeCellListeners(){
         for(int i=0; i<25; i++){
             for(int o=0; o<cells[i].getActionListeners().length; o++) {
@@ -300,8 +325,12 @@ public class GuiPlayerManager implements PlayerManager {
         }
     }
 
+    /**
+     * Method called by the TextInputListener once the submit button is pressed and the input is validated
+     * Calls UserInterface to send the message to the server
+     * @param input the content of the JTextField
+     */
     private void textInput(String input){
-        this.input = input;
         SwingUtilities.invokeLater(() -> {
             panel.removeAll();
             JLabel label = new JLabel("Waiting...");
@@ -310,22 +339,14 @@ public class GuiPlayerManager implements PlayerManager {
         });
         ui.receivedUiInput(input);
     }
-/*
-    private boolean cellInput(int cellNumber){
-        for(int i=0; i<validCells.length; i++){
-            if(validCells[i]==cellNumber){
-                System.out.println("correct input "+ input);
-                return true;
-            }
-        }
-        System.out.println("invalid input");
-        return false;
-    }*/
 
+    /**
+     * The Listener given to the submit button of the TextInputPanel
+     */
     class TextInputListener implements ActionListener{
 
         JTextField tf;
-        public TextInputListener(JTextField tf){
+        TextInputListener(JTextField tf){
             this.tf = tf;
         }
 
@@ -338,9 +359,13 @@ public class GuiPlayerManager implements PlayerManager {
         }
     }
 
+    /**
+     * The Listener given to the single cell button
+     * Once clicked send the input to the server
+     */
     class CellListener implements ActionListener{
         private int cellNumber;
-        public CellListener(int cellNumber){
+        CellListener(int cellNumber){
             this.cellNumber = cellNumber;
         }
         @Override

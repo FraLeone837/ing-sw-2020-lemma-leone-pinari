@@ -27,6 +27,11 @@ public interface GameManager {
      */
     public abstract void updateMap(int[] island);
 
+    /**
+     * On CLI it prints the list of the gods
+     * On GUI it cleans the GameManagerPanel
+     * @param god a single god, with name and description
+     */
     public abstract void showGod(String[] god);
 
     /**

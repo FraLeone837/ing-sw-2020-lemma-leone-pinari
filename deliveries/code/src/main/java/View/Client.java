@@ -40,7 +40,7 @@ public class Client implements Runnable, ServerObserver
             ui.receivedServerInput(null);
             return;
         }
-        System.out.println("Connected");
+        System.out.println("Connected. Wait for server message.");
 
         this.serverAdapter = new ServerAdapter(server);
 
@@ -116,7 +116,7 @@ public class Client implements Runnable, ServerObserver
 
     }
 
-    public synchronized void sendThis(Message msg){
+    synchronized void sendThis(Message msg){
         messageOut = msg;
         notifyAll();
     }
