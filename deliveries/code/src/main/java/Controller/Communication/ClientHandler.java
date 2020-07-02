@@ -20,9 +20,9 @@ public class ClientHandler implements Runnable
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
+    static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
     boolean debugging = true;
@@ -30,8 +30,6 @@ public class ClientHandler implements Runnable
     private Socket client;
     private Message currentMessage;
     private Message toSendMsg;
-    //Parameter that shows if we can get the input from the other client
-    private boolean writes;
     private ArrayList<MessageObservers> observers = new ArrayList<>();
 
 
@@ -41,7 +39,6 @@ public class ClientHandler implements Runnable
 
     private String name;
 
-    private final Object sendLock = new Object();
     private boolean otherDisconnected = false;
 
     public void setName(String name) {
@@ -53,7 +50,7 @@ public class ClientHandler implements Runnable
         return "Player " + name;
     }
 
-    public void addObserver(MessageObservers obs){
+    void addObserver(MessageObservers obs){
         observers.add(obs);
     }
 
@@ -62,7 +59,7 @@ public class ClientHandler implements Runnable
      * which in turn writes the object in stream
      * @param message to be sent
      */
-    public void setToSendMsg(Message message){
+    void setToSendMsg(Message message){
         synchronized (this){
             this.toSendMsg = message;
             notifyAll();
@@ -74,7 +71,6 @@ public class ClientHandler implements Runnable
     {
         this.client = client;
         toSendMsg = new Message(ZZZ, "Waiting");
-        this.writes = true;
         currentMessage = null;
         personalProxy = new CommunicationProxy(this,ic);
         name = (Integer.toString(counter));
@@ -82,7 +78,7 @@ public class ClientHandler implements Runnable
         t.start();
     }
 
-    public void setOtherDisconnected(boolean didDisconnect){
+    void setOtherDisconnected(boolean didDisconnect){
         this.otherDisconnected = didDisconnect;
     }
 
@@ -104,7 +100,6 @@ public class ClientHandler implements Runnable
             //calls every client and this.personalProxy to close their connections
             //closes thread
             System.out.println("Exiting from thread " + this.getName());
-            return;
         }
     }
 
@@ -119,7 +114,7 @@ public class ClientHandler implements Runnable
         ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
         ObjectInputStream input = new ObjectInputStream(client.getInputStream());
 
-        /**
+        /*
          * Read first object afterwards reply.
          * After that go into a while loop in which the client responds only to my requests
          */
@@ -156,7 +151,7 @@ public class ClientHandler implements Runnable
                     }
                 }
             } catch (ClassNotFoundException e ){
-
+                e.printStackTrace();
             }
             toSendMsg = new Message(ZZZ,"Waiting");
         }
@@ -164,22 +159,23 @@ public class ClientHandler implements Runnable
     }
 
     private void notifyObservers() {
+        ArrayList<MessageObservers> copy;
         synchronized (this){
-            ArrayList<MessageObservers> copy = new ArrayList<>(observers);
+            copy = new ArrayList<>(observers);
         }
-        for(MessageObservers obs : observers)
+        for(MessageObservers obs : copy)
             obs.receivedMessage();
     }
 
 
-    public Message getCurrentMessage() {
+    Message getCurrentMessage() {
         return currentMessage;
     }
 
     /**
      * receives a local message that allows the game to terminate
      */
-    public synchronized void terminateGame(){
+    private synchronized void terminateGame(){
         this.toSendMsg = new Message(END_GAME,"One player disconnected, game has been interrupted.");
         notifyAll();
         this.personalProxy.interruptGame();
