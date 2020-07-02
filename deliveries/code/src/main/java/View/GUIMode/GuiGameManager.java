@@ -44,28 +44,29 @@ public class GuiGameManager implements GameManager {
 
     @Override
     public void showGod(String[] god) {
-        //String godName = god[0];
-
         panel.removeAll();
-        /*ImageIcon image = new ImageIcon(getClass().getResource("/godCards/"+godName+".png"));
-        Image scaledImg = image.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-        JLabel godLabel = new JLabel(new ImageIcon(scaledImg));
-        panel.add(godLabel);
-
-
-        String godDescription = god[1];
-        godDescription = godDescription.replaceAll("\n", "<br>");
-        System.out.println(godDescription);
-        JLabel l = new JLabel("<html>"+LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription+"</html>");
-        panel.add(l);*/
         SwingUtilities.updateComponentTreeUI(panel);
     }
 
     @Override
     public void printWin(boolean win) {
+        SwingUtilities.invokeLater(() -> {
+            panel.removeAll();
+            JLabel l;
+            if(win)
+                l = new JLabel("You win!");
+            else
+                l = new JLabel("You lose.");
+            panel.add(l);
+            SwingUtilities.updateComponentTreeUI(panel);
+        });
 
     }
 
+    /**
+     * Getter method for the panel of the GameManager
+     * @return the panel
+     */
     public JPanel getPanel(){
         return panel;
     }

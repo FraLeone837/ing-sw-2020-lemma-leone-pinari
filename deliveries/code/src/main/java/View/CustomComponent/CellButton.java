@@ -28,6 +28,10 @@ public class CellButton extends JButton {
         setLevel(level);
     }
 
+    /**
+     * Check whether there is a dome (level>3)
+     * if so, invoke the method setDome
+     */
     private void checkDome(){
         if(level>3) {
             level -= 4;
@@ -35,6 +39,10 @@ public class CellButton extends JButton {
         }
     }
 
+    /**
+     * Invoked by checkDome()
+     * Create a JLabel with the image of the dome and add it to the button
+     */
     private void setDome(){
         ImageIcon image;
         Image scaledImg;
@@ -45,11 +53,19 @@ public class CellButton extends JButton {
         add(dome);
     }
 
+    /**
+     * Check whether there is a worker (worker!=0)
+     * if so, invoke the method setWorker()
+     */
     private void checkWorker(){
         if(worker!=0)
             setWorker();
     }
 
+    /**
+     * Invoked by checkWorker()
+     * Create a JLabel with the image of the worker and add it to the button
+     */
     private void setWorker(){
         ImageIcon image;
         Image scaledImg;
@@ -74,6 +90,10 @@ public class CellButton extends JButton {
         add(workerLabel);
     }
 
+    /**
+     * Add, one on top of the others, the images of the buildings to the button
+     * @param level the top level on which there's a building
+     */
     private void setLevel(int level){
         ImageIcon image;
         Image scaledImg;
@@ -100,10 +120,15 @@ public class CellButton extends JButton {
         }
     }
 
-    public int idPlayerWorker(int firstPlayer){
-        if(worker==firstPlayer)
+    /**
+     * Check whether the worker on this cell is owned by the player on this client
+     * @param firstWorker the id of the first worker owned by the player on this client (can be 1,3,5)
+     * @return 1 if it's the first worker, 2 if the second, -1 if there isn't any worker of if it's owned by
+     */
+    public int idPlayerWorker(int firstWorker){
+        if(worker==firstWorker)
             return 1;
-        if(worker==firstPlayer+1)
+        if(worker==firstWorker+1)
             return 2;
         return -1;
     }
@@ -128,6 +153,10 @@ public class CellButton extends JButton {
             setOpaque(false);
         }
     }
+
+    /**
+    * if the cell is clicked set his background color to red
+     */
     public void setSelected(){
         SwingUtilities.updateComponentTreeUI(this);
         setBackground(Color.red);

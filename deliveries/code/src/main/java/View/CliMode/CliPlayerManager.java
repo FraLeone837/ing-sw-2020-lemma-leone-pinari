@@ -68,11 +68,16 @@ public class CliPlayerManager implements PlayerManager, Runnable{
             }
         }
     }
-
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Check which of the valid input the player has given and return a string to print
+     * @param input the input given by the user on console
+     * @return the string to print on console
+     */
     private String checkInput(String input) {
         switch (input){
             case "/HELP":
@@ -96,6 +101,10 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         }
     }
 
+    /**
+     * Return a string to print containing the list of possible input that the user can give in this phase
+     * @return the string to print
+     */
     private String showAvailableInput() {
         if(isEveryInputValid){
             return "Every input is available";
@@ -122,6 +131,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         return toReturn;
     }
 
+    @Override
     public void getServerIp(){
         System.out.println(LABEL_SERVER_IP);
         isEveryInputValid = true;
@@ -271,10 +281,7 @@ public class CliPlayerManager implements PlayerManager, Runnable{
         System.out.println(name + "'s God is:" + god[0] + ", " + god[1]);
     }
 
-    /**
-     * Set for first worker's id
-     * @param id worker's id
-     */
+    @Override
     public void setIdFirstWorker(int id){
         idFirstWorker = id;
         this.id = LABEL_ID_BEGIN + id + LABEL_ID_FINAL + id + " " + (id+1);

@@ -87,8 +87,10 @@ public class UserInterface implements Runnable {
                 if(inputUi){
                     inputUi = false;
                     client.sendThis(messageOut);
-                    if(messageOut.getType() == Message.MessageType.PLAYER_LOST || messageOut.getType() == Message.MessageType.PLAYER_WON)
-                        exit(0);
+                    if(mode == Mode.CLI) {
+                        if (messageOut.getType() == Message.MessageType.PLAYER_LOST || messageOut.getType() == Message.MessageType.PLAYER_WON)
+                            exit(0);
+                    }
                 }
                 if(inputServer){
                     inputServer = false;
@@ -291,12 +293,14 @@ public class UserInterface implements Runnable {
                 playerManager.buildOtherWorker();
                 break;
             case END_GAME:
-                System.out.println(msg.getObject());
-                System.out.println("Exiting");
-                /**
-                 * method that quits the game with a warning
-                 */
-                exit(-1);
+                if(mode == Mode.CLI){
+                    System.out.println(msg.getObject());
+                    System.out.println("Exiting");
+                    /**
+                     * method that quits the game with a warning
+                     */
+                    exit(-1);
+                }
                 break;
             case OTHERS_LOSS:
                 playerManager.printLoser((String)msg.getObject());
@@ -307,11 +311,20 @@ public class UserInterface implements Runnable {
         }
     }
 
-
+    /**
+     * Convert the double given by GSON to int
+     * @param d the double value
+     * @return the number converted to int
+     */
     private int convertToInt(Double d){
         return d.intValue();
     }
 
+    /**
+     * Convert an array list of double into an array of int
+     * @param d the array list of double
+     * @return the array of int
+     */
     private int[] convertToIntArray(ArrayList<Double> d){
         int[] toReturn = new int[d.size()];
         for(int i=0; i<d.size(); i++){

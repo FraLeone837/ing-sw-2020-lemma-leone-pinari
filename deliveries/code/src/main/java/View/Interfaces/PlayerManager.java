@@ -62,11 +62,10 @@ public interface PlayerManager {
      */
     void setName(String name);
     /**
-     * Print the list of all the matches that the player can join
-     * @param ids the ArrayList with the ids of all the matches
-     * @return the id of the match that the player has choosen to join
+     * Store the id of the first worker of this player (1-3-5)
+     * @param id the id of the first worker
      */
-    //int listMatch(List<Integer> ids);
+    void setIdFirstWorker(int id);
 
     /**
      * If there isn't any match on the server, the player is asked to create a new one
