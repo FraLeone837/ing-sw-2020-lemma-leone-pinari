@@ -4,41 +4,41 @@ import Controller.Communication.Message;
 
 public interface PlayerManager {
 
-    String ANSI_RESET = "\u001B[0m";
-    String ANSI_BLACK = "\u001B[30m";
-    String ANSI_RED = "\u001B[31m";
-    String ANSI_GREEN = "\u001B[32m";
-    String ANSI_YELLOW = "\u001B[33m";
-    String ANSI_BLUE = "\u001B[34m";
-    String ANSI_PURPLE = "\u001B[35m";
-    String ANSI_CYAN = "\u001B[36m";
-    String ANSI_WHITE = "\u001B[37m";
+     String ANSI_RESET = "\u001B[0m";
+     String ANSI_BLACK = "\u001B[30m";
+     String ANSI_RED = "\u001B[31m";
+     String ANSI_GREEN = "\u001B[32m";
+     String ANSI_YELLOW = "\u001B[33m";
+     String ANSI_BLUE = "\u001B[34m";
+     String ANSI_PURPLE = "\u001B[35m";
+     String ANSI_CYAN = "\u001B[36m";
+     String ANSI_WHITE = "\u001B[37m";
 
-    String LABEL_SERVER_IP = "Which server do you want to connect to?";
-    String LABEL_TURN = "It is ";
-    String LABEL_TURN_2 = "'s turn";
-    String LABEL_HELP = "To see which is your god type /god" + System.lineSeparator() +
+     String LABEL_SERVER_IP = "Which server do you want to connect to?";
+     String LABEL_TURN = "It is ";
+     String LABEL_TURN_2 = "'s turn";
+     String LABEL_HELP = "To see which is your god type /god" + System.lineSeparator() +
                                 "To see map's legend type /map" + System.lineSeparator() +
                                 "To see your name type /name" + System.lineSeparator() +
                                 "To see your worker's id type /id" + System.lineSeparator() +
                                 "To see whose turn it is type /turn" + System.lineSeparator() +
                                 "To exit from the game type /exit" + System.lineSeparator() +
                                 "To see what is the valid input to reply with type /input";
-    String LABEL_NO_INPUT = "Please wait for the game to start";
-    String LABEL_WAIT_YOUR_TURN = "It is not your turn yet, ask that question after the beginning of your turn";
-    String LABEL_USERNAME = "Write your username";
-    String LABEL_NUMBER_PLAYERS = "How many players do you want in this match? (2 or 3)";
-    String LABEL_FIRST_WORKER = "Choose where to locate the first worker";
-    String LABEL_SECOND_WORKER = "Choose where to locate the second worker";
-    String LABEL_ONLY_FIRST_WORKER_MOVE = "You can only move the first worker in this turn";
-    String LABEL_ONLY_SECOND_WORKER_MOVE = "You can only move the second worker in this turn";
-    String LABEL_CHOOSE_WORKER_TO_MOVE = "Which worker do you want to move?";
-    String LABEL_CHOOSE_WHERE_TO_MOVE = "Where do you want to move the worker?";
-    String LABEL_CHOOSE_WHERE_TO_BUILD = "Where do you want to build?";
-    String LABEL_BUILD_DOME = "Do you want to build a dome or a building?";
-    String LABEL_MOVE_AGAIN = "Do you want to ";
-    String LABEL_BUILD_BEFORE = "Do you want to build before moving?";
-    String LABEL_ID_BEGIN = "Your Id is: ";
+     String LABEL_NO_INPUT = "Please wait for the game to start";
+     String LABEL_WAIT_YOUR_TURN = "It is not your turn yet, ask that question after the beginning of your turn";
+     String LABEL_USERNAME = "Write your username";
+     String LABEL_NUMBER_PLAYERS = "How many players do you want in this match? (2 or 3)";
+     String LABEL_FIRST_WORKER = "Choose where to locate the first worker";
+     String LABEL_SECOND_WORKER = "Choose where to locate the second worker";
+     String LABEL_ONLY_FIRST_WORKER_MOVE = "You can only move the first worker in this turn";
+     String LABEL_ONLY_SECOND_WORKER_MOVE = "You can only move the second worker in this turn";
+     String LABEL_CHOOSE_WORKER_TO_MOVE = "Which worker do you want to move?";
+     String LABEL_CHOOSE_WHERE_TO_MOVE = "Where do you want to move the worker?";
+     String LABEL_CHOOSE_WHERE_TO_BUILD = "Where do you want to build?";
+     String LABEL_BUILD_DOME = "Do you want to build a dome or a building?";
+     String LABEL_MOVE_AGAIN = "Do you want to ";
+     String LABEL_BUILD_BEFORE = "Do you want to build before moving?";
+     String LABEL_ID_BEGIN = "Your Id is: ";
     String LABEL_ID_FINAL = " and the workers you can move are: ";
     String LABEL_YOUR_GOD = "Your god is: ";
     String LABEL_YOUR_GOD_DESC = ", ";
