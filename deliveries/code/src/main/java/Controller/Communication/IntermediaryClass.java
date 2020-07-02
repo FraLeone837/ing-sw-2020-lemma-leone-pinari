@@ -27,7 +27,7 @@ public class IntermediaryClass {
     private ArrayList<CommunicationProxy> communicationProxies = new ArrayList<>();
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<CommunicationProxy> unusedProxies = new ArrayList<>();
-    public final String disconnectedFlag = "--";
+    private final String disconnectedFlag = "--";
     private String disconnected = disconnectedFlag;
 
     public IntermediaryClass(){
@@ -44,11 +44,11 @@ public class IntermediaryClass {
         this.threadOfMm.start();
     }
 
-    public synchronized void setClientHandlers(ClientHandler clientHandler) {
+    private synchronized void setClientHandlers(ClientHandler clientHandler) {
             this.clientHandlerArrayList.add(clientHandler);
     }
 
-    public synchronized void changeNoOfPlayers(){
+    synchronized void changeNoOfPlayers(){
         maxPlayers = 3;
         if(unusedProxies.size() > 0){
             setCommunicationProxy(unusedProxies.remove(0));
@@ -118,7 +118,7 @@ public class IntermediaryClass {
      * @param msg message to be communicated to every other communication proxy except the one disconnected
      * @param disconnected is the reason of the game being interrupted (time-out/ disconnected user)
      */
-    public void Broadcast(Message msg, String disconnected){
+    private void Broadcast(Message msg, String disconnected){
         System.out.println("Broadcasting" + msg);
         for(CommunicationProxy cp : communicationProxies) {
             if(isDisconnected(cp)){
@@ -135,7 +135,7 @@ public class IntermediaryClass {
         return disconnected;
     }
 
-    public synchronized void setDisconnected(String disconnected){
+    synchronized void setDisconnected(String disconnected){
         int num = 0;
         int numberToRemove = -1;
         for(num=0; num<names.size();num++){
@@ -215,7 +215,6 @@ public class IntermediaryClass {
 
 
     public Match getMatch() {
-        Match m = matchManager.getMatch();
-        return m;
+        return matchManager.getMatch();
     }
 }

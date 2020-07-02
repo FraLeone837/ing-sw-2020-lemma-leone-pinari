@@ -14,9 +14,6 @@ import static Controller.Communication.Message.MessageType.*;
  * uses observer and observable design pattern
  */
 public class CommunicationProxy implements Runnable, MessageObservers {
-    //counts the time since last message
-    private static Timer timer;
-    private static int timeConstant = 120;
 
     private boolean debugging = true;
 
@@ -57,7 +54,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         if(!acceptInput)
             received.setType(Message.MessageType.YYY);
     }
-    public synchronized void receivedMessage(Message msg) {
+    private synchronized void receivedMessage(Message msg) {
         received = msg;
         notifyAll();
         if(!acceptInput)
@@ -97,7 +94,6 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
     @Override
     public void run() {
-//        this.timer = new Timer(timeConstant, ic, this);
         handleConnection();
     }
 
@@ -110,18 +106,13 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      * or when a message is received and forwards it to matchManager
      */
     private synchronized void handleConnection(){
-//        Thread t = new Thread(timer);
-//        t.start();
         if(ic != null)
         ic.setCommunicationProxy(this);
         received.setType(Message.MessageType.YYY);
         waitForReceiveMessage(JOIN_GAME);
-
-  //      timer.notifyReceived(timeConstant);
-
         while(true){
 
-            /**
+            /*
              * messages to be sent automatically without any need of input from client/controller
              */
             Message.MessageType typeCopy = received.getType();
@@ -144,11 +135,9 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
             //sets msg toSend and notifies client handler
             clientHandler.setToSendMsg(toSend);
-//            timer.notifyWait();
 
             received.setType(YYY);
             waitForReceiveMessage();
-          // timer.notifyReceived(timeConstant);
 
         }
 
@@ -186,13 +175,13 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      * @return right value of the answer (index/int for the worker/string for the name)
      */
     public Object sendMessage(Message.MessageType messageType, Object toSend){
-        /**
+        /*
          * stops execution while
          * we have not yet received a message
          * sets waiting to receive to true and gets lock
          */
         canSendMessage();
-        /**
+        /*
          * prepare to send a message
          */
         synchronized (this){
@@ -204,7 +193,6 @@ public class CommunicationProxy implements Runnable, MessageObservers {
             notifyAll();
             if(debugging)
                 System.out.println("What Comm proxy sent: "+ messageType + "  " + this.clientHandler);
-//        }
 
         Message copy;
         if(messageType == END_GAME){
@@ -213,10 +201,9 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         }
 
 
-        /**
+        /*
          * prepare to receive message
          */
-//        synchronized (this){
             if(debugging)
                 System.out.println("Comm proxy waiting for response for " + messageType);
             while(received.getType() != messageType){
@@ -243,7 +230,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
     private void canSendMessage() {
         synchronized (this){
-            while(isWaitingToReceive == true || disconnected){
+            while(isWaitingToReceive || disconnected){
                 if(debugging)
                 System.out.println("asking if i can send message");
                 try{
@@ -275,11 +262,9 @@ public class CommunicationProxy implements Runnable, MessageObservers {
                 int toReturnx = ((Double)copy.getObject()).intValue();
                 return convertFromIntToIndex(toReturnx);
             case NUMBER_PLAYERS:
-                int toReturn = ((Double)copy.getObject()).intValue();
-                return toReturn;
+                return ((Double)copy.getObject()).intValue();
             case MOVEMENT:
-                int toReturny = ((Double)copy.getObject()).intValue() % 2;
-                return toReturny;
+                return ((Double)copy.getObject()).intValue() % 2;
             default:
                 return copy.getObject();
 
@@ -324,8 +309,8 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
     /**
      * orders any index into a number of 0-24
-     * @param number
-     * @return
+     * @param number 0-24 indicating A1,A2 ecc.
+     * @return The "right" (x,y) copy of Index. Caller needs to check the height
      */
     private Object convertFromIntToIndex(int number) {
         int x = number % 5;
@@ -380,13 +365,12 @@ public class CommunicationProxy implements Runnable, MessageObservers {
 
 
     /**
-     * method called when this.timeconstant seconds have
-     * passed or connection has been dropped
+     * method called when connection has been dropped
      */
     public void interruptGame(){
         if(debugging)
-        System.out.println(ANSI_RED + "Interrupting Game");
-//            //inform all other players that they have been disconnected
+        System.out.println("Interrupting Game");
+        //inform all other players that they have been disconnected
         synchronized (this){
 
             receivedMessage(new Message(toSend.getType(), "...."));
@@ -397,23 +381,28 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         }
         if(debugging)
                 System.out.println("Received fake message, calling terminate game.");
-//            ic.terminateGame();
 
         if(debugging)
-            System.out.println("Done" + ANSI_RESET);
+            System.out.println("Done");
     }
 
-    public IntermediaryClass getIC() {
+    IntermediaryClass getIC() {
         return ic;
     }
 
-    public void setDisconnected(boolean disconnected){
+    void setDisconnected(boolean disconnected){
         this.disconnected = disconnected;
         synchronized (this){
             notifyAll();
         }
     }
 
+    /**
+     * send message method for interruptions
+     * @param type is always END_GAME
+     * @param object is not important
+     * @param disconnected reason of disconnection
+     */
     public void sendMessage(Message.MessageType type, Object object, String disconnected) {
         this.toSend = new Message(type,"Player disconnected " + disconnected);
         clientHandler.setToSendMsg(this.toSend);
