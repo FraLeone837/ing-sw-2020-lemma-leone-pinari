@@ -295,16 +295,6 @@ public class GuiPlayerManager implements PlayerManager {
             public void run() {
                 panel.removeAll();
                 JLabel label = new JLabel(labelText);
-                Font font = null;
-                try {
-                    font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LillyBelle.ttf"));
-                    Font biggerFont = font.deriveFont(Font.BOLD, 12f);
-                    label.setFont(biggerFont);
-                } catch (FontFormatException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 panel.add(label);
                 JTextField tf = new JTextField(10);
                 panel.add(tf);
