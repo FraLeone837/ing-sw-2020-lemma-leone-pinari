@@ -116,7 +116,7 @@ public class Client implements Runnable, ServerObserver
 
     }
 
-    public synchronized void sendThis(Message msg){
+    synchronized void sendThis(Message msg){
         messageOut = msg;
         notifyAll();
     }

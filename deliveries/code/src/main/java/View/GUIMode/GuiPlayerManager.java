@@ -96,8 +96,8 @@ public class GuiPlayerManager implements PlayerManager {
                     prepareUpperText(LABEL_FIRST_WORKER);
                 else
                     prepareUpperText(LABEL_SECOND_WORKER);
-                for(int i=0; i<possiblePositions.length; i++){
-                    cells[possiblePositions[i]].addActionListener(new CellListener(possiblePositions[i]));
+                for (int possiblePosition : possiblePositions) {
+                    cells[possiblePosition].addActionListener(new CellListener(possiblePosition));
                 }
             }
         });
@@ -147,9 +147,9 @@ public class GuiPlayerManager implements PlayerManager {
                 for(int i=0; i<25; i++){
                     cells[i].setSelectable(false);
                 }
-                for(int i=0; i<moves.length; i++){
-                    cells[moves[i]].setSelectable(true);
-                    cells[moves[i]].addActionListener(new CellListener(moves[i]));
+                for (int move : moves) {
+                    cells[move].setSelectable(true);
+                    cells[move].addActionListener(new CellListener(move));
                 }
             }
         });
@@ -346,7 +346,7 @@ public class GuiPlayerManager implements PlayerManager {
     class TextInputListener implements ActionListener{
 
         JTextField tf;
-        public TextInputListener(JTextField tf){
+        TextInputListener(JTextField tf){
             this.tf = tf;
         }
 
@@ -365,7 +365,7 @@ public class GuiPlayerManager implements PlayerManager {
      */
     class CellListener implements ActionListener{
         private int cellNumber;
-        public CellListener(int cellNumber){
+        CellListener(int cellNumber){
             this.cellNumber = cellNumber;
         }
         @Override
