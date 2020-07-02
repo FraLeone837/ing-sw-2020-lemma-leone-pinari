@@ -25,17 +25,17 @@ public class UserInterface implements Runnable {
     private MainFrame mainFrame;
     private GameManager gameManager;
     private PlayerManager playerManager;
-    Client client;
+    private Client client;
 
     private boolean connected = false;
     private boolean inputUi = false;
     private boolean inputServer = false;
-    Message messageIn;
-    Message messageOut;
+    private Message messageIn;
+    private Message messageOut;
 
-    String ip;
-    String name;
-    int idFirstWorker;
+    private String ip;
+    private String name;
+    private int idFirstWorker;
 
     public enum Mode{
         CLI,
@@ -110,7 +110,7 @@ public class UserInterface implements Runnable {
      * It notifies the thread of UserInterface to wake it up from the previous wait
      * @param msg the messaged received
      */
-    public synchronized void receivedServerInput(Message msg){
+    synchronized void receivedServerInput(Message msg){
         if(msg == null && !connected)
             playerManager.getServerIp();
         else {
@@ -184,7 +184,7 @@ public class UserInterface implements Runnable {
      * Identify the message received from the server by the message type and
      * invokes the correspondent method of the GameManager to print information on
      * screen, or of the PlayerManager to ask the player an input
-     * @param msg
+     * @param msg is the message received
      */
     private synchronized void identificationMessage(Message msg){
         messageOut = new Message(msg.getType(), "Ok!");
@@ -296,10 +296,14 @@ public class UserInterface implements Runnable {
                 if(mode == Mode.CLI){
                     System.out.println(msg.getObject());
                     System.out.println("Exiting");
-                    /**
+                    /*
                      * method that quits the game with a warning
                      */
                     exit(-1);
+                }
+                else
+                {
+                    ((GuiPlayerManager)playerManager).endGame();
                 }
                 break;
             case OTHERS_LOSS:

@@ -148,6 +148,7 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                removeCellListeners();
                 prepareUpperText(msg);
                 for(int i=0; i<25; i++){
                     cells[i].setSelectable(false);
@@ -295,16 +296,6 @@ public class GuiPlayerManager implements PlayerManager {
             public void run() {
                 panel.removeAll();
                 JLabel label = new JLabel(labelText);
-                Font font = null;
-                try {
-                    font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LillyBelle.ttf"));
-                    Font biggerFont = font.deriveFont(Font.BOLD, 12f);
-                    label.setFont(biggerFont);
-                } catch (FontFormatException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 panel.add(label);
                 JTextField tf = new JTextField(10);
                 panel.add(tf);
@@ -326,6 +317,15 @@ public class GuiPlayerManager implements PlayerManager {
         infoLabel = new JLabel(labelText);
         infoPanel.add(infoLabel);
 
+    }
+
+    /**
+     * Invoked when the game ends or the enemy players is disconnected
+     */
+    public void endGame(){
+        SwingUtilities.invokeLater(() -> {
+            prepareUpperText("Match ended");
+        });
     }
 
     /**
@@ -385,9 +385,9 @@ public class GuiPlayerManager implements PlayerManager {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
+            removeCellListeners();
             ui.receivedUiInput(cellNumber);
             prepareUpperText("Waiting...");
-            removeCellListeners();
         }
     }
 }

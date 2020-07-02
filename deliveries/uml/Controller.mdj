@@ -1250,30 +1250,11 @@
 									"model": {
 										"$ref": "AAAAAAFxIdMz5ztRtGo="
 									},
-									"subViews": [
-										{
-											"_type": "UMLAttributeView",
-											"_id": "AAAAAAFxIdPXLTuHBu8=",
-											"_parent": {
-												"$ref": "AAAAAAFxIdMz6DtZcNY="
-											},
-											"model": {
-												"$ref": "AAAAAAFxIdPXBTuEl+8="
-											},
-											"font": "Arial;13;0",
-											"left": 189,
-											"top": 206,
-											"width": 148.7001953125,
-											"height": 13,
-											"text": "+socket_port: Socket",
-											"horizontalAlignment": 0
-										}
-									],
 									"font": "Arial;13;0",
 									"left": 184,
 									"top": 201,
 									"width": 158.7001953125,
-									"height": 23
+									"height": 10
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -1296,7 +1277,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 189,
-											"top": 229,
+											"top": 216,
 											"width": 148.7001953125,
 											"height": 13,
 											"text": "+main(): void",
@@ -1305,7 +1286,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 184,
-									"top": 224,
+									"top": 211,
 									"width": 158.7001953125,
 									"height": 23
 								},
@@ -4224,7 +4205,7 @@
 											"top": 773,
 											"width": 207,
 											"height": 13,
-											"text": "+CLIENT: SOCKET",
+											"text": "+Client: Socket",
 											"horizontalAlignment": 0
 										}
 									],
@@ -5905,47 +5886,11 @@
 									"model": {
 										"$ref": "AAAAAAFyBX+hH2UsrF4="
 									},
-									"subViews": [
-										{
-											"_type": "UMLOperationView",
-											"_id": "AAAAAAFyBbywG9IkDms=",
-											"_parent": {
-												"$ref": "AAAAAAFyBX+hH2U11co="
-											},
-											"model": {
-												"$ref": "AAAAAAFyBbyv2tIPb8I="
-											},
-											"font": "Arial;13;0",
-											"left": 477,
-											"top": 1229,
-											"width": 183,
-											"height": 13,
-											"text": "+setType(): void",
-											"horizontalAlignment": 0
-										},
-										{
-											"_type": "UMLOperationView",
-											"_id": "AAAAAAFyBbzyndVZo5o=",
-											"_parent": {
-												"$ref": "AAAAAAFyBX+hH2U11co="
-											},
-											"model": {
-												"$ref": "AAAAAAFyBbzyY9VEjR8="
-											},
-											"font": "Arial;13;0",
-											"left": 477,
-											"top": 1244,
-											"width": 183,
-											"height": 13,
-											"text": "+getType(): MessageType",
-											"horizontalAlignment": 0
-										}
-									],
 									"font": "Arial;13;0",
 									"left": 472,
 									"top": 1224,
 									"width": 193,
-									"height": 38
+									"height": 10
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -11774,17 +11719,6 @@
 							}
 						}
 					],
-					"attributes": [
-						{
-							"_type": "UMLAttribute",
-							"_id": "AAAAAAFxIdPXBTuEl+8=",
-							"_parent": {
-								"$ref": "AAAAAAFxIdMz5ztRtGo="
-							},
-							"name": "socket_port",
-							"type": "Socket"
-						}
-					],
 					"operations": [
 						{
 							"_type": "UMLOperation",
@@ -13018,8 +12952,8 @@
 							"_parent": {
 								"$ref": "AAAAAAFyBWNZ7yMIZGo="
 							},
-							"name": "CLIENT",
-							"type": "SOCKET"
+							"name": "Client",
+							"type": "Socket"
 						}
 					],
 					"operations": [
@@ -13557,48 +13491,6 @@
 							},
 							"name": "object",
 							"type": "Object"
-						}
-					],
-					"operations": [
-						{
-							"_type": "UMLOperation",
-							"_id": "AAAAAAFyBbyv2tIPb8I=",
-							"_parent": {
-								"$ref": "AAAAAAFyBX+hH2UsrF4="
-							},
-							"name": "setType",
-							"parameters": [
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAFyBbzR3NNgrT8=",
-									"_parent": {
-										"$ref": "AAAAAAFyBbyv2tIPb8I="
-									},
-									"type": "void",
-									"direction": "return"
-								}
-							]
-						},
-						{
-							"_type": "UMLOperation",
-							"_id": "AAAAAAFyBbzyY9VEjR8=",
-							"_parent": {
-								"$ref": "AAAAAAFyBX+hH2UsrF4="
-							},
-							"name": "getType",
-							"parameters": [
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAFyBb3Cl9h54tY=",
-									"_parent": {
-										"$ref": "AAAAAAFyBbzyY9VEjR8="
-									},
-									"type": {
-										"$ref": "AAAAAAFyBYEJs2+Z7KE="
-									},
-									"direction": "return"
-								}
-							]
 						}
 					]
 				},
