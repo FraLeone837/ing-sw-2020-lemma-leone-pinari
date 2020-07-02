@@ -19,6 +19,9 @@ public class GuiGameManager implements GameManager {
         panel = new JPanel();
     }
 
+    /**
+     * UNUSED ON GUI
+     */
     @Override
     public void startMatch() {
 
@@ -32,11 +35,20 @@ public class GuiGameManager implements GameManager {
         SwingUtilities.updateComponentTreeUI(panel);
     }
 
+    /**
+     * UNUSED ON GUI
+     * @param starting true if the player on this client is the first to start
+     * @param assigned the randomly chosen god for the player
+     */
     @Override
     public void printReadyToStart(boolean starting, God assigned) {
 
     }
 
+    /**
+     * UNUSED ON GUI, handled by PlayerManager
+     * @param island the updated map
+     */
     @Override
     public void updateMap(int[] island) {
 

@@ -19,7 +19,6 @@ public class GuiPlayerManager implements PlayerManager {
 
     private JLabel infoLabel;
     private CellButton[] cells;
-    //private int[] validCells;
     private UserInterface ui;
     private int idFirstWorker;
     private String godName;
@@ -44,9 +43,6 @@ public class GuiPlayerManager implements PlayerManager {
         prepareTextInputPanel(LABEL_SERVER_IP);
     }
 
-    @Override
-    public void getName() {
-    }
     @Override
     public void setName(String name) {
         this.name = name;
@@ -231,6 +227,10 @@ public class GuiPlayerManager implements PlayerManager {
             ui.receivedUiInput("NO");
     }
 
+    /**
+     * UNUSED ON GUI
+     * @param object the name of the player whose turn it is
+     */
     @Override
     public void showTurn(String object) {
 
@@ -289,29 +289,16 @@ public class GuiPlayerManager implements PlayerManager {
      * @param labelText the text displayed on the label to tell the player what to write
      */
     private void prepareTextInputPanel(String labelText){
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                panel.removeAll();
-                JLabel label = new JLabel(labelText);
-                Font font = null;
-                try {
-                    font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LillyBelle.ttf"));
-                    Font biggerFont = font.deriveFont(Font.BOLD, 12f);
-                    label.setFont(biggerFont);
-                } catch (FontFormatException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                panel.add(label);
-                JTextField tf = new JTextField(10);
-                panel.add(tf);
-                JButton submit = new JButton("SUBMIT");
-                submit.addActionListener(new TextInputListener(tf));
-                panel.add(submit);
-                SwingUtilities.updateComponentTreeUI(panel);
-            }
+        SwingUtilities.invokeLater(() -> {
+            panel.removeAll();
+            JLabel label = new JLabel(labelText);
+            panel.add(label);
+            JTextField tf = new JTextField(10);
+            panel.add(tf);
+            JButton submit = new JButton("SUBMIT");
+            submit.addActionListener(new TextInputListener(tf));
+            panel.add(submit);
+            SwingUtilities.updateComponentTreeUI(panel);
         });
     }
 
