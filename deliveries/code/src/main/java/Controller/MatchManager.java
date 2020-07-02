@@ -45,6 +45,10 @@ public class MatchManager implements Runnable{
         this.godToChoose = godToChoose;
     }
 
+    public Boolean getMatchInProgress() {
+        return matchInProgress;
+    }
+
     public Match getMatch() {
         return match;
     }
@@ -55,7 +59,7 @@ public class MatchManager implements Runnable{
     public void run() {
         setupPlayers(godToChoose);
         setupGame();
-        while(matchInProgress ){
+        while(matchInProgress){
             turn();
         }
         intermediaryClass.terminateGame();

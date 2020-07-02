@@ -405,6 +405,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
      */
     public void sendMessage(Message.MessageType type, Object object, String disconnected) {
         this.toSend = new Message(type,"Player disconnected " + disconnected);
+        if(clientHandler != null)
         clientHandler.setToSendMsg(this.toSend);
         synchronized (this){
             notifyAll();
