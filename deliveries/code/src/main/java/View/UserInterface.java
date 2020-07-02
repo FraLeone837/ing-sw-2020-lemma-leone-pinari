@@ -301,6 +301,10 @@ public class UserInterface implements Runnable {
                      */
                     exit(-1);
                 }
+                else
+                {
+                    ((GuiPlayerManager)playerManager).endGame();
+                }
                 break;
             case OTHERS_LOSS:
                 playerManager.printLoser((String)msg.getObject());

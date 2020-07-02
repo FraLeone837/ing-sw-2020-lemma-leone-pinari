@@ -148,6 +148,7 @@ public class GuiPlayerManager implements PlayerManager {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                removeCellListeners();
                 prepareUpperText(msg);
                 for(int i=0; i<25; i++){
                     cells[i].setSelectable(false);
@@ -319,6 +320,15 @@ public class GuiPlayerManager implements PlayerManager {
     }
 
     /**
+     * Invoked when the game ends or the enemy players is disconnected
+     */
+    public void endGame(){
+        SwingUtilities.invokeLater(() -> {
+            prepareUpperText("Match ended");
+        });
+    }
+
+    /**
      * Method that removes the listeners on every cell after one of them is pressed
      */
     private void removeCellListeners(){
@@ -375,9 +385,9 @@ public class GuiPlayerManager implements PlayerManager {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
+            removeCellListeners();
             ui.receivedUiInput(cellNumber);
             prepareUpperText("Waiting...");
-            removeCellListeners();
         }
     }
 }
