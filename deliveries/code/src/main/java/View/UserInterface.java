@@ -25,17 +25,17 @@ public class UserInterface implements Runnable {
     private MainFrame mainFrame;
     private GameManager gameManager;
     private PlayerManager playerManager;
-    private Client client;
+    Client client;
 
     private boolean connected = false;
     private boolean inputUi = false;
     private boolean inputServer = false;
-    private Message messageIn;
-    private Message messageOut;
+    Message messageIn;
+    Message messageOut;
 
-    private String ip;
-    private String name;
-    private int idFirstWorker;
+    String ip;
+    String name;
+    int idFirstWorker;
 
     public enum Mode{
         CLI,
@@ -101,7 +101,6 @@ public class UserInterface implements Runnable {
             try {
                 wait();
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -111,7 +110,7 @@ public class UserInterface implements Runnable {
      * It notifies the thread of UserInterface to wake it up from the previous wait
      * @param msg the messaged received
      */
-    synchronized void receivedServerInput(Message msg){
+    public synchronized void receivedServerInput(Message msg){
         if(msg == null && !connected)
             playerManager.getServerIp();
         else {
@@ -185,7 +184,7 @@ public class UserInterface implements Runnable {
      * Identify the message received from the server by the message type and
      * invokes the correspondent method of the GameManager to print information on
      * screen, or of the PlayerManager to ask the player an input
-     * @param msg message received from server
+     * @param msg
      */
     private synchronized void identificationMessage(Message msg){
         messageOut = new Message(msg.getType(), "Ok!");
@@ -297,7 +296,7 @@ public class UserInterface implements Runnable {
                 if(mode == Mode.CLI){
                     System.out.println(msg.getObject());
                     System.out.println("Exiting");
-                    /*
+                    /**
                      * method that quits the game with a warning
                      */
                     exit(-1);
@@ -338,7 +337,7 @@ public class UserInterface implements Runnable {
     /**
      * Given the coordinates from console, this method validates them
      * and give back a corresponding int according to the numeration
-     * @param coor a two char String corresponding to a Cell (A-E)(1-5)
+     * @param coor a two char String corrersponding to a Cell (A-E)(1-5)
      * @return an int corresponding to the numeration of the cell
      */
     private int correspondingCellNumeration(String coor){

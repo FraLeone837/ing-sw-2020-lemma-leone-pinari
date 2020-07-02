@@ -13,7 +13,7 @@ public class Atlas extends God {
      */
     private boolean buildDome;
 
-    private void setBuildDome(boolean buildDome){this.buildDome=buildDome;}
+    public void setBuildDome(boolean buildDome){this.buildDome=buildDome;}
 
     @Override
     public String getName() {

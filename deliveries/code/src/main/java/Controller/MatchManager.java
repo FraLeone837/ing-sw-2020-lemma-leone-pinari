@@ -22,7 +22,7 @@ public class MatchManager implements Runnable{
     //number used in test phase, so I can choose which god to test Automatically with JUnit
     final int RANDOM_GODS = -1;
     //x is always -1 unless special constructor is used (only in testing phase)
-    private int godToChoose = RANDOM_GODS;
+    private int x = RANDOM_GODS;
 
     /**
      * starts with only the first player who is also the creator of the match
@@ -42,7 +42,7 @@ public class MatchManager implements Runnable{
         match = new Match(id);
         match.setIntermediaryClass(this.intermediaryClass);
         this.matchInProgress = true;
-        this.godToChoose = x;
+        this.x = x;
     }
 
     public Match getMatch() {
@@ -50,7 +50,7 @@ public class MatchManager implements Runnable{
     }
     @Override
     public void run() {
-        setupPlayers(godToChoose);
+        setupPlayers(x);
         setupGame();
         while(matchInProgress ){
             turn();
@@ -67,7 +67,7 @@ public class MatchManager implements Runnable{
      *                    it will choose a random god (set by default for normal games) otherwise
      *                    we can change it to a value from 0 to 14 to choose one god we decide.
      */
-    private void setupPlayers(int godToChoose){
+    public void setupPlayers(int godToChoose){
         ArrayList<String> names = new ArrayList<String>();
         //the first player connects
         CommunicationProxy firstCP = intermediaryClass.getNewCommunicationProxy();
@@ -103,7 +103,7 @@ public class MatchManager implements Runnable{
     /**
      * each player puts his own invisible blocks on the game board if his god foresees it, and sets his workers
      */
-    private void setupGame(){
+    public void setupGame(){
         ArrayList<Index> possiblePosition = new ArrayList<Index>();
         for (int x=0; x<5; x++){
             for (int y=0; y<5; y++){
@@ -209,7 +209,7 @@ public class MatchManager implements Runnable{
     /**
      * give randomly a god to each player
      */
-    private void giveGods(){
+    public void giveGods(){
         int numberOfGods = 14;
         ArrayList<Integer> given = new ArrayList<Integer>();
         Random godGen = new Random();
@@ -228,7 +228,7 @@ public class MatchManager implements Runnable{
         }
     }
 
-    private void giveGods(int id){
+    public void giveGods(int id){
         if(id == RANDOM_GODS){
             giveGods();
             return;
@@ -247,7 +247,7 @@ public class MatchManager implements Runnable{
         }
     }
 
-    private void giveVictory(PlayerManager playerManager){
+    public void giveVictory(PlayerManager playerManager){
         playerManager.getCommunicationProxy().sendMessage(Message.MessageType.PLAYER_WON, "YOU WON!");
         playerManagers.remove(playerManager);
         for (PlayerManager playerManager1 : playerManagers){

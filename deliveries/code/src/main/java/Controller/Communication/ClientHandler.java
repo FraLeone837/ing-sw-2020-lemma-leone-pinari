@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable
         return "Player " + name;
     }
 
-    void addObserver(MessageObservers obs){
+    public void addObserver(MessageObservers obs){
         observers.add(obs);
     }
 
@@ -62,7 +62,7 @@ public class ClientHandler implements Runnable
      * which in turn writes the object in stream
      * @param message to be sent
      */
-    void setToSendMsg(Message message){
+    public void setToSendMsg(Message message){
         synchronized (this){
             this.toSendMsg = message;
             notifyAll();
@@ -82,7 +82,7 @@ public class ClientHandler implements Runnable
         t.start();
     }
 
-    void setOtherDisconnected(boolean didDisconnect){
+    public void setOtherDisconnected(boolean didDisconnect){
         this.otherDisconnected = didDisconnect;
     }
 
@@ -172,14 +172,14 @@ public class ClientHandler implements Runnable
     }
 
 
-    Message getCurrentMessage() {
+    public Message getCurrentMessage() {
         return currentMessage;
     }
 
     /**
      * receives a local message that allows the game to terminate
      */
-    private synchronized void terminateGame(){
+    public synchronized void terminateGame(){
         this.toSendMsg = new Message(END_GAME,"One player disconnected, game has been interrupted.");
         notifyAll();
         this.personalProxy.interruptGame();

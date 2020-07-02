@@ -186,8 +186,8 @@ public class ServerAdapter implements Runnable
     }
 
     //while isWaitingToReceive no one can send a message
-    private synchronized void notifyToSendMessage(Message msg){
-        while(isWaitingToReceive){
+    public synchronized void notifyToSendMessage(Message msg){
+        while(isWaitingToReceive == true){
             try{
                 wait();
             } catch (InterruptedException e){

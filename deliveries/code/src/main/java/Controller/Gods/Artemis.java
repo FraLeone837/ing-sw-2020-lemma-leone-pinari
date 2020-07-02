@@ -13,7 +13,7 @@ public class Artemis extends God {
      */
     private boolean moveAgain;
 
-    private void setMoveAgain(boolean moveAgain) {
+    public void setMoveAgain(boolean moveAgain) {
         this.moveAgain = moveAgain;
     }
 
@@ -23,7 +23,7 @@ public class Artemis extends God {
      */
     private Index prevMoveIndex;
 
-    private void setPrevMoveIndex(Index prevMoveIndex) {
+    public void setPrevMoveIndex(Index prevMoveIndex) {
         this.prevMoveIndex = prevMoveIndex;
     }
 
@@ -141,6 +141,8 @@ public class Artemis extends God {
 
     @Override
     public Boolean canMove(Match match, Worker worker){
-        return canMoveOnce(match, worker) || canMoveTwice(match, worker);
+        if(canMoveOnce(match, worker) || canMoveTwice(match, worker))
+            return true;
+        return false;
     }
 }

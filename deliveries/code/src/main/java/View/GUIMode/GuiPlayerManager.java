@@ -18,7 +18,9 @@ public class GuiPlayerManager implements PlayerManager {
     private JPanel godPanel;
 
     private JLabel infoLabel;
+    private String input;
     private CellButton[] cells;
+    //private int[] validCells;
     private UserInterface ui;
     private int idFirstWorker;
     private String godName;
@@ -43,6 +45,9 @@ public class GuiPlayerManager implements PlayerManager {
         prepareTextInputPanel(LABEL_SERVER_IP);
     }
 
+    @Override
+    public void getName() {
+    }
     @Override
     public void setName(String name) {
         this.name = name;
@@ -96,8 +101,8 @@ public class GuiPlayerManager implements PlayerManager {
                     prepareUpperText(LABEL_FIRST_WORKER);
                 else
                     prepareUpperText(LABEL_SECOND_WORKER);
-                for (int possiblePosition : possiblePositions) {
-                    cells[possiblePosition].addActionListener(new CellListener(possiblePosition));
+                for(int i=0; i<possiblePositions.length; i++){
+                    cells[possiblePositions[i]].addActionListener(new CellListener(possiblePositions[i]));
                 }
             }
         });
@@ -147,9 +152,9 @@ public class GuiPlayerManager implements PlayerManager {
                 for(int i=0; i<25; i++){
                     cells[i].setSelectable(false);
                 }
-                for (int move : moves) {
-                    cells[move].setSelectable(true);
-                    cells[move].addActionListener(new CellListener(move));
+                for(int i=0; i<moves.length; i++){
+                    cells[moves[i]].setSelectable(true);
+                    cells[moves[i]].addActionListener(new CellListener(moves[i]));
                 }
             }
         });
@@ -227,10 +232,6 @@ public class GuiPlayerManager implements PlayerManager {
             ui.receivedUiInput("NO");
     }
 
-    /**
-     * UNUSED ON GUI
-     * @param object the name of the player whose turn it is
-     */
     @Override
     public void showTurn(String object) {
 
@@ -289,16 +290,29 @@ public class GuiPlayerManager implements PlayerManager {
      * @param labelText the text displayed on the label to tell the player what to write
      */
     private void prepareTextInputPanel(String labelText){
-        SwingUtilities.invokeLater(() -> {
-            panel.removeAll();
-            JLabel label = new JLabel(labelText);
-            panel.add(label);
-            JTextField tf = new JTextField(10);
-            panel.add(tf);
-            JButton submit = new JButton("SUBMIT");
-            submit.addActionListener(new TextInputListener(tf));
-            panel.add(submit);
-            SwingUtilities.updateComponentTreeUI(panel);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                panel.removeAll();
+                JLabel label = new JLabel(labelText);
+                Font font = null;
+                try {
+                    font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/LillyBelle.ttf"));
+                    Font biggerFont = font.deriveFont(Font.BOLD, 12f);
+                    label.setFont(biggerFont);
+                } catch (FontFormatException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                panel.add(label);
+                JTextField tf = new JTextField(10);
+                panel.add(tf);
+                JButton submit = new JButton("SUBMIT");
+                submit.addActionListener(new TextInputListener(tf));
+                panel.add(submit);
+                SwingUtilities.updateComponentTreeUI(panel);
+            }
         });
     }
 
@@ -331,6 +345,7 @@ public class GuiPlayerManager implements PlayerManager {
      * @param input the content of the JTextField
      */
     private void textInput(String input){
+        this.input = input;
         SwingUtilities.invokeLater(() -> {
             panel.removeAll();
             JLabel label = new JLabel("Waiting...");
@@ -346,7 +361,7 @@ public class GuiPlayerManager implements PlayerManager {
     class TextInputListener implements ActionListener{
 
         JTextField tf;
-        TextInputListener(JTextField tf){
+        public TextInputListener(JTextField tf){
             this.tf = tf;
         }
 
@@ -365,7 +380,7 @@ public class GuiPlayerManager implements PlayerManager {
      */
     class CellListener implements ActionListener{
         private int cellNumber;
-        CellListener(int cellNumber){
+        public CellListener(int cellNumber){
             this.cellNumber = cellNumber;
         }
         @Override
