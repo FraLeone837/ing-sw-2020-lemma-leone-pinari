@@ -23,7 +23,7 @@ public class Demeter extends God {
      */
     private Index prevBuildIndex;
 
-    public void setPrevBuildIndex(Index prevBuildIndex) {
+    private void setPrevBuildIndex(Index prevBuildIndex) {
         this.prevBuildIndex = prevBuildIndex;
     }
 

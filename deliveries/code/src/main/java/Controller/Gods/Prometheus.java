@@ -14,7 +14,7 @@ public class Prometheus extends God {
      */
     private Boolean buildBefore;
 
-    public void setBuildBefore(Boolean buildBefore) {
+    private void setBuildBefore(Boolean buildBefore) {
         this.buildBefore = buildBefore;
     }
 

@@ -13,7 +13,7 @@ public class Hephaestus extends God {
      */
     private boolean buildAgain;
 
-    public void setBuildAgain(boolean buildAgain) {
+    private void setBuildAgain(boolean buildAgain) {
         this.buildAgain = buildAgain;
     }
 
@@ -23,7 +23,7 @@ public class Hephaestus extends God {
      */
     private Index prevBuildIndex;
 
-    public void setPrevBuildIndex(Index prevBuildIndex) {
+    private void setPrevBuildIndex(Index prevBuildIndex) {
         this.prevBuildIndex = prevBuildIndex;
     }
 
