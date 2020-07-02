@@ -64,11 +64,15 @@ public class IntermediaryClass {
      */
     public synchronized void terminateGame(){
         System.out.println("Start method terminate game");
-        Broadcast(new Message(Message.MessageType.END_GAME, "Player has disconnected"),disconnected);
+        if(matchManager.getMatchInProgress()){
+            //game finished with no disconnections
+            Broadcast(new Message(Message.MessageType.END_GAME, "Player has disconnected"),disconnected);
+        }
         counter = 0;
         this.maxPlayers = 2;
         this.notified = false;
-        threadOfMm.stop();
+        if(matchManager.getMatchInProgress())
+            threadOfMm.stop();
 
         System.out.println("Stopped match manager");
         this.notified = false;
