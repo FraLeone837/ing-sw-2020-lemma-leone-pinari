@@ -18,6 +18,7 @@ public class GuiPlayerManager implements PlayerManager {
     private JPanel godPanel;
 
     private JLabel infoLabel;
+    private String input;
     private CellButton[] cells;
     //private int[] validCells;
     private UserInterface ui;
@@ -344,6 +345,7 @@ public class GuiPlayerManager implements PlayerManager {
      * @param input the content of the JTextField
      */
     private void textInput(String input){
+        this.input = input;
         SwingUtilities.invokeLater(() -> {
             panel.removeAll();
             JLabel label = new JLabel("Waiting...");

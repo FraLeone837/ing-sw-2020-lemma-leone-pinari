@@ -120,14 +120,15 @@ public class CliPlayerManager implements PlayerManager, Runnable{
     /**
      * gives the legend of the maps with colors
      * and the meaning of the characters found
-     * @return A legend for the map
+     * @return
      */
     private String mapLegend() {
-        return "The buildings are denoted each one with a certain color: " + ANSI_BLACK +
+        String toReturn = "The buildings are denoted each one with a certain color: " + ANSI_BLACK +
                 colorGroundLevel + "Ground level " + ANSI_RESET  + ANSI_BLACK + colorFirstLevel + "First level " + ANSI_RESET + ANSI_BLACK +
                 colorSecondLevel + "Second level " + ANSI_RESET + ANSI_BLACK  + colorThirdLevel + "Third level" + ANSI_RESET
                 + "." + System.lineSeparator()+ "If there is a dome it is denoted by the character 'c'."+  System.lineSeparator()+ "Meanwhile if there is a player it is denoted" +
                 " by one of the numbers 1-6.";
+        return toReturn;
     }
 
     @Override
