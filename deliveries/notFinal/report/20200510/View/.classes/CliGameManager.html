@@ -1,0 +1,174 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CliGameManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">View</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CliGameManager (View)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CliGameManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package View;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import Controller.God;
+<i>4</i>&nbsp;
+<b class="nc"><i>5</i>&nbsp;public class CliGameManager implements GameManager {</b>
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;    private int idFirstWorker;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;    @Override
+<i>10</i>&nbsp;    public void startMatch() {
+<i>11</i>&nbsp;        //System.out.println(&quot;Sei connesso&quot;);
+<b class="nc"><i>12</i>&nbsp;        System.out.println(&quot;Do you want to start a match?&quot;);</b>
+<i>13</i>&nbsp;    }
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    @Override
+<i>16</i>&nbsp;    public void waitForPlayer(){
+<b class="nc"><i>17</i>&nbsp;        System.out.println(&quot;Corrispondere iniziare&quot;);</b>
+<i>18</i>&nbsp;    }
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    public void printIdWorkers(int idFirstWorker){
+<b class="nc"><i>21</i>&nbsp;        this.idFirstWorker = idFirstWorker;</b>
+<b class="nc"><i>22</i>&nbsp;        System.out.println(&quot;Your workers will be the ones with ids &quot; + idFirstWorker + &quot; and &quot; + (idFirstWorker+1));</b>
+<i>23</i>&nbsp;    }
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    @Override
+<i>26</i>&nbsp;    public void printReadyToStart(boolean starting, God assigned) {
+<b class="nc"><i>27</i>&nbsp;        System.out.println(&quot;Both the players are here, the match can start!&quot;);</b>
+<b class="nc"><i>28</i>&nbsp;        if(starting)</b>
+<b class="nc"><i>29</i>&nbsp;            System.out.println(&quot;You&#39;ll play as first player&quot;);</b>
+<i>30</i>&nbsp;        else
+<b class="nc"><i>31</i>&nbsp;            System.out.println(&quot;You&#39;ll play as second player&quot;);</b>
+<b class="nc"><i>32</i>&nbsp;        System.out.println(&quot;You&#39;ve been assigned the God &quot; + assigned.getName());</b>
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;    @Override
+<i>35</i>&nbsp;    public void updateMap(int[][][] island) {
+<b class="nc"><i>36</i>&nbsp;        System.out.println(&quot;  a b c d e &quot;);</b>
+<b class="nc"><i>37</i>&nbsp;        for(int y=0; y&lt;5; y++){</b>
+<b class="nc"><i>38</i>&nbsp;            System.out.print(y+1+&quot; &quot;);</b>
+<b class="nc"><i>39</i>&nbsp;            for(int x=0; x&lt;5; x++){</b>
+<b class="nc"><i>40</i>&nbsp;                char content = &#39; &#39;;</b>
+<b class="nc"><i>41</i>&nbsp;                int level = 0;</b>
+<b class="nc"><i>42</i>&nbsp;                if(island[x][y][0] &gt; 3) {</b>
+<b class="nc"><i>43</i>&nbsp;                    content = &#39;c&#39;;</b>
+<b class="nc"><i>44</i>&nbsp;                    level = island[x][y][0] - 4;</b>
+<i>45</i>&nbsp;                }
+<i>46</i>&nbsp;                else
+<b class="nc"><i>47</i>&nbsp;                    level = island[x][y][0];</b>
+<b class="nc"><i>48</i>&nbsp;                if(island[x][y][0] != 0)</b>
+<b class="nc"><i>49</i>&nbsp;                    content = (char)(island[x][y][0]);</b>
+<b class="nc"><i>50</i>&nbsp;                System.out.print(&quot;\u001B[4&quot;+(level+1)+&quot;m\u001B[37m&quot;+content+&quot; &quot;);</b>
+<i>51</i>&nbsp;            }
+<b class="nc"><i>52</i>&nbsp;            System.out.println(&quot;\u001B[0m&quot;);</b>
+<i>53</i>&nbsp;        }
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;    /*@Override
+<i>56</i>&nbsp;    public void updateMap(Island island, Player player) {
+<i>57</i>&nbsp;        /*System.out.println(&quot;  a b c d e &quot;);
+<i>58</i>&nbsp;        for(int y=0; y&lt;5; y++){
+<i>59</i>&nbsp;            System.out.print(y+1+&quot; &quot;);
+<i>60</i>&nbsp;            for(int x=0; x&lt;5; x++){
+<i>61</i>&nbsp;                char content = &#39; &#39;;
+<i>62</i>&nbsp;                int level = 0;
+<i>63</i>&nbsp;                for(int z=0; z&lt;4; z++){
+<i>64</i>&nbsp;                    Cell cell = island.getCell(new Index(x, y, z));
+<i>65</i>&nbsp;                    if(cell.isEmpty())
+<i>66</i>&nbsp;                        break;
+<i>67</i>&nbsp;                    level = z;
+<i>68</i>&nbsp;                    if(cell.getWorker()!=null){
+<i>69</i>&nbsp;                        if(cell.getWorker().getOwner()==player)
+<i>70</i>&nbsp;                            content = &#39;y&#39;;
+<i>71</i>&nbsp;                        else
+<i>72</i>&nbsp;                            content = &#39;e&#39;;
+<i>73</i>&nbsp;                        level=z-1;
+<i>74</i>&nbsp;                    }
+<i>75</i>&nbsp;                }
+<i>76</i>&nbsp;                System.out.print(&quot;\u001B[4&quot;+(level+1)+&quot;m\u001B[37m&quot;+content+&quot; &quot;);
+<i>77</i>&nbsp;            }
+<i>78</i>&nbsp;            System.out.println(&quot;\u001B[0m&quot;);
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;    }*/
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    @Override
+<i>83</i>&nbsp;    public void printWin(boolean win) {
+<b class="nc"><i>84</i>&nbsp;        if(win)</b>
+<b class="nc"><i>85</i>&nbsp;            System.out.println(&quot;You win!&quot;);</b>
+<i>86</i>&nbsp;        else
+<b class="nc"><i>87</i>&nbsp;            System.out.println(&quot;You lose.&quot;);</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-05-10 18:59</div>
+</div>
+</body>
+</html>

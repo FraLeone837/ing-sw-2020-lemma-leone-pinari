@@ -1,0 +1,196 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: IntermediaryClass</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">Controller.Communication</a> ]
+</div>
+
+<h1>Coverage Summary for Class: IntermediaryClass (Controller.Communication)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IntermediaryClass</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package Controller.Communication;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import Controller.MatchManager;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.util.ArrayList;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * Class needed so we could always go back to the original matchManager
+<i>9</i>&nbsp; */
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;public class IntermediaryClass {
+<i>12</i>&nbsp;    private MatchManager matchManager;
+<b class="nc"><i>13</i>&nbsp;    private final Object lock = new Object();</b>
+<b class="nc"><i>14</i>&nbsp;    private ArrayList&lt;ClientHandler&gt; clientHandlerArrayList = new ArrayList&lt;&gt;();</b>
+<i>15</i>&nbsp;    private boolean notified;
+<i>16</i>&nbsp;    private boolean running;
+<i>17</i>&nbsp;    // Mm means MatchManager
+<i>18</i>&nbsp;    private Thread threadOfMm;
+<b class="nc"><i>19</i>&nbsp;    private ArrayList&lt;CommunicationProxy&gt; communicationProxies = new ArrayList&lt;&gt;();</b>
+<i>20</i>&nbsp;
+<b class="nc"><i>21</i>&nbsp;    public IntermediaryClass(){</b>
+<b class="nc"><i>22</i>&nbsp;        this.running = false;</b>
+<b class="nc"><i>23</i>&nbsp;        this.notified = false;</b>
+<b class="nc"><i>24</i>&nbsp;        this.matchManager = new MatchManager(1,this);</b>
+<b class="nc"><i>25</i>&nbsp;        this.threadOfMm = new Thread(matchManager);</b>
+<b class="nc"><i>26</i>&nbsp;        this.threadOfMm.start();</b>
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    /**
+<i>30</i>&nbsp;     * method that finishes game and clears all threads after a 10 second period
+<i>31</i>&nbsp;     */
+<i>32</i>&nbsp;    public void terminateGame(){
+<b class="nc"><i>33</i>&nbsp;        threadOfMm.stop();</b>
+<b class="nc"><i>34</i>&nbsp;        this.matchManager = new MatchManager(1, this);</b>
+<b class="nc"><i>35</i>&nbsp;        threadOfMm = new Thread(matchManager);</b>
+<b class="nc"><i>36</i>&nbsp;        threadOfMm.start();</b>
+<b class="nc"><i>37</i>&nbsp;        this.running = false;</b>
+<b class="nc"><i>38</i>&nbsp;        this.notified = false;</b>
+<b class="nc"><i>39</i>&nbsp;        for(ClientHandler cl : clientHandlerArrayList){</b>
+<b class="nc"><i>40</i>&nbsp;            cl.terminateGame();</b>
+<b class="nc"><i>41</i>&nbsp;        }</b>
+<b class="nc"><i>42</i>&nbsp;        clientHandlerArrayList = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>43</i>&nbsp;        communicationProxies = new ArrayList&lt;&gt;();</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * to be called from MatchManager whenever game starts
+<i>49</i>&nbsp;     * @param t
+<i>50</i>&nbsp;     */
+<i>51</i>&nbsp;    public void setMatchRunning(boolean t){
+<b class="nc"><i>52</i>&nbsp;        running = t;</b>
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public boolean MatchRunning(){
+<b class="nc"><i>56</i>&nbsp;        return running;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * used to communicate with all 2/3 players of a game
+<i>61</i>&nbsp;     * @param msg
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    public void Broadcast(Message msg){
+<b class="nc"><i>64</i>&nbsp;        for(CommunicationProxy cl : communicationProxies) {</b>
+<b class="nc"><i>65</i>&nbsp;            cl.sendMessage(msg.getType(), msg);</b>
+<b class="nc"><i>66</i>&nbsp;        }</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /**
+<i>70</i>&nbsp;     * adds a new comm proxy for matchManager to use
+<i>71</i>&nbsp;     * @param communicationProxy
+<i>72</i>&nbsp;     */
+<i>73</i>&nbsp;    public void setCommunicationProxy(CommunicationProxy communicationProxy) {
+<b class="nc"><i>74</i>&nbsp;        synchronized (lock){</b>
+<b class="nc"><i>75</i>&nbsp;            this.communicationProxies.add(communicationProxy);</b>
+<b class="nc"><i>76</i>&nbsp;            notified = true;</b>
+<b class="nc"><i>77</i>&nbsp;            lock.notifyAll();</b>
+<b class="nc"><i>78</i>&nbsp;        }</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public MatchManager getMatchManager() {
+<b class="nc"><i>82</i>&nbsp;        return matchManager;</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Helps in asking the first player to be connected, how many players want to play
+<i>87</i>&nbsp;     * @return
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    public boolean isAnyPlayerConnected(){
+<b class="nc"><i>90</i>&nbsp;        return matchManager.isAnyPlayerConnected();</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /**
+<i>94</i>&nbsp;     *
+<i>95</i>&nbsp;     * @returns the communication proxy from which to call
+<i>96</i>&nbsp;     * and send messages to the client
+<i>97</i>&nbsp;     */
+<i>98</i>&nbsp;    public CommunicationProxy getNewCommunicationProxy(){
+<b class="nc"><i>99</i>&nbsp;        synchronized (lock){</b>
+<b class="nc"><i>100</i>&nbsp;            while(!notified){</b>
+<i>101</i>&nbsp;                try{
+<b class="nc"><i>102</i>&nbsp;                    lock.wait();</b>
+<b class="nc"><i>103</i>&nbsp;                } catch (InterruptedException e){</b>
+<b class="nc"><i>104</i>&nbsp;                    e.printStackTrace();</b>
+<b class="nc"><i>105</i>&nbsp;                }</b>
+<i>106</i>&nbsp;            }
+<i>107</i>&nbsp;            //if there are no more clients to get we need to wait
+<b class="nc"><i>108</i>&nbsp;            if(communicationProxies.size() == 0)</b>
+<b class="nc"><i>109</i>&nbsp;            notified = false;</b>
+<b class="nc"><i>110</i>&nbsp;        }</b>
+<b class="nc"><i>111</i>&nbsp;        return communicationProxies.get(communicationProxies.size()-1);</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-05-10 18:59</div>
+</div>
+</body>
+</html>
