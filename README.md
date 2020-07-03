@@ -16,9 +16,9 @@ JAR COMPILATION
 
 In order to compile the JAR files, you have to modify the attribute in 'mainclass'
 in the maven-shade-plugin with the following values:
-Server: Controller.ViewManager
-Gui: View.GUIMode.GuiMain
-Cli: View.CliMode.CliMain  
+Server: Controller.ViewManager, 
+Gui: View.GUIMode.GuiMain, 
+Cli: View.CliMode.CliMain,   
 
 Afterwards you need to launch the packaging with maven.
 
