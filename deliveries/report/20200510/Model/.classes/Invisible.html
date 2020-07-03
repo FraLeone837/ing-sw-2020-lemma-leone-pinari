@@ -1,0 +1,141 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Invisible</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">Model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Invisible (Model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Invisible</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/ 10)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package Model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.ArrayList;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;/**
+<i>6</i>&nbsp; * this class implements gods&#39; powers that have effects during the opponents turns.
+<i>7</i>&nbsp; * each invisible block is a set of conditions that forbid certain actions.
+<i>8</i>&nbsp; * in your turn you set these blocks in the cells where the condition has effect, and the opponent has to check during his turn
+<i>9</i>&nbsp; * if he can win, build or do whatever he wants before he does it.
+<i>10</i>&nbsp; * for example: if you have Athena and one of your workers moves up, at the end of your turn you build an invisible block
+<i>11</i>&nbsp; * that forbids movement in each cell one level above opponents&#39; workers, so during their turns the opponents&#39; workers cannot move up.
+<i>12</i>&nbsp; * obviously, in each invisible block there are all the useful informations for the power (creator player, players affected by the power,
+<i>13</i>&nbsp; * workers affected by the power, ecc).
+<i>14</i>&nbsp; */
+<i>15</i>&nbsp;public class Invisible {
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    private Player creator;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    private ArrayList&lt;Worker&gt; workersList;
+<i>20</i>&nbsp;
+<b class="fc"><i>21</i>&nbsp;    public Invisible (Player creator){</b>
+<b class="fc"><i>22</i>&nbsp;        this.creator = creator;</b>
+<b class="fc"><i>23</i>&nbsp;        this.workersList = new ArrayList&lt;Worker&gt;();</b>
+<b class="fc"><i>24</i>&nbsp;    }</b>
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    public Player getCreator(){
+<b class="fc"><i>29</i>&nbsp;        return creator;</b>
+<i>30</i>&nbsp;    }
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    /**
+<i>33</i>&nbsp;     * adds the worker to the list of the workers affected by the forbidden
+<i>34</i>&nbsp;     *
+<i>35</i>&nbsp;     * @param w the worker to be added
+<i>36</i>&nbsp;     */
+<i>37</i>&nbsp;    public void addWorker(Worker w){
+<b class="fc"><i>38</i>&nbsp;        workersList.add(w);</b>
+<b class="fc"><i>39</i>&nbsp;    }</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    /**
+<i>42</i>&nbsp;     * removes all the workers from the list of the workers affected by the forbidden
+<i>43</i>&nbsp;     */
+<i>44</i>&nbsp;    public void removeWorkers(){
+<b class="fc"><i>45</i>&nbsp;        workersList.clear();</b>
+<b class="fc"><i>46</i>&nbsp;    }</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    /**
+<i>49</i>&nbsp;     * checks if the worker is in the list of workers affected by the forbidden
+<i>50</i>&nbsp;     *
+<i>51</i>&nbsp;     * @param w the worker to check
+<i>52</i>&nbsp;     * @return true if the worker is in the list
+<i>53</i>&nbsp;     */
+<i>54</i>&nbsp;    public Boolean isIn(Worker w){
+<b class="fc"><i>55</i>&nbsp;        return workersList.contains(w);</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-05-10 18:59</div>
+</div>
+</body>
+</html>

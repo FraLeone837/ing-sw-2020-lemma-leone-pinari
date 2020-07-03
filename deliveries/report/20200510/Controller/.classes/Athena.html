@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Athena</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">Controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Athena (Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Athena</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    59.7%
+  </span>
+  <span class="absValue">
+    (40/ 67)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package Controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import Controller.Communication.CommunicationProxy;
+<i>4</i>&nbsp;import Controller.Communication.Message;
+<i>5</i>&nbsp;import Model.*;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.util.ArrayList;
+<i>8</i>&nbsp;
+<b class="fc"><i>9</i>&nbsp;public class Athena extends God {</b>
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;    @Override
+<i>12</i>&nbsp;    public String getName() {
+<b class="fc"><i>13</i>&nbsp;        return &quot;Athena&quot;;</b>
+<i>14</i>&nbsp;    }
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    @Override
+<i>17</i>&nbsp;    public String getDescription() {
+<b class="fc"><i>18</i>&nbsp;        return &quot;Goddess of Wisdom\n&quot; +</b>
+<i>19</i>&nbsp;                &quot;Opponent’s Turn: If one of your\n&quot; +
+<i>20</i>&nbsp;                &quot;Workers moved up on your last\n&quot; +
+<i>21</i>&nbsp;                &quot;turn, opponent Workers cannot\n&quot; +
+<i>22</i>&nbsp;                &quot;move up this turn.&quot;;
+<i>23</i>&nbsp;    }
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    @Override
+<i>26</i>&nbsp;    public void turn(Match m, CommunicationProxy communicationProxy, Worker w) {
+<b class="nc"><i>27</i>&nbsp;        resetPower(m, w);</b>
+<b class="nc"><i>28</i>&nbsp;        setPrevIndex(w.getPosition());</b>
+<i>29</i>&nbsp;        //take index1 where to move from view
+<b class="nc"><i>30</i>&nbsp;        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, whereToMove(m, w, w.getPosition()));</b>
+<b class="nc"><i>31</i>&nbsp;        Index actualMoveIndex = correctIndex(m,tempMoveIndex);</b>
+<b class="nc"><i>32</i>&nbsp;        m.moveWorker(w, actualMoveIndex);</b>
+<b class="nc"><i>33</i>&nbsp;        checkWin(m, w);</b>
+<i>34</i>&nbsp;        //take index2 where to build from view
+<b class="nc"><i>35</i>&nbsp;        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, whereToMove(m, w, w.getPosition()));</b>
+<b class="nc"><i>36</i>&nbsp;        Index actualBuildIndex = correctIndex(m,tempBuildIndex);</b>
+<b class="nc"><i>37</i>&nbsp;        m.build(w, actualBuildIndex);</b>
+<b class="nc"><i>38</i>&nbsp;        usePower(m, w);</b>
+<b class="nc"><i>39</i>&nbsp;    }</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public void turn(Match m, Worker w,Index index1, Index index2) {
+<b class="fc"><i>42</i>&nbsp;        resetPower(m, w);</b>
+<b class="fc"><i>43</i>&nbsp;        setPrevIndex(w.getPosition());</b>
+<i>44</i>&nbsp;        //take index1 where to move from view
+<b class="fc"><i>45</i>&nbsp;        m.moveWorker(w, index1);</b>
+<b class="fc"><i>46</i>&nbsp;        checkWin(m, w);</b>
+<i>47</i>&nbsp;        //take index2 where to build from view
+<b class="fc"><i>48</i>&nbsp;        m.build(w, index2);</b>
+<b class="fc"><i>49</i>&nbsp;        usePower(m, w);</b>
+<b class="fc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /**
+<i>54</i>&nbsp;     * put the opponents&#39; workers in the forbiddenMove blocks if your worker moves up during this turn
+<i>55</i>&nbsp;     *
+<i>56</i>&nbsp;     * @param m the match that the server is managing
+<i>57</i>&nbsp;     * @param w the worker that the player chose to move
+<i>58</i>&nbsp;     */
+<i>59</i>&nbsp;    private void usePower(Match m, Worker w){
+<b class="fc"><i>60</i>&nbsp;        if(prevIndex.getZ()+1 == w.getPosition().getZ()){</b>
+<b class="fc"><i>61</i>&nbsp;            for (Player p : m.getPlayers()){</b>
+<b class="fc"><i>62</i>&nbsp;                if(p.getIdPlayer() != w.getOwner().getIdPlayer()) {</b>
+<b class="fc"><i>63</i>&nbsp;                    Worker w1 = p.getWorker1();</b>
+<b class="fc"><i>64</i>&nbsp;                    if(w1 != null){</b>
+<b class="fc"><i>65</i>&nbsp;                        Index i1 = w1.getPosition();</b>
+<b class="fc"><i>66</i>&nbsp;                        if (i1.getZ() &lt; 3) {</b>
+<b class="nc"><i>67</i>&nbsp;                            for (int x = 0; x &lt; 5; x++) {</b>
+<b class="nc"><i>68</i>&nbsp;                                for (int y = 0; y &lt; 5; y++) {</b>
+<b class="nc"><i>69</i>&nbsp;                                    Cell c1 = m.selectCell(new Index(x, y, i1.getZ() + 1));</b>
+<b class="nc"><i>70</i>&nbsp;                                    ArrayList&lt;Invisible&gt; invisibles = c1.getForbidden();</b>
+<b class="nc"><i>71</i>&nbsp;                                    for (Invisible inv : invisibles) {</b>
+<b class="nc"><i>72</i>&nbsp;                                        if (inv instanceof ForbiddenMove &amp;&amp; w.getOwner() == inv.getCreator())</b>
+<b class="nc"><i>73</i>&nbsp;                                            inv.addWorker(w1);</b>
+<b class="nc"><i>74</i>&nbsp;                                    }</b>
+<i>75</i>&nbsp;                                }
+<i>76</i>&nbsp;                            }
+<i>77</i>&nbsp;                        }
+<i>78</i>&nbsp;                    }
+<b class="fc"><i>79</i>&nbsp;                    Worker w2 = p.getWorker2();</b>
+<b class="fc"><i>80</i>&nbsp;                    if (w2 != null) {</b>
+<b class="fc"><i>81</i>&nbsp;                        Index i2 = w2.getPosition();</b>
+<b class="fc"><i>82</i>&nbsp;                        if (i2.getZ() &lt; 3) {</b>
+<b class="nc"><i>83</i>&nbsp;                            for (int x = 0; x &lt; 5; x++) {</b>
+<b class="nc"><i>84</i>&nbsp;                                for (int y = 0; y &lt; 5; y++) {</b>
+<b class="nc"><i>85</i>&nbsp;                                    Cell c2 = m.selectCell(new Index(x, y, i2.getZ() + 1));</b>
+<b class="nc"><i>86</i>&nbsp;                                    ArrayList&lt;Invisible&gt; invisibles = c2.getForbidden();</b>
+<b class="nc"><i>87</i>&nbsp;                                    for (Invisible inv : invisibles) {</b>
+<b class="nc"><i>88</i>&nbsp;                                        if (inv instanceof ForbiddenMove &amp;&amp; w.getOwner() == inv.getCreator())</b>
+<b class="nc"><i>89</i>&nbsp;                                            inv.addWorker(w2);</b>
+<b class="nc"><i>90</i>&nbsp;                                    }</b>
+<i>91</i>&nbsp;                                }
+<i>92</i>&nbsp;                            }
+<i>93</i>&nbsp;                        }
+<i>94</i>&nbsp;                    }
+<i>95</i>&nbsp;                }
+<b class="fc"><i>96</i>&nbsp;            }</b>
+<i>97</i>&nbsp;        }
+<b class="fc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    @Override
+<i>101</i>&nbsp;    public void setup(Match m, Player p) {
+<b class="fc"><i>102</i>&nbsp;        for(int x=0; x&lt;5; x++){</b>
+<b class="fc"><i>103</i>&nbsp;            for(int y=0; y&lt;5; y++){</b>
+<b class="fc"><i>104</i>&nbsp;                for(int z=0; z&lt;4; z++){</b>
+<b class="fc"><i>105</i>&nbsp;                    Index i=new Index(x,y,z);</b>
+<b class="fc"><i>106</i>&nbsp;                    Invisible invisible = new ForbiddenMove(p);</b>
+<b class="fc"><i>107</i>&nbsp;                    m.buildInvisible(invisible, i);</b>
+<i>108</i>&nbsp;                }
+<i>109</i>&nbsp;            }
+<i>110</i>&nbsp;        }
+<b class="fc"><i>111</i>&nbsp;    }</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    @Override
+<i>115</i>&nbsp;    public void resetPower(Match m, Worker w){
+<b class="fc"><i>116</i>&nbsp;        for(int x=0; x&lt;5; x++){</b>
+<b class="fc"><i>117</i>&nbsp;            for(int y=0; y&lt;5; y++){</b>
+<b class="fc"><i>118</i>&nbsp;                for(int z=0; z&lt;4; z++){</b>
+<b class="fc"><i>119</i>&nbsp;                    Index i=new Index(x,y,z);</b>
+<b class="fc"><i>120</i>&nbsp;                    ArrayList&lt;Invisible&gt; invisibles =m.selectCell(i).getForbidden();</b>
+<b class="fc"><i>121</i>&nbsp;                    for(Invisible inv : invisibles){</b>
+<b class="fc"><i>122</i>&nbsp;                        if(inv instanceof ForbiddenMove &amp;&amp; w.getOwner()==inv.getCreator())</b>
+<b class="fc"><i>123</i>&nbsp;                            inv.removeWorkers();</b>
+<b class="fc"><i>124</i>&nbsp;                    }</b>
+<i>125</i>&nbsp;                }
+<i>126</i>&nbsp;            }
+<i>127</i>&nbsp;        }
+<b class="fc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-05-10 18:59</div>
+</div>
+</body>
+</html>
