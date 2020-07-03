@@ -25,7 +25,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>View.GUIMode.GuiMain</mainClass>
+                  <mainClass>Controller.ViewManager</mainClass>
                 </transformer>
               </transformers>
             </configuration>
