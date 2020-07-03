@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"Controller"},{"l":"Controller.Communication"},{"l":"Controller.Gods"},{"l":"ControllerTest"},{"l":"ControllerTest.UtilClasses"},{"l":"Model"},{"l":"ModelTest"},{"l":"View"},{"l":"View.CliMode"},{"l":"View.Communication"},{"l":"View.CustomComponent"},{"l":"View.GUIMode"},{"l":"View.Interfaces"}]

@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 .idea
 target/
 
-=======
->>>>>>> parent of ca7faa8... update gitignore
 # Compiled class file
 *.class
 
