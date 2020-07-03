@@ -25,7 +25,11 @@
             <configuration>
               <transformers>
                 <transformer>
+<<<<<<< HEAD
                   <mainClass>Controller.ViewManager</mainClass>
+=======
+                  <mainClass>View.GUIMode.GuiMain</mainClass>
+>>>>>>> parent of 3e4cde6... adds all deliveries
                 </transformer>
               </transformers>
             </configuration>
