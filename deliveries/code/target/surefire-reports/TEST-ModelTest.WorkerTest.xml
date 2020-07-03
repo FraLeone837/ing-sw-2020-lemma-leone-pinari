@@ -61,7 +61,7 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="ModelTest.WorkerTest" name="testSetOwner_correctOwner_expectedEquals" time="0"/>
+  <testcase classname="ModelTest.WorkerTest" name="testSetOwner_correctOwner_expectedEquals" time="0.001"/>
   <testcase classname="ModelTest.WorkerTest" name="testBuild" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testMove" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testSetIdWorker_correctId_expectedEquals" time="0"/>
@@ -69,6 +69,6 @@
   <testcase classname="ModelTest.WorkerTest" name="testBuildDome" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testSetPosition_correctPosition_expectedEquals" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testSetOwner_incorrectOwner_expectedNotEquals" time="0"/>
-  <testcase classname="ModelTest.WorkerTest" name="testDelete" time="0.001"/>
+  <testcase classname="ModelTest.WorkerTest" name="testDelete" time="0"/>
   <testcase classname="ModelTest.WorkerTest" name="testSetIdWorker_incorrectId_expectedNotEquals" time="0"/>
 </testsuite>

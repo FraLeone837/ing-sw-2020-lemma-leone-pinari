@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="6" failures="0" name="ModelTest.CellTest" time="0" errors="0" skipped="0">
+<testsuite tests="6" failures="0" name="ModelTest.CellTest" time="0.001" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="java.vm.version" value="13.0.2+8"/>
@@ -62,7 +62,7 @@
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
   <testcase classname="ModelTest.CellTest" name="testForbidden" time="0"/>
-  <testcase classname="ModelTest.CellTest" name="testIsEmpty_containsBuilding_expectedNotEmpty" time="0"/>
+  <testcase classname="ModelTest.CellTest" name="testIsEmpty_containsBuilding_expectedNotEmpty" time="0.001"/>
   <testcase classname="ModelTest.CellTest" name="testIsEmpty_containsDome_expectedNotEmpty" time="0"/>
   <testcase classname="ModelTest.CellTest" name="testGetIndex" time="0"/>
   <testcase classname="ModelTest.CellTest" name="testIsEmpty_containsNothing_expectedEmpty" time="0"/>

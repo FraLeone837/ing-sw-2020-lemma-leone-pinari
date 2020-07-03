@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="2" failures="0" name="ControllerTest.ApolloTest" time="6.439" errors="0" skipped="0">
+<testsuite tests="2" failures="0" name="ControllerTest.ApolloTest" time="6.512" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="java.vm.version" value="13.0.2+8"/>
@@ -61,6 +61,6 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="ControllerTest.ApolloTest" name="testTurn_NormalMovement_CorrectOutput" time="3.353"/>
-  <testcase classname="ControllerTest.ApolloTest" name="testTurn_SwitchPlaces_ExpectedSwitchedPlaces" time="3.086"/>
+  <testcase classname="ControllerTest.ApolloTest" name="testTurn_NormalMovement_CorrectOutput" time="3.419"/>
+  <testcase classname="ControllerTest.ApolloTest" name="testTurn_SwitchPlaces_ExpectedSwitchedPlaces" time="3.093"/>
 </testsuite>

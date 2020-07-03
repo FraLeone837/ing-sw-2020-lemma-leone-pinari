@@ -97,7 +97,7 @@ public class CommunicationProxy implements Runnable, MessageObservers {
         handleConnection();
     }
 
-    public synchronized void removeIntermediaryClass(){
+    public void removeIntermediaryClass(){
         this.ic = null;
     }
 

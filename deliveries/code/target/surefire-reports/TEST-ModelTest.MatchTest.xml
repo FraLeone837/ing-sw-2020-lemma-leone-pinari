@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="5" failures="0" name="ModelTest.MatchTest" time="0.001" errors="0" skipped="0">
+<testsuite tests="5" failures="0" name="ModelTest.MatchTest" time="0" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="java.vm.version" value="13.0.2+8"/>
@@ -62,7 +62,7 @@
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
   <testcase classname="ModelTest.MatchTest" name="testPlayers_InsertAndRemove_isInsertedIsRemoved" time="0"/>
-  <testcase classname="ModelTest.MatchTest" name="testMoveWorker_MoveFromFirstPosition_True" time="0.001"/>
+  <testcase classname="ModelTest.MatchTest" name="testMoveWorker_MoveFromFirstPosition_True" time="0"/>
   <testcase classname="ModelTest.MatchTest" name="testBuild_BuildEverwhere_isBuildingAndisDomeInLevel3" time="0"/>
   <testcase classname="ModelTest.MatchTest" name="testInitWorker_CorrectIn_CorrectOut" time="0"/>
   <testcase classname="ModelTest.MatchTest" name="testBuildInvisible_BuildOneCell_CorrectOutput" time="0"/>

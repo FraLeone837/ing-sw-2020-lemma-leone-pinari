@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="10" failures="0" name="ModelTest.IndexTest" time="0.005" errors="0" skipped="0">
+<testsuite tests="10" failures="0" name="ModelTest.IndexTest" time="0.003" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="java.vm.version" value="13.0.2+8"/>
@@ -61,14 +61,14 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="ModelTest.IndexTest" name="testGetY_sameY_expectedEquals" time="0.001"/>
-  <testcase classname="ModelTest.IndexTest" name="testToString" time="0.002"/>
+  <testcase classname="ModelTest.IndexTest" name="testGetY_sameY_expectedEquals" time="0"/>
+  <testcase classname="ModelTest.IndexTest" name="testToString" time="0"/>
   <testcase classname="ModelTest.IndexTest" name="testEquals_sameIndexes_expectedTrue" time="0"/>
   <testcase classname="ModelTest.IndexTest" name="testGetZ_sameZ_expectedEquals" time="0"/>
-  <testcase classname="ModelTest.IndexTest" name="testEquals_differentClasses_expectedFalse" time="0"/>
+  <testcase classname="ModelTest.IndexTest" name="testEquals_differentClasses_expectedFalse" time="0.001"/>
   <testcase classname="ModelTest.IndexTest" name="testGetZ_differentZ_expectedNotEquals" time="0"/>
-  <testcase classname="ModelTest.IndexTest" name="testGetX_sameX_expectedEquals" time="0.001"/>
-  <testcase classname="ModelTest.IndexTest" name="testGetY_differentY_expectedNotEquals" time="0.001"/>
-  <testcase classname="ModelTest.IndexTest" name="testEquals_differentIndexes_expectedFalse" time="0"/>
-  <testcase classname="ModelTest.IndexTest" name="testGetX_differentX_expectedNotEquals" time="0"/>
+  <testcase classname="ModelTest.IndexTest" name="testGetX_sameX_expectedEquals" time="0"/>
+  <testcase classname="ModelTest.IndexTest" name="testGetY_differentY_expectedNotEquals" time="0"/>
+  <testcase classname="ModelTest.IndexTest" name="testEquals_differentIndexes_expectedFalse" time="0.001"/>
+  <testcase classname="ModelTest.IndexTest" name="testGetX_differentX_expectedNotEquals" time="0.001"/>
 </testsuite>

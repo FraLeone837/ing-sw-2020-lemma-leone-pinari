@@ -166,6 +166,7 @@ public class MatchManager implements Runnable{
                 intermediaryClass.removeCommunicationProxy(thisPlayer);
                 intermediaryClass.Broadcast(new Message(Message.MessageType.OTHERS_LOSS, playerManager.getPlayer().getName()));
                 if(playerManagers.size()>2) {
+                    removePower(match, playerManager.getPlayer());
                     match.removeWorker(playerManager.getPlayer().getWorker1());
                     match.removeWorker(playerManager.getPlayer().getWorker2());
                     match.removePlayer(playerManager.getPlayer());
@@ -179,6 +180,22 @@ public class MatchManager implements Runnable{
             }
         }
         playerManagers = playerManagersCopy;
+    }
+
+    private void removePower(Match match, Player looser){
+        for(int x=0; x<5; x++){
+            for(int y=0; y<5; y++){
+                for(int z=0; z<4; z++){
+                    Index index = new Index(x, y, z);
+                    Cell cell = match.selectCell(index);
+                    ArrayList<Invisible> invisibles = cell.getForbidden();
+                    for(Invisible invisible : invisibles){
+                        if(invisible.getCreator()==looser)
+                            invisible.removeWorkers();
+                    }
+                }
+            }
+        }
     }
 
     private God godID(int id){
