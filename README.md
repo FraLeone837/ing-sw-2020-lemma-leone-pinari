@@ -8,13 +8,13 @@ Pinari Etion
 
 IMPLEMENTED FUNCTIONALITIES
 
-Complete rules + CLI + GUI + Socket + 1 FA
+Complete rules + CLI + GUI + Socket + 1 FA (5 Advanced Gods)
 
 
 
 JAR COMPILATION
 
-In order to compile the JAR files, you have to modify the value in <mainclass>
+In order to compile the JAR files, you have to modify the attribute in '<mainclass>'
 in the maven-shade-plugin with the following values:
 Server: Controller.ViewManager
 Gui: View.GUIMode.GuiMain
