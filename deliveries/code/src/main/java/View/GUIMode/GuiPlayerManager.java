@@ -186,7 +186,7 @@ public class GuiPlayerManager implements PlayerManager {
         String godDescription = god[1];
         godDescription = godDescription.replaceAll("\n", "<br>");
         JLabel l;
-        if(this.name.equals(owner.toUpperCase()))
+        if(this.name.equals(owner))
             l = new JLabel("<html>"+LABEL_YOUR_GOD + godName + LABEL_YOUR_GOD_DESC + godDescription+"</html>");
         else
             l = new JLabel("<html>"+owner+"'s God is:" + godName + LABEL_YOUR_GOD_DESC + godDescription+"</html>");
@@ -235,7 +235,14 @@ public class GuiPlayerManager implements PlayerManager {
 
     @Override
     public void showTurn(String object) {
-
+        SwingUtilities.invokeLater(() -> {
+            String turn;
+            if(object.toUpperCase().equals(this.name))
+                turn = LABEL_YOUR_TURN;
+            else
+                turn = LABEL_TURN + object + LABEL_TURN_2;
+            prepareUpperText(turn);
+        });
     }
 
     @Override
