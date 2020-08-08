@@ -177,6 +177,8 @@ public class MatchManager implements Runnable{
                     playerManagersCopy.remove(toRemove);
                     toRemove = null;
                 }
+                if(playerManagers.size()==2)
+                    break;
             }
         }
         playerManagers = playerManagersCopy;
