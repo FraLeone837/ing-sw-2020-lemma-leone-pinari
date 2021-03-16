@@ -24,12 +24,7 @@ public class Apollo extends God {
     }
 
     @Override
-    public void turn(Match match, CommunicationProxy communicationProxy, Worker worker) {
-        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
-        if(possibleMove.isEmpty()){
-            setInGame(false);
-            return;
-        }
+    public void manageMove(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleMove) {
         setPrevIndex(worker.getPosition());
         //take index1 where to move from view
         Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
@@ -41,30 +36,6 @@ public class Apollo extends God {
         }
         else
             match.moveWorker(worker, actuaMovelIndex);
-        if(checkWin(match, worker)){
-            setWinner(true);
-            return;
-        }
-        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
-        if(possibleBuild.isEmpty()){
-            setInGame(false);
-            return;
-        }
-        //take index2 where to build from view
-        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
-        match.build(worker, actualBuildIndex);
-    }
-
-    public void turn(Match match, Worker worker, Index index1, Index index2) {
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move from view
-        Worker opponent = match.selectCell(index1).getWorker();
-        match.moveWorker(opponent, worker.getPosition(), false);
-        match.initWorker(worker,index1);
-        checkWin(match, worker);
-        //take index2 where to build from view
-        match.build(worker, index2);
     }
 
     @Override

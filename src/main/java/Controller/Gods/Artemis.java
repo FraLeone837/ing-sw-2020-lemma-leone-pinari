@@ -48,36 +48,15 @@ public class Artemis extends God {
             setInGame(false);
             return;
         }
-        setPrevIndex(worker.getPosition());
-        setPrevMoveIndex(worker.getPosition());
-        //take index1 where to move the first time
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
-        match.moveWorker(worker, actualMoveIndex);
+        manageMove(match, communicationProxy, worker, possibleMove);
         if(checkWin(match, worker)){
             setWinner(true);
             return;
         }
-//        Cell cell = match.selectCell(prevMoveIndex);
-//        ArrayList<Invisible> invisibles = cell.getForbidden();
-//        for (Invisible inv : invisibles) {
-//            if (inv instanceof ForbiddenMove && worker.getOwner() == inv.getCreator())
-//                inv.addWorker(worker);
-//        }
         possibleMove = whereToMove(match, worker, worker.getPosition());
-        if(possibleMove.contains(prevMoveIndex))
-            possibleMove.remove(prevMoveIndex);
-        if(!possibleMove.isEmpty()) {
-            //ask to move another time
-            Boolean moveAgainAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.MOVE_AGAIN, "Want to move again?");
-            setMoveAgain(moveAgainAsked);
-        }
+        askToMoveAgain(possibleMove, communicationProxy);
         if(moveAgain) {
-            setPrevIndex(worker.getPosition());
-            //take index2 where to move a second time
-            Index tempMoveIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-            Index actualMoveIndex2 = correctIndex(match,tempMoveIndex2);
-            match.moveWorker(worker, actualMoveIndex2);
+            manageMove(match, communicationProxy, worker, possibleMove);
             if(checkWin(match, worker)){
                 setWinner(true);
                 return;
@@ -89,10 +68,27 @@ public class Artemis extends God {
             setInGame(false);
             return;
         }
-        //take index3 where to build
-        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
-        match.build(worker, actualBuildIndex);
+        manageBuild(match, communicationProxy, worker, possibleBuild);
+    }
+
+    @Override
+    public void manageMove(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleMove){
+        setPrevIndex(worker.getPosition());
+        setPrevMoveIndex(worker.getPosition());
+        //take index1 where to move the first time
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
+        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
+        match.moveWorker(worker, actualMoveIndex);
+    }
+
+    public void askToMoveAgain(ArrayList<Index> possibleMove, CommunicationProxy communicationProxy){
+        if(possibleMove.contains(prevMoveIndex))
+            possibleMove.remove(prevMoveIndex);
+        if(!possibleMove.isEmpty()) {
+            //ask to move another time
+            Boolean moveAgainAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.MOVE_AGAIN, "Want to move again?");
+            setMoveAgain(moveAgainAsked);
+        }
     }
 
     /**

@@ -61,11 +61,7 @@ public abstract class God {
             setInGame(false);
             return;
         }
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move from view
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
-        match.moveWorker(worker,actualMoveIndex);
+        manageMove(match, communicationProxy, worker, possibleMove);
         if(checkWin(match, worker)){
             setWinner(true);
             return;
@@ -75,6 +71,18 @@ public abstract class God {
             setInGame(false);
             return;
         }
+        manageBuild(match, communicationProxy, worker, possibleBuild);
+    }
+
+    public void manageMove(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleMove){
+        setPrevIndex(worker.getPosition());
+        //take index1 where to move from view
+        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
+        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
+        match.moveWorker(worker,actualMoveIndex);
+    }
+
+    public void manageBuild(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleBuild){
         //take index2 where to build from view
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
         Index actualBuildIndex = correctIndex(match,tempBuildIndex);
