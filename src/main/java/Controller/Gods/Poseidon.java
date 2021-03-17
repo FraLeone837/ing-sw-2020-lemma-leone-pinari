@@ -27,30 +27,8 @@ public class Poseidon extends God {
     }
 
     @Override
-    public void turn(Match match, CommunicationProxy communicationProxy, Worker worker) {
-        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
-        if(possibleMove.isEmpty()){
-            setInGame(false);
-            return;
-        }
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move the first time from the view
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
-        match.moveWorker(worker, actualMoveIndex);
-        if(checkWin(match, worker)){
-            setWinner(true);
-            return;
-        }
-        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
-        if(possibleBuild.isEmpty()){
-            setInGame(false);
-            return;
-        }
-        //take index2 where to build
-        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
-        match.build(worker, actualBuildIndex);
+    public void manageBuild(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleBuild){
+        build(match, communicationProxy, worker, possibleBuild);
         worker = otherWorker(worker);
         if(worker.getPosition().getZ()>0)
             return;
@@ -62,10 +40,7 @@ public class Poseidon extends God {
         //Boolean buildWithOther = (Boolean) communicationProxy.sendMessage(Message.MessageType.BUILD_AGAIN, "Want to build with other worker?");
         if(!buildWithOther)
             return;
-        //take index where to build with the unmoved worker
-        tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        actualBuildIndex = correctIndex(match,tempBuildIndex);
-        match.build(worker, actualBuildIndex);
+        build(match, communicationProxy, worker, possibleBuild);
         for(int i=0; i<2; i++) {
             possibleBuild = whereToBuild(match, worker, worker.getPosition());
             if (possibleBuild.isEmpty())
@@ -74,11 +49,15 @@ public class Poseidon extends God {
             Boolean buildAgain = (Boolean) communicationProxy.sendMessage(Message.MessageType.BUILD_AGAIN, "Want to build again?");
             if (!buildAgain)
                 return;
-            //take index where to build again
-            tempBuildIndex = (Index) communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-            actualBuildIndex = correctIndex(match, tempBuildIndex);
-            match.build(worker, actualBuildIndex);
+            build(match, communicationProxy, worker, possibleBuild);
         }
+    }
+
+    public void build(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleBuild){
+        //take index2 where to build
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
+        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
+        match.build(worker, actualBuildIndex);
     }
 
     private Worker otherWorker(Worker actualWorker){

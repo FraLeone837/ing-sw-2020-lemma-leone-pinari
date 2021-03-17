@@ -31,15 +31,23 @@ public class Triton extends God{
             setInGame(false);
             return;
         }
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move the first time
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
-        match.moveWorker(worker, actualMoveIndex);
+        manageMove(match, communicationProxy, worker, possibleMove);
         if(checkWin(match, worker)){
             setWinner(true);
             return;
         }
+        moveAgain(match, communicationProxy, worker, possibleMove);
+        if(winner)
+            return;
+        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
+        if(possibleBuild.isEmpty()){
+            setInGame(false);
+            return;
+        }
+        manageBuild(match, communicationProxy, worker, possibleBuild);
+    }
+
+    public void moveAgain(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleMove){
         int actualX = worker.getPosition().getX();
         int actualY = worker.getPosition().getY();
         while (actualX==0 || actualX==4 || actualY==0 || actualY==4) {
@@ -49,11 +57,7 @@ public class Triton extends God{
             //ask to move another time
             Boolean moveAgain = (Boolean) communicationProxy.sendMessage(Message.MessageType.MOVE_AGAIN, "Want to move again?");
             if (moveAgain) {
-                setPrevIndex(worker.getPosition());
-                //take index2 where to move a second time
-                Index tempMoveIndex2 = (Index) communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-                Index actualMoveIndex2 = correctIndex(match, tempMoveIndex2);
-                match.moveWorker(worker, actualMoveIndex2);
+                manageMove(match, communicationProxy, worker, possibleMove);
                 if (checkWin(match, worker)) {
                     setWinner(true);
                     return;
@@ -64,14 +68,6 @@ public class Triton extends God{
             actualX = worker.getPosition().getX();
             actualY = worker.getPosition().getY();
         }
-        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
-        if(possibleBuild.isEmpty()){
-            setInGame(false);
-            return;
-        }
-        //take index3 where to build
-        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
-        match.build(worker, actualBuildIndex);
     }
+
 }

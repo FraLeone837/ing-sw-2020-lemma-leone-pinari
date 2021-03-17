@@ -74,6 +74,13 @@ public abstract class God {
         manageBuild(match, communicationProxy, worker, possibleBuild);
     }
 
+    /**
+     * this method manages the movement of the worker, taking into account god's power
+     * @param communicationProxy is the class (not null) with which the game interfaces with the other player and sends messages to
+     * @param match the match that the server is managing
+     * @param worker the worker selected by the player
+     * @param possibleMove list of possible indexes where the worker can move
+     */
     public void manageMove(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleMove){
         setPrevIndex(worker.getPosition());
         //take index1 where to move from view
@@ -82,6 +89,13 @@ public abstract class God {
         match.moveWorker(worker,actualMoveIndex);
     }
 
+    /**
+     * this method manages the building, taking into account god's power
+     * @param communicationProxy is the class (not null) with which the game interfaces with the other player and sends messages to
+     * @param match the match that the server is managing
+     * @param worker the worker selected by the player
+     * @param possibleBuild list of possible indexes where the worker can build
+     */
     public void manageBuild(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleBuild){
         //take index2 where to build from view
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);

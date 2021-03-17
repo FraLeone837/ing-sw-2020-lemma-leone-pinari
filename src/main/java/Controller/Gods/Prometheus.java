@@ -34,28 +34,13 @@ public class Prometheus extends God {
     @Override
     public void turn(Match match, CommunicationProxy communicationProxy, Worker worker) {
         ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
-        if(!possibleBuild.isEmpty()) {
-            //ask the player if he wants to move before building
-            Boolean buildBeforeAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.BUILD_BEFORE, "Want to build before to move?");
-            setBuildBefore(buildBeforeAsked);
-        }
-        if(buildBefore) {
-            //take index where to build before to move
-            Index tempBuildIndex1 = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-            Index actualBuildIndex1 = correctIndex(match,tempBuildIndex1);
-            match.build(worker, actualBuildIndex1);
-            usePower(match, worker);
-        }
+        buildBeforeMoving(match, communicationProxy, worker, possibleBuild);
         ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
         if(possibleMove.isEmpty()){
             setInGame(false);
             return;
         }
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move from view
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
-        match.moveWorker(worker,actualMoveIndex);
+        manageMove(match, communicationProxy, worker, possibleMove);
         if(checkWin(match, worker)){
             setWinner(true);
             return;
@@ -65,12 +50,21 @@ public class Prometheus extends God {
             setInGame(false);
             return;
         }
-        //take index2 where to build from view
-        Index tempBuildIndex2 = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
-        Index actualBuildIndex2 = correctIndex(match,tempBuildIndex2);
-        match.build(worker, actualBuildIndex2);
+        manageBuild(match, communicationProxy, worker, possibleBuild);
         if(buildBefore) {
             resetPower(match, worker);
+        }
+    }
+
+    public void buildBeforeMoving(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleBuild){
+        if(!possibleBuild.isEmpty()) {
+            //ask the player if he wants to move before building
+            Boolean buildBeforeAsked = (Boolean) communicationProxy.sendMessage(Message.MessageType.BUILD_BEFORE, "Want to build before to move?");
+            setBuildBefore(buildBeforeAsked);
+        }
+        if(buildBefore) {
+            manageBuild(match, communicationProxy, worker, possibleBuild);
+            usePower(match, worker);
         }
     }
 

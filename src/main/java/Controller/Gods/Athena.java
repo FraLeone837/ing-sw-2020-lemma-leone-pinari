@@ -25,22 +25,15 @@ public class Athena extends God {
     @Override
     public void turn(Match match, CommunicationProxy communicationProxy, Worker worker){
         resetPower(match, worker);
-        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
-        if(possibleMove.isEmpty()){
-            setInGame(false);
-            return;
-        }
-        manageMove(match, communicationProxy, worker, possibleMove);
-        if(checkWin(match, worker)){
-            setWinner(true);
-            return;
-        }
-        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
-        if(possibleBuild.isEmpty()){
-            setInGame(false);
-            return;
-        }
-        manageBuild(match, communicationProxy, worker, possibleBuild);
+        super.turn(match, communicationProxy, worker);
+    }
+
+    @Override
+    public void manageBuild(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleBuild){
+        //take index2 where to build from view
+        Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
+        Index actualBuildIndex = correctIndex(match,tempBuildIndex);
+        match.build(worker, actualBuildIndex);
         if(prevIndex.getZ() < worker.getPosition().getZ())
             usePower(match, worker);
     }

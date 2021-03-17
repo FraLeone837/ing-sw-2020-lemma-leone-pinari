@@ -49,20 +49,8 @@ public class Artemis extends God {
             return;
         }
         manageMove(match, communicationProxy, worker, possibleMove);
-        if(checkWin(match, worker)){
-            setWinner(true);
+        if(winner)
             return;
-        }
-        possibleMove = whereToMove(match, worker, worker.getPosition());
-        askToMoveAgain(possibleMove, communicationProxy);
-        if(moveAgain) {
-            manageMove(match, communicationProxy, worker, possibleMove);
-            if(checkWin(match, worker)){
-                setWinner(true);
-                return;
-            }
-        }
-        setMoveAgain(false);
         ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
         if(possibleBuild.isEmpty()){
             setInGame(false);
@@ -73,6 +61,23 @@ public class Artemis extends God {
 
     @Override
     public void manageMove(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleMove){
+        move(match, communicationProxy, worker, possibleMove);
+        if(checkWin(match, worker)){
+            setWinner(true);
+            return;
+        }
+        possibleMove = whereToMove(match, worker, worker.getPosition());
+        askToMoveAgain(possibleMove, communicationProxy);
+        if(moveAgain) {
+            move(match, communicationProxy, worker, possibleMove);
+            if(checkWin(match, worker)){
+                setWinner(true);
+                return;
+            }
+        }
+    }
+
+    public void move(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleMove){
         setPrevIndex(worker.getPosition());
         setPrevMoveIndex(worker.getPosition());
         //take index1 where to move the first time
@@ -82,6 +87,7 @@ public class Artemis extends God {
     }
 
     public void askToMoveAgain(ArrayList<Index> possibleMove, CommunicationProxy communicationProxy){
+        setMoveAgain(false);
         if(possibleMove.contains(prevMoveIndex))
             possibleMove.remove(prevMoveIndex);
         if(!possibleMove.isEmpty()) {

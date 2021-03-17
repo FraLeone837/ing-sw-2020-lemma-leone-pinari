@@ -25,26 +25,7 @@ public class Hestia extends God{
     }
 
     @Override
-    public void turn(Match match, CommunicationProxy communicationProxy, Worker worker) {
-        ArrayList<Index> possibleMove = whereToMove(match, worker, worker.getPosition());
-        if(possibleMove.isEmpty()){
-            setInGame(false);
-            return;
-        }
-        setPrevIndex(worker.getPosition());
-        //take index1 where to move the first time from the view
-        Index tempMoveIndex = (Index)communicationProxy.sendMessage(Message.MessageType.MOVE_INDEX_REQ, possibleMove);
-        Index actualMoveIndex = correctIndex(match,tempMoveIndex);
-        match.moveWorker(worker, actualMoveIndex);
-        if(checkWin(match, worker)){
-            setWinner(true);
-            return;
-        }
-        ArrayList<Index> possibleBuild = whereToBuild(match, worker, worker.getPosition());
-        if(possibleBuild.isEmpty()){
-            setInGame(false);
-            return;
-        }
+    public void manageBuild(Match match, CommunicationProxy communicationProxy, Worker worker, ArrayList<Index> possibleBuild){
         //take index2 where to build
         Index tempBuildIndex = (Index)communicationProxy.sendMessage(Message.MessageType.BUILD_INDEX_REQ, possibleBuild);
         Index actualBuildIndex = correctIndex(match,tempBuildIndex);
