@@ -228,6 +228,12 @@ public class MatchManager implements Runnable{
                 return new Poseidon();
             case 12:
                 return new Triton();
+            case 13:
+                return new Lemma();
+            case 14:
+                return new Leone();
+            case 15:
+                return new Pinari();
             default:
                 return new Zeus();
         }
@@ -236,7 +242,7 @@ public class MatchManager implements Runnable{
      * give randomly a god to each player
      */
     private void giveGods(){
-        int numberOfGods = 14;
+        int numberOfGods = 17;
         ArrayList<Integer> given = new ArrayList<Integer>();
         Random godGen = new Random();
         God god = new Apollo();
